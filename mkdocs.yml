@@ -1,0 +1,17 @@
+site_name: C2SIM Server
+site_url: https://github.com/TNO-MST/c2sim-server
+docs_dir: ./docs/content
+theme:
+  name: material
+nav:
+  - Index: index.md
+  - Implementation:
+    - High level overview: c2sim-server/c2sim-server-architecture.md  
+  - Manual testing: openapi-ui/manual-testing-with-openapi-ui.md
+  - State machine: state-machine.md
+  - LOX XML examples: C2SIM-example-messages.md
+markdown_extensions:
+  - admonition
+  - codehilite
+  - toc:
+      permalink: true
