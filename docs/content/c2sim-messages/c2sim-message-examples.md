@@ -1,26 +1,10 @@
 # C2SIM XML Message examples
 
-The following messages are used to force a [state transition](state-machine.md) in the C2SIM server:
+## Schema version
 
-* System message `SubmitInitialization`
+The examples are based on schema version '1.0.2' (used in CWIX 2025). Due to an XSD schema publishing error the '1.0.2' schema version still uses namespace `http://www.sisostds.org/schemas/C2SIM/1.1` namespace.
 
-* System message `InitializationComplete` (optional)
-
-* System message `ShareScenario` 
-
-* System message `StartScenario`
-
-* System message `PauseScenario`
-
-* System message `ResumeScenario`
-
-* System message `StopScenario`
-
-* System message `ResetScenario`
-
-The `C2SIMInitializationBody` is used to initialize scenario.
-
-## System Msg Submit Initialization
+## Submit Initialization
 
 ```
 <Message xmlns="http://www.sisostds.org/schemas/C2SIM/1.1">
@@ -45,7 +29,7 @@ The `C2SIMInitializationBody` is used to initialize scenario.
 </Message>
 ```
 
-## System Msg Share Scenario
+## Share Scenario
 
 ```
 <Message xmlns="http://www.sisostds.org/schemas/C2SIM/1.1">
@@ -70,7 +54,7 @@ The `C2SIMInitializationBody` is used to initialize scenario.
 </Message>
 ```
 
-## System Msg Start Scenario
+## Start Scenario
 
 ```
 <Message xmlns="http://www.sisostds.org/schemas/C2SIM/1.1">
@@ -142,12 +126,9 @@ The `C2SIMInitializationBody` is used to initialize scenario.
         </DomainMessageBody>
     </MessageBody>
 </Message>
-
 ```
 
 ## Position report
-
-
 
 ```
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
@@ -234,7 +215,6 @@ The `C2SIMInitializationBody` is used to initialize scenario.
         </DomainMessageBody>
     </MessageBody>
 </Message>
-
 ```
 
 ## Task order
@@ -287,17 +267,36 @@ The `C2SIMInitializationBody` is used to initialize scenario.
         </DomainMessageBody>
     </MessageBody>
 </Message>
-
 ```
 
 ## Magic move (teleport)
 
-
-
 ```
-
+    <C2SIMHeader>
+        <CommunicativeActTypeCode>Accept</CommunicativeActTypeCode>
+        <ConversationID>7eda75a9-bcc2-4921-ae0f-6b3cd6b84676</ConversationID>
+        <FromSendingSystem>SYSTEM_A</FromSendingSystem>
+        <MessageID>0b4b29b7-1fb7-45c3-ba30-73100623a417</MessageID>
+        <Protocol>SISO-STD-C2SIM</Protocol>
+        <ProtocolVersion>1.0.2</ProtocolVersion>
+        <SecurityClassificationCode>Unclassified</SecurityClassificationCode>
+        <SendingTime>
+            <IsoDateTime>2025-10-29T15:42:40Z</IsoDateTime>
+        </SendingTime>
+        <ToReceivingSystem>SYSTEM_A</ToReceivingSystem>
+    </C2SIMHeader>
+    <MessageBody>
+        <SystemMessageBody>
+            <MagicMove>
+                <EntityReference>f8237259-9a3c-4939-ac2c-d188736386a2</EntityReference>
+                <Location>
+                    <GeodeticCoordinate>
+                        <Latitude>10.0</Latitude>
+                        <Longitude>20.0</Longitude>
+                    </GeodeticCoordinate>
+                </Location>
+            </MagicMove>
+        </SystemMessageBody>
+    </MessageBody>
+</Message>
 ```
-
-
-
-<<TODO>> EXAMPLES OF OTHER MESSAGES

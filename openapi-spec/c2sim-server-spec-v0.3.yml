@@ -1,0 +1,498 @@
+openapi: 3.0.3
+info:
+  title: C2SIM Server interface specification
+  version: "0.3 (9 feb 2026)"
+
+servers:
+  - url: /api
+    description: Development server
+tags:
+  - name: session
+    description: Session management
+  - name: send
+    description: Send information to C2SIM Server
+  - name: notifications
+    description: Receive notifications from C2SIM Server (setup streaming WebSocket connection)
+paths:
+  /c2sim/session/{sessionId}/create:
+    put:
+      tags:
+        - session
+      summary: Create or update a shared session in the C2SIM Server
+      description: Create or update a shared session in the C2SIM Server. When the shared session already exsist, the request body information will be used to update the shared session information. The C2SIM Schema version during the session (changing this will result in 400 C2SimError)
+      operationId: createSession
+      parameters:
+        - $ref: '#/components/parameters/ClientId'      
+        - $ref: '#/components/parameters/SessionId' 
+            
+      requestBody:
+        description: Information needed to create a shared session
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RequestCreateSession"
+        required: true
+      responses:
+        "200":
+          description: The C2SIM session was succesfully created/update
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResponseCreateSession"
+        "400":
+          description: Request could not be handled
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/C2SimError"
+
+  /c2sim/session/{sessionId}/join:
+    post:
+      tags:
+        - session
+      summary: Join a shared session
+      description: Join a shared session in C2SIM server. Use 'default' session to connect to default session.
+      operationId: joinSession
+      parameters:
+        - $ref: '#/components/parameters/ClientId'      
+        - $ref: '#/components/parameters/SessionId' 
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RequestJoinSession"
+      responses:
+        "200":
+          description: Joined the shared session succesfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResponseJoinSession"
+        "400":
+          description: C2SimError handling request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/C2SimError"
+
+  /c2sim/session/{sessionId}/resign:
+    post:
+      tags:
+        - session
+      summary: Resign from shared session
+      description: Resign from shared session
+      operationId: resignFromSession
+      parameters:
+        - $ref: '#/components/parameters/ClientId'      
+        - $ref: '#/components/parameters/SessionId' 
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RequestResignSession"
+      responses:
+        "200":
+          description: Resigned from shared session
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResponseResignSession"
+        "400":
+          description: C2SimError handling request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/C2SimError"                
+
+  /c2sim/session/{sessionId}:
+    delete:
+      tags:
+        - session
+      summary: Delete shared session
+      description: "Delete shared session on the C2SIM Server"
+      operationId: deleteSession
+      parameters:
+        - $ref: '#/components/parameters/ClientId'      
+        - $ref: '#/components/parameters/SessionId' 
+        - name: force
+          in: query
+          required: false
+          description: Force session delete, even if C2SIm clients are connected (default is true)
+          schema:
+            type: boolean
+
+      responses:
+        "200":
+          description: The shared session was succesfully created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResponseDeleteSession"
+        "400":
+          description: Request could not be handled
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/C2SimError"
+
+  /c2sim/session/{sessionId}/info:
+    get:
+      tags:
+        - session
+      summary: Get shared session info
+      description: "Get information for shared session (is updated at runtime)."
+      operationId: getSessionInfo
+      parameters:
+        - $ref: '#/components/parameters/ClientId'      
+        - $ref: '#/components/parameters/SessionId' 
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DynamicSessionInfo"
+        "400":
+          description: Request could not be handled
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/C2SimError"
+
+  /c2sim/session/list:
+    get:
+      tags:
+        - session
+      summary: Get all active shared sessions
+      description: "Returns a list of all active C2SIM sessions"
+      operationId: getSessions
+      parameters:
+        - $ref: '#/components/parameters/ClientId'      
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/DynamicSessionInfo"
+        "400":
+          description: Request could not be handled
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/C2SimError"
+
+  /c2sim/session/{sessionId}/initialization:
+    get:
+      tags:
+        - session
+      summary: Get XML C2SIMInitializationBody.
+      description: "When the scenario is executing phase, the XML C2SIMInitializationBody is returned. This is the state when the scenario started, the C2SIMInitializationBody will not be updated during the execution phase."
+      operationId: getSessionInitialization
+      parameters:
+        - $ref: '#/components/parameters/ClientId'      
+        - $ref: '#/components/parameters/SessionId' 
+      responses:
+        "200":
+          description: C2SIMInitializationBody
+          content:
+            application/xml:
+              schema:
+                type: string
+
+        "400":
+          description: Request could not be handled
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/C2SimError"
+
+  /c2sim/session/{sessionId}/send:
+    post:
+      tags:
+        - send
+      summary: Send C2SIM document
+      description: Send XML C2SIM document (root element Message)). The document will be validated against the schema version in the session. Only one message (<Message></Message>) is allowed in the body.
+      operationId: send
+      parameters:
+        - $ref: '#/components/parameters/ClientId'      
+        - $ref: '#/components/parameters/SessionId' 
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+          application/xml:
+            schema:
+              type: string
+            example: |
+              <?xml version="1.0" encoding="UTF-8"?>
+                <c2sim:Message xmlns:c2sim="http://www.sisostds.org/schemas/C2SIM/1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                 <c2sim:C2SIMHeader>
+                    <c2sim:CommunicativeActTypeCode>Confirm</c2sim:CommunicativeActTypeCode>
+                    <c2sim:ConversationID>0041d386-fd4f-4876-8c62-af4ec4afeba4</c2sim:ConversationID>
+                    <c2sim:FromSendingSystem>A</c2sim:FromSendingSystem>
+                    <c2sim:MessageID>79f18d41-7b77-4a67-882e-25ab7fe866a1</c2sim:MessageID>
+                    <c2sim:Protocol>SISO-STD-C2SIM</c2sim:Protocol>
+                     <c2sim:ProtocolVersion>1.0.2</c2sim:ProtocolVersion>
+                    <c2sim:ToReceivingSystem>N</c2sim:ToReceivingSystem>
+                 </c2sim:C2SIMHeader>
+                 <c2sim:MessageBody>XML DATA </c2sim:MessageBody>
+              </c2sim:Message>
+
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResponseSend"          
+        "400":
+          description: Request could not be handled
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/C2SimError"
+
+  /c2sim/session/{sessionId}/stream-endpoints:
+    get:
+      tags:
+        - notifications
+      summary: Request information how to connect to stream, to receive C2SIM messages from C2SIM Server
+      operationId: getStreamEndpoints
+      description: >
+        In order for the C2SIM client to receive C2SIM messages from the C2SIM server, the C2SIM client needs to connect to a WebSocket.  The C2SIM client can always connect to a stream, but the C2SIM server only will start sending C2SIM messages when the join request is received and approved. The clientId is used to apply message filtering per streaming connection.
+      parameters:
+        - $ref: '#/components/parameters/ClientId'      
+        - $ref: '#/components/parameters/SessionId' 
+      responses:
+        "200":
+          description: Enpoint to create an stream
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResponseStreamEndpoints"
+        "400":
+          description: Request could not be handled
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/C2SimError"
+
+
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+
+  
+  parameters:
+    ClientId:
+      name: clientId
+      in: header
+      required: true
+      schema:
+        type: string
+        example: HSAWDSA
+        minLength: 5 
+        maxLength: 10
+      description: Client identifier (random created ID, doesn't change for entire lifetime of the C2SIM client instance).
+    SessionId:
+      name: sessionId
+      in: path
+      required: true
+      description: Shared session identifier
+      schema:
+        $ref: "#/components/schemas/SessionIdType"      
+      
+  schemas:
+    CreateUpdateType:
+      type: string
+      enum:
+        - CREATED
+        - UPDATED
+
+    StateType:
+      type: string
+      default: UNINITIALIZED
+      enum:
+        - UNINITIALIZED
+        - INITIALIZING
+        - INITIALIZED
+        - RUNNING
+        - PAUSED
+
+    SessionIdType:
+      type: string
+      example: default
+      description: Unique ID. (RFC 3986)
+      pattern: '^(?:[A-Za-z0-9._~\-]|%[0-9A-Fa-f]{2})+$'
+
+    # Supplied information create/update
+    SessionInfo:
+      type: object
+      properties:
+
+        c2simSchemaVersion:
+          type: string
+          example: 1.0.2
+          description: The XSD version of C2SIM schema used in session. All messages will be validated against this XSD schema.
+        displayName:
+          type: string
+          example: "Exercise XXX"
+          description: Small human readable name to identify the session
+        description:
+          type: string
+          example: ""
+          description: Where the session is used for.
+      required:
+        - c2simSchemaVersion
+        - displayName
+        - description
+
+    DynamicSessionInfo:
+      type: object
+      properties:
+        sessionName:
+          $ref: "#/components/schemas/SessionIdType"           
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp when the session was created.
+          example: "2025-10-03T21:13:45Z"
+        info:
+          $ref: "#/components/schemas/SessionInfo"
+        state:
+          $ref: "#/components/schemas/StateType"
+      required:
+        - sessionName
+        - createdAt
+        - info
+        - state
+
+    RequestCreateSession:
+      type: object
+      properties:
+        data:
+          $ref: "#/components/schemas/SessionInfo"
+      required:
+        - data
+
+    ResponseCreateSession:
+      type: object
+      properties:
+        creation:
+          $ref: "#/components/schemas/CreateUpdateType"
+        session:
+          $ref: "#/components/schemas/DynamicSessionInfo"
+      required:
+        - creation
+        - session
+
+    RequestJoinSession:
+      type: object
+      properties:
+        systemName:
+          type: string
+          description: "The system name (this will be used when there is no auth info )"
+        clientIdDisplayName:
+          type: string
+          description: "Human-readable C2SIM client identifier, doesn't have to be unique (only used for logging)"
+      required:
+       - clientIdDisplayName
+        
+    ResponseJoinSession:
+      type: object
+      properties:
+        session:
+          $ref: "#/components/schemas/DynamicSessionInfo"
+      required:
+        - session
+
+    RequestResignSession:
+      type: object
+      description: Resign from session
+      properties:
+         reason: 
+            type: string
+            description: "Reason why resigned"
+
+
+    ResponseResignSession:
+      type: object
+      properties:
+        msg:
+          type: string
+          description: Resign message
+      required:
+        - msg
+        
+    ResponseSend:
+      type: object
+      properties:
+        trackingId:
+          type: string
+          description: Can be use to track send message in log
+      
+     
+
+    ResponseStreamEndpoints:
+      type: object
+      properties:
+        websocket:
+          type: object
+          properties:
+            url:
+              type: string
+              description: The WebSocket connect url.
+          required:
+            - url
+      required:
+        - websocket
+
+
+    ResponseDeleteSession:
+      type: object
+      properties:
+         message:
+            type: string
+         
+    C2SimError:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Unique C2SimError code to identify the C2SimError
+          example: C2SimError_XSD
+        message:
+          type: string
+          description: C2SimError message (English)
+          example: XSD validation
+        details: # <— this is the “dictionary” field
+          type: object
+          description: Dictionary to add detail information to C2SimError object
+          additionalProperties: true # allows arbitrary key/value pairs
+          example:
+            sessionId: "xxxxxxxxx"
+            line: "10"
+      required:
+        - code
+        - message
+
+security:
+  - {}
+  - bearerAuth: []
+  

@@ -3,15 +3,89 @@ site_url: https://github.com/TNO-MST/c2sim-server
 docs_dir: ./docs/content
 theme:
   name: material
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+        
+        
 nav:
-  - Index: index.md
-  - Implementation:
+  - Home: index.md
+  - C2SIM standard:
+    - Standard in a nutshell: c2sim-in-nutshell.md
+    - C2SIM Messages (XML): c2sim-messages/c2sim-messages.md
+    - C2SIM Message Examples: c2sim-messages/c2sim-message-examples.md
+    - Control flow: c2sim-server/state-machine.md
+  - C2SIM implementation:  
+    - Summary: c2sim-server/c2sim-implementation-in-nutshell.md
     - High level overview: c2sim-server/c2sim-server-architecture.md  
-  - Manual testing: openapi-ui/manual-testing-with-openapi-ui.md
-  - State machine: state-machine.md
-  - LOX XML examples: C2SIM-example-messages.md
+      
+    - Modules:
+      - C2SIM Server: c2sim-server/module-c2sim-server.md
+      - C2SIM Client: c2sim-server/module-c2sim-client.md
+      - C2SIM Authorization: c2sim-server/modulec-2sim-authorization.md
+    - Logging: c2sim-server/logging.md
+    - Code style & quality: c2sim-server/code-style-and-quality
+      
+  - Getting Started:
+      - Quick start: c2sim-server/quick-start.md
+      - Architecture Overview: architecture-overview.md
+
+      - Deployment: deployment/deployment.md
+  - Docker:
+      - Docker development env: docker/docker.md  
+      - Monitoring: docker/docker-monitoring.md
+  - Open API spec:
+      - Manual testing: openapi/manual-testing-with-openapi-ui.md 
+  - Metrics:
+      - C2SIM Metrics:  metrics/c2sim-metrics.md
+  - Security:
+      - OpenID: security/openid.md  
+      - Keycloak dev env: security/keycloak-development-env.md
+      - Keycloak web interface: security/keycloak-webinterface.md
+
 markdown_extensions:
   - admonition
   - codehilite
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.details
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true  
   - toc:
       permalink: true
+  - attr_list
+  - md_in_html
+
+extra:
+ mermaid: true  
+  
+plugins:
+  - search
+  - mermaid2

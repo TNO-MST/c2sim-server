@@ -27,8 +27,8 @@ pip install --upgrade pip
 
 # 5. Install MkDocs and Material theme
 Write-Host "Installing MkDocs and MkDocs-Material..."
-pip install mkdocs mkdocs-material
-
+python -m pip install mkdocs mkdocs-material mkdocs-mermaid2-plugin  pymdown-extensions
+ 
 # 6. Build doc
 Write-Host "Creating doc folder for C2SIm server..."
 cd ..
