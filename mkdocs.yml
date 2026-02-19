@@ -36,19 +36,20 @@ nav:
   - C2SIM implementation:  
     - Summary: c2sim-server/c2sim-implementation-in-nutshell.md
     - High level overview: c2sim-server/c2sim-server-architecture.md  
-      
     - Modules:
       - C2SIM Server: c2sim-server/module-c2sim-server.md
       - C2SIM Client: c2sim-server/module-c2sim-client.md
-      - C2SIM Authorization: c2sim-server/modulec-2sim-authorization.md
+      - C2SIM Authorization: c2sim-server/module-c2sim-authorization.md
+      - C2SIM OpenAPI: c2sim-server/module-open-api-javalin-server-stub.md
+      - C2SIM State machine: c2sim-server/module-c2sim-statemachine.md
+      - C2SIM XML (LOX): c2sim-server/module-c2sim-land-operation-extension.md
     - Logging: c2sim-server/logging.md
     - Code style & quality: c2sim-server/code-style-and-quality
       
   - Getting Started:
       - Quick start: c2sim-server/quick-start.md
-      - Architecture Overview: architecture-overview.md
-
-      - Deployment: deployment/deployment.md
+      - C2SIM testing app: c2sim-test-client-app.md
+      - JAVA C2SIM client: c2sim-client-java.md
   - Docker:
       - Docker development env: docker/docker.md  
       - Monitoring: docker/docker-monitoring.md

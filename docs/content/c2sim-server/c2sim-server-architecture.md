@@ -45,15 +45,3 @@ graph TD
     F --> E
     G[c2sim-client-app] --> F
 ```
-
-## Service interfaces
-
-| Service            |                                         |
-| ------------------ | --------------------------------------- |
-| ConfigService      | Manages all configuration-related data  |
-| C2SimSchemaService | Validates C2SIM XSD schemas             |
-| WebService         | Handles RESTful API operations          |
-| WebSocketService   | Manages WebSocket communication         |
-| C2SimService       | Oversees and coordinates C2SIM services |
-
- 
