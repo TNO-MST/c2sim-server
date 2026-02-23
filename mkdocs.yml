@@ -45,7 +45,9 @@ nav:
       - C2SIM XML (LOX): c2sim-server/module-c2sim-land-operation-extension.md
     - Logging: c2sim-server/logging.md
     - Code style & quality: c2sim-server/code-style-and-quality
-      
+    - Licenses:
+      - License info: licenses/license-info.md
+      - Third party: licenses/THIRD-PARTY.md
   - Getting Started:
       - Quick start: c2sim-server/quick-start.md
       - C2SIM testing app: c2sim-test-client-app.md
