@@ -43,8 +43,12 @@ nav:
       - C2SIM OpenAPI: c2sim-server/module-open-api-javalin-server-stub.md
       - C2SIM State machine: c2sim-server/module-c2sim-statemachine.md
       - C2SIM XML (LOX): c2sim-server/module-c2sim-land-operation-extension.md
+    - Configuration: c2sim-server/configuration.md
     - Logging: c2sim-server/logging.md
-    - Code style & quality: c2sim-server/code-style-and-quality
+    - End points: c2sim-server/endpoints.md
+    - Code style & quality: 
+      - Generic: code-style-and-quality/code-style-and-quality.md
+      - Sonar Qube: code-style-and-quality/sonar-qube.md
     - Licenses:
       - License info: licenses/license-info.md
       - Third party: licenses/THIRD-PARTY.md
@@ -56,6 +60,7 @@ nav:
       - Docker development env: docker/docker.md  
       - Monitoring: docker/docker-monitoring.md
   - Open API spec:
+      - C2SIM spec: openapi/c2sim-openapi-spec.md
       - Manual testing: openapi/manual-testing-with-openapi-ui.md 
   - Metrics:
       - C2SIM Metrics:  metrics/c2sim-metrics.md

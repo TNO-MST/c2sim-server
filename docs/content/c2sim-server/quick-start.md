@@ -24,7 +24,7 @@ git clone <repository-url>
 
 ```bash
 cd server
-mvn clean package
+mvn clean generate-sources package
 ```
 
 **Expected output**:

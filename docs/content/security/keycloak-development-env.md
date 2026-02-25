@@ -102,34 +102,55 @@ This imports the realm configuration during startup.
 
 - Less flexible than dynamic initialization scripts
 
-Example of client section in `realm.json`:
+Example of client section in `realm.json` (realm settings => action => import partial):
 
 ```
- "clients": [
+ {
+  "realm": "c2sim",
+  "enabled": true,
+
+  "clients": [
     {
-      "clientId": "c2sim-client",
+      "clientId": "c2sim-client-2",
       "enabled": true,
       "protocol": "openid-connect",
       "publicClient": false,
-      "secret": "CHANGE_ME_IN_PRODUCTION",
-      "standardFlowEnabled": true,
-      "directAccessGrantsEnabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "CHANGE_ME_SECRET",
       "serviceAccountsEnabled": true,
-      "redirectUris": [
-        "http://localhost:8081/*"
-      ],
-      "webOrigins": [
-        "+"
-      ],
+      "standardFlowEnabled": false,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "bearerOnly": false,
+      "consentRequired": false,
+      "fullScopeAllowed": false,
       "defaultClientScopes": [
-        "web-origins",
-        "roles",
-        "profile",
-        "email",
         "c2sim"
-      ]
+      ],
+      "optionalClientScopes": []
+    }
+  ],
+
+  "users": [
+    {
+      "username": "service-account-c2sim-client-2",
+      "enabled": true,
+      "serviceAccountClientId": "c2sim-client-2",
+      "realmRoles": [
+        "default-roles-c2sim"
+      ],
+      "attributes": {
+        "securityClassificationCode": ["UNCLASSIFIED"],
+        "messageType": ["ORDER"],
+        "fromSendingSystem": ["C2SIM-SYSTEM-A"],
+        "communicativeActTypeCode": ["REQUEST"],
+        "replyToSystem": ["SYSTEM-B"],
+        "toReceivingSystem": ["SYSTEM-C"]
+      }
     }
   ]
+}
+
 ```
 
 ---
@@ -144,5 +165,3 @@ Example of client section in `realm.json`:
 | Good for dev automation     | Good for simple setups  |
 
 ## Keycloak web interface
-
-
