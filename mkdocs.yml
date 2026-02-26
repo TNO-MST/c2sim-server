@@ -43,6 +43,7 @@ nav:
       - C2SIM OpenAPI: c2sim-server/module-open-api-javalin-server-stub.md
       - C2SIM State machine: c2sim-server/module-c2sim-statemachine.md
       - C2SIM XML (LOX): c2sim-server/module-c2sim-land-operation-extension.md
+    - Unit testing: c2sim-server/unit-testing.md
     - Configuration: c2sim-server/configuration.md
     - Logging: c2sim-server/logging.md
     - End points: c2sim-server/endpoints.md
