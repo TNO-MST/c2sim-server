@@ -2,6 +2,10 @@
 
 The C2SIM Server is deployed using **Docker Compose** with supporting services (Keycloak, Prometheus, Grafana).  The docker compose can also be used to deploy the c2sim-server but also create a clean build from the source code. 
 
+*** Note
+
+The `supporting services` are only for testing, not production environment!
+
 ## Docker Compose Architecture
 
 ```mermaid
@@ -12,8 +16,8 @@ flowchart TB
         PROM["Prometheus<br/>Port: 9090"]
         GRAF["Grafana<br/>Port: 3000"]
 
-        C2SIM --> GRAF
-        KC --> GRAF
+        C2SIM --> PROM
+        C2SIM <--> KC
         PROM --> GRAF
     end
 ```
@@ -31,21 +35,17 @@ docker compose up --build
 docker compose up -d
 ```
 
-
-
-
-
 **Services started**:
 
-|                      |                                     |                                                                                       |
-| -------------------- | ----------------------------------- | ------------------------------------------------------------------------------------- |
-| C2SIM Server         | http://localhost:7777               |                                                                                       |
-| Keycloak             | http://localhost:8080               | Identity provider, initialized with test client credentials to test the c2sim claims. |
-| Prometheus           | http://localhost:9090               | Collection of metric data                                                             |
-| Grafana              | http://localhost:3000 (admin/admin) | Visualization of metric data                                                          |
-| MkDocs Documentation | http://localhost:7778               | Access documentation from docker container                                            |
+| Component            |                                                                                       |
+| -------------------- | ------------------------------------------------------------------------------------- |
+| C2SIM Server         | The C2SIM server                                                                      |
+| Keycloak             | Identity provider, initialized with test client credentials to test the c2sim claims. |
+| Prometheus           | Collection of metric data                                                             |
+| Grafana              | Visualization of metric data                                                          |
+| MkDocs Documentation | Access documentation from docker container                                            |
 
-Note: keycloak, prometheus and grafana are meant for testing environments, **not production**
+
 
 ### Stop Services
 
@@ -65,3 +65,17 @@ docker-compose up --build
 ```bash
 docker-compose logs c2sim-server
 ```
+
+## End points
+
+Based on value in `docker/env` the default exposed port numbers:
+
+| Name                 | URL                                                   |
+| -------------------- | ----------------------------------------------------- |
+| C2SIM-server         | http://localhost:9999                                 |
+| C2SIM API endpoints  | http://localhost:9999/api                             |
+| Swagger UI (OpenApi) | http://localhost:9999/openapi-ui.html                 |
+| MkDocs Documentation | http://localhost:9999/docs/                           |
+| Grafana              | http://localhost:3000 (admin with password `welcome`) |
+| Keycloak             | http://localhost:8080 (admin with passsword `admin`)  |
+|                      |                                                       |
