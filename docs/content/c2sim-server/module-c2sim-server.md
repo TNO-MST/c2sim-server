@@ -27,6 +27,7 @@ The `c2sim-server` module is the main application that provides REST and WebSock
 | WebService         | Handles RESTful API operations          |
 | WebSocketService   | Manages WebSocket communication         |
 | C2SimService       | Oversees and coordinates C2SIM services |
+| MetricService      | Collect metrics                         |
 
 ## Management of Shared Sessions
 
@@ -142,6 +143,7 @@ public class DefaultModule extends AbstractModule {
         bind(C2SimService.class).to(DefaultC2SimService.class).in(Scopes.SINGLETON);
         bind(WebService.class).to(DefaultWebService.class).in(Scopes.SINGLETON);
         bind(WebSocketService.class).to(DefaultWebSocketService.class).in(Scopes.SINGLETON);
+        bind(MetricService.class).to(DefaultMetricService.class).in(Scopes.SINGLETON);
     }
 
     @Provides

@@ -2,7 +2,7 @@
 
 ## MKDOCS Documentation
 
-The documentation website is generated with [mkdocs](https://www.mkdocs.org/) . The table of content is described in `/mkdocs.yml`. 
+The documentation website is generated with [mkdocs](https://www.mkdocs.org/) . The table of content is described in `<root>/mkdocs.yml`. 
 
 Build documentation:
 
@@ -22,14 +22,23 @@ View documentation
 
 ## Java doc
 
-The project includes javadoc.
+Each module has `javadoc` enabled.
+
+During the standard Maven build process, Javadoc is generated automatically.
 
 ```
-mvn javadoc:javadoc
+mvn clean verify
 ```
 
-To generate a `HTML` documentation website for all modules:
+| Type                                  | Location                                              |
+| ------------------------------------- | ----------------------------------------------------- |
+| Per-module HTML Javadoc               | `<module>/target/site/apidocs`                        |
+| Per-module Javadoc JAR                | `<module>/target/<module-name>-<version>-javadoc.jar` |
+| Aggregated HTML Javadoc (all modules) | `<root>\target\reports\apidocs`                       |
+
+### Manual Build Commands
 
 ```
-mvn javadoc:aggregate
+mvn javadoc:javadoc # per module (in module folder)
+mvn javadoc:aggregate # generate one javadoc for all modules (root folder)
 ```

@@ -70,12 +70,14 @@ docker-compose logs c2sim-server
 
 Based on value in `docker/env` the default exposed port numbers:
 
-| Name                 | URL                                                   |
-| -------------------- | ----------------------------------------------------- |
-| C2SIM-server         | http://localhost:9999                                 |
-| C2SIM API endpoints  | http://localhost:9999/api                             |
-| Swagger UI (OpenApi) | http://localhost:9999/openapi-ui.html                 |
-| MkDocs Documentation | http://localhost:9999/docs/                           |
-| Grafana              | http://localhost:3000 (admin with password `welcome`) |
-| Keycloak             | http://localhost:8080 (admin with passsword `admin`)  |
-|                      |                                                       |
+| Name                     | URL                                                   |
+| ------------------------ | ----------------------------------------------------- |
+| C2SIM-server             | http://localhost:9999                                 |
+| C2SIM API endpoints      | http://localhost:9999/api                             |
+| Swagger UI (OpenApi)     | http://localhost:9999/openapi-ui.html                 |
+| MkDocs Documentation     | http://localhost:9999/docs/                           |
+| Grafana                  | http://localhost:3000 (admin with password `welcome`) |
+| Metrics (open telemetry) | http://localhost:9999/metrics                         |
+| Keycloak                 | http://localhost:8080 (admin with passsword `admin`)  |
+| C2SIM Metric endpoint    | http://localhost:9999/metrics                         |
+| C2SIM health endpoint    | http://localhost:9999/health                          |

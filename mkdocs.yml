@@ -43,6 +43,7 @@ nav:
       - C2SIM OpenAPI: c2sim-server/module-open-api-javalin-server-stub.md
       - C2SIM State machine: c2sim-server/module-c2sim-statemachine.md
       - C2SIM XML (LOX): c2sim-server/module-c2sim-land-operation-extension.md
+    - Documentation generation: c2sim-server/documentation-generation.md
     - Unit testing: c2sim-server/unit-testing.md
     - Configuration: c2sim-server/configuration.md
     - Logging: c2sim-server/logging.md
@@ -65,6 +66,7 @@ nav:
       - Manual testing: openapi/manual-testing-with-openapi-ui.md 
   - Metrics:
       - C2SIM Metrics:  metrics/c2sim-metrics.md
+      - Metric names and labels: metrics/generated-metrics.md
   - Security:
       - OpenID: security/openid.md  
       - Keycloak dev env: security/keycloak-development-env.md
