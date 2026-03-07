@@ -2,7 +2,7 @@
 
 The C2SIM Server is deployed using **Docker Compose** with supporting services (Keycloak, Prometheus, Grafana).  The docker compose can also be used to deploy the c2sim-server but also create a clean build from the source code. 
 
-*** Note
+!!! note
 
 The `supporting services` are only for testing, not production environment!
 
@@ -44,8 +44,6 @@ docker compose up -d
 | Prometheus           | Collection of metric data                                                             |
 | Grafana              | Visualization of metric data                                                          |
 | MkDocs Documentation | Access documentation from docker container                                            |
-
-
 
 ### Stop Services
 
