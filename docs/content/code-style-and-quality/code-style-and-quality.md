@@ -2,6 +2,10 @@
 
  The [Google Java Format](https://github.com/google/google-java-format) java code styling is applied to the code.
 
+* Spotless = formatting  
+
+* Checkstyle = structural/style enforcement
+
 
 
 ## Spotless – Google Java Format
@@ -15,11 +19,11 @@
 
 ## Checkstyle – Static Code Rules
 
-We use [Maven Checkstyle Plugin](https://maven.apache.org/plugins/maven-checkstyle-plugin/) to enforce coding standards beyond formatting.
+[Maven Checkstyle Plugin](https://maven.apache.org/plugins/maven-checkstyle-plugin/) to enforce coding standards beyond formatting.
 
-- [checkstyle:checkstyle](https://maven.apache.org/plugins/maven-checkstyle-plugin/checkstyle-mojo.html) is a reporting goal that performs Checkstyle analysis and generates a report on violations.
-- [checkstyle:checkstyle-aggregate](https://maven.apache.org/plugins/maven-checkstyle-plugin/checkstyle-aggregate-mojo.html) is a reporting goal that performs Checkstyle analysis and generates an aggregate HTML report on violations in a multi-module reactor build.
-- [checkstyle:check](https://maven.apache.org/plugins/maven-checkstyle-plugin/check-mojo.html) is a goal that performs Checkstyle analysis and outputs violations or a count of violations to the console, potentially failing the build. It can also be configured to re-use an earlier analysis.
+```
+mvn clean verify
+```
 
 ## SonarQube – Code Quality & Coverage
 
