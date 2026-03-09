@@ -48,18 +48,19 @@ nav:
     - Configuration: c2sim-server/configuration.md
     - Logging: c2sim-server/logging.md
     - End points: c2sim-server/endpoints.md
+    - C2SIM Client CLI: c2sim-client-cli/c2sim-client-cli.md
     - Code style & quality: 
       - Generic: code-style-and-quality/code-style-and-quality.md
       - Sonar Qube: code-style-and-quality/sonar-qube.md
     - Licenses:
       - License info: licenses/license-info.md
       - Third party: licenses/THIRD-PARTY.md
-    - C2SIM Client CLI: csim-client-cli/csim-client-cli.md
+    
   - Getting Started:
       - Quick start: c2sim-server/quick-start.md
       - C2SIM testing app: c2sim-test-client-app.md
       - JAVA C2SIM client: c2sim-client-java.md
-      - C2SIM Client CLI: csim-client-cli/csim-client-cli.md
+      - C2SIM Client CLI: c2sim-client-cli/c2sim-client-cli.md
   - Docker:
       - Docker development env: docker/docker.md  
       - Monitoring: docker/docker-monitoring.md
