@@ -38,12 +38,13 @@ docker compose up -d
 
 * Store the generated token (should start with `squ_`), this is needed for the `mvn` command
 
-!!! warning
 
-```
-The storage for SonarQube is persistent! 
-Next time SonarQube is started, use the new password
-```
+
+!!! warning  
+
+    The storage for SonarQube is persistent.  
+    After changing the SonarQube admin password, it is saved in the persistent volume.  
+    The next time SonarQube starts, you must use the **new password**, not the default.
 
 ## Run code analyses
 
