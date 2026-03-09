@@ -54,10 +54,12 @@ nav:
     - Licenses:
       - License info: licenses/license-info.md
       - Third party: licenses/THIRD-PARTY.md
+    - C2SIM Client CLI: csim-client-cli/csim-client-cli.md
   - Getting Started:
       - Quick start: c2sim-server/quick-start.md
       - C2SIM testing app: c2sim-test-client-app.md
       - JAVA C2SIM client: c2sim-client-java.md
+      - C2SIM Client CLI: csim-client-cli/csim-client-cli.md
   - Docker:
       - Docker development env: docker/docker.md  
       - Monitoring: docker/docker-monitoring.md
