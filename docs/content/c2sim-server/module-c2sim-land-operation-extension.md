@@ -1,6 +1,6 @@
 # Module C2SIM XML (LOX)
 
-This module generates Java classes from the Lox/C2SIM XML Schema definitions (XSD).
+This module generates Java classes from the LOX C2SIM XML Schema definitions (XSD).
 
 The schema files are located in:
 
@@ -8,9 +8,7 @@ The schema files are located in:
 src/main/resources/lox/xsd/2025
 ```
 
-To convert these XSD files into strongly typed Java classes, the project uses the **`jaxb2-maven-plugin`**.
-
-
+To convert these XSD files into strongly typed Java classes, the project uses the [jaxb2-maven-plugin](https://github.com/mojohaus/jaxb2-maven-plugin)
 
 Code generation can be triggered manually with:
 
@@ -20,13 +18,9 @@ mvn clean generate-sources
 
 This approach guarantees that the Java model remains fully aligned with the authoritative XML schema definitions.
 
-
-
 # Jakarta JAXB
 
-**Jakarta XML Binding (JAXB)** is a framework for mapping XML schemas (XSD) to Java classes and vice versa.
-
-
+[Jakarta XML Binding](https://en.wikipedia.org/wiki/Jakarta_XML_Binding) (JAXB) is a framework for mapping XML schemas (XSD) to Java classes and vice versa.
 
 ## Helper function
 
@@ -46,8 +40,6 @@ The module also providers extra helper functions like:
 
 * .....
 
-
-
 ## Deserialize / serialize  C2SIM XML message
 
 The class `org.c2sim.lox.helpers.MessageTypeHelper` can be used to serialize and deserialize `C2SIM messages`.
@@ -57,9 +49,9 @@ MessageBodyType msgAsObject = MessageTypeHelper.readMessage(xmlText);
 String xmlAsText = MessageTypeHelper.writeMessageAsString(msg, true, true);
 ```
 
-## Validate C2SIM XML message
+## Validation C2SIM XML message
 
-The class `org.c2sim.lox.validation.LoxXsdValidator` can be used to validate `XML` against the `C2SIM XSD`. The class can return a simple `boolean` or an complete `error report` (with line numbers).
+The class `org.c2sim.lox.validation.LoxXsdValidator` can be used to validate `XML` against the `C2SIM XSD`. The class can return a simple `boolean` or an complete `error report` (with line numbers and error messages).
 
 ```
 LoxXsdValidator.doValidation(xml).isValid()
@@ -74,14 +66,4 @@ var result = DetectMsgKind.determineMsgKindMeasured(xml);
 The result is an enumeration of the type `org.c2sim.lox.C2SimMsgKind`.
 ```
 
-
-
 ## 
-
-
-
-
-
-
-
-

@@ -1,16 +1,17 @@
 # Module C2SIM server
 
-The `c2sim-server` module is the main application that provides REST and WebSocket endpoints for C2SIM message exchange. It uses **Javalin 6.7.0** (not Spring) as the web framework with Google Guice for dependency injection.
+The `c2sim-server` module is the main application that provides REST and WebSocket endpoints for C2SIM message exchange. It uses [Javalin 6](https://javalin.io/) (not Spring) as the web framework with [Google Guice](https://github.com/google/guice) for dependency injection.
 
 **Location**: `server/c2sim-server/`
 
 **Key Characteristics**:
 
-- OpenAPI-first REST API design
+- [OpenAPI Contract first REST API design](module-open-api-javalin-server-stub.md)
 - WebSocket for real-time message streaming
-- Prometheus metrics integration
-- JWT-based authentication
-- Swagger UI for API documentation
+- Uses [jetty](https://jetty.org/index.html) as embedded web engine
+- [OpenTelemetry](https://opentelemetry.io/) metrics support (trough [micrometer](https://javalin.io/plugins/micrometer))
+- JWT-based authentication/authorization ([OIDC](./../security/openid.md))
+- [Swagger UI](https://swagger.io/tools/swagger-ui/) support
 
  
 
@@ -20,14 +21,14 @@ The `c2sim-server` module is the main application that provides REST and WebSock
 
 ## Service interfaces
 
-| Service            |                                         |
-| ------------------ | --------------------------------------- |
-| ConfigService      | Manages all configuration-related data  |
-| C2SimSchemaService | Validates C2SIM XSD schemas             |
-| WebService         | Handles RESTful API operations          |
-| WebSocketService   | Manages WebSocket communication         |
-| C2SimService       | Oversees and coordinates C2SIM services |
-| MetricService      | Collect metrics                         |
+| Service            |                                                             |
+| ------------------ | ----------------------------------------------------------- |
+| ConfigService      | Manages all configuration-related data                      |
+| C2SimSchemaService | Validates C2SIM XSD schemas                                 |
+| WebService         | Handles RESTful API operations                              |
+| WebSocketService   | Manages WebSocket communication                             |
+| C2SimService       | Oversees and coordinates C2SIM services                     |
+| MetricService      | Collect and stores [metrics](./../metrics/c2sim-metrics.md) |
 
 ## Management of Shared Sessions
 
@@ -153,20 +154,34 @@ public class DefaultModule extends AbstractModule {
 }
 ```
 
-**Convention**: All implementations use **constructor injection** - no field injection.
+!!! info
+
+    All implementations use **constructor injection** - no field injection.
 
 ## RESTFul API implementation
 
-The project uses an `OpenAPI-first REST API design` approach. In the module [open-api-javalin-server-stub](module-open-api-javalin-server-stub.md) , a server stub is automatically generated from the C2SIM OpenAPI specification.
+The project uses an `OpenAPI-contract first REST API` approach. In the module [open-api-javalin-server-stub](module-open-api-javalin-server-stub.md) , a server stub is automatically generated from the C2SIM OpenAPI specification.
 
 in the package `org.c2sim.server.rest.impl` the RESTful server stub interfaces are implemented. 
 
-The only exception is the **C2SIM initialization** operation.  This endpoint returns its response in **XML** format. Because the generated OpenAPI server stub does not support `application/xml` as a response type for this operation, the XML response is handled explicitly in: `DefaultWebService::handleSpecialCaseRestOperationInitialization`. 
+!!! info
+
+    The only exception is the **C2SIM initialization** operation.  This endpoint returns its response in **XML** format. Because the generated OpenAPI server stub does not support `application/xml` as a response type for this operation, the XML response is handled explicitly in: `DefaultWebService::handleSpecialCaseRestOperationInitialization`. 
 
 ## Configuration management
 
 **File**: `server/c2sim-server/src/main/java/org/c2sim/server/utils/Config.java`
 
-The class `DefaultConfigService` implements a type-safe configuration. If the `ENV variable` is set, this value is used, else the the default value is returned. 
+The class `DefaultConfigService` implements a type-safe configuration. If the `ENV variable` is set, this value is used, else the the default (hardcoded) value is returned. 
 
-The method `Config::asTable` can be used to print all available config options (with ENV name) to the console.
+The method `Config::asTable` can be used to print all available config options (with ENV name) to the console. See [configuration section](configuration.md).
+
+
+
+## RESTFul and streaming
+
+RESTful operations are inherently stateless. The C2SIM `Join Shared Session`operation introduces state by creating a `SharedSessionClient` instance associated with the client.
+
+If a streaming connection is established prior to the `Join Shared Session` request, the `SharedSessionClient` instance is created but remains inactive until the `join shared session request` is received. Upon receipt of the `join shared session request`, the instance becomes active and the client is considered part of the shared session.
+
+If the streaming connection is subsequently interrupted, the `SharedSessionClient` instance remains active on the server. When the client reconnects, it may resume participation in the shared session without issuing a new join request.

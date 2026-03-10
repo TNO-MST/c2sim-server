@@ -1,8 +1,12 @@
 # Module C2SIM Authorization
 
-This module handles all functionality for handling OpenID `C2SIM claims`. The `JWT token` signature is validated, `C2SIM claims` are extracted from `JWT payload`. And the claims can be validated against a `C2SIM message`.
+This module handles all functionality for handling `OIDC C2SIM claims`. 
 
-More information over [OpenID C2SIM](../security/openid.md)
+OpenID Connect (OIDC) is an identity layer built on top of OAuth 2.0. While OAuth 2.0 is designed for authorization (granting access to resources), OpenID Connect adds authentication. More information over [OpenID C2SIM](../security/openid.md)
+
+
+
+The `JWT token` signature is validated, `C2SIM claims` are extracted from `JWT payload`. And the claims can be validated against a `C2SIM message`.
 
 
 

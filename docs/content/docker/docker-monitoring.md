@@ -25,8 +25,6 @@ curl http://localhost:9999/api/c2sim/session/list
 
 **Expected**: HTTP 200 with JSON array
 
-
-
 ## Metrics
 
 See [documentation](./.../metrics/c2sim-metrics/)

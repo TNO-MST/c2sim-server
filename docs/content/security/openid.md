@@ -1,9 +1,12 @@
 # OpenID Connect (OIDC) Integration
 
-This section describes how the C2SIM server integrates with OpenID Connect (OIDC) for authentication and authorization. Within this project the [keycloak](https://www.keycloak.org/) implementation is used as Identity Provider (IDP).
+This section describes how the C2SIM server integrates with OpenID Connect (OIDC) for authentication and authorization. 
+
+OpenID Connect (OIDC) is an identity layer built on top of OAuth 2.0. While OAuth 2.0 is designed for authorization (granting access to resources), OpenID Connect adds authentication.
+
+Within this project the [keycloak](https://www.keycloak.org/) implementation is used as Identity Provider (IDP).
 
 ![](images/SecurityFlow.png)
-
 
 ## Terminology
 
@@ -13,9 +16,9 @@ Authorization (Permission) - The process of verifying *what* the authenticated s
 
 ## OIDC Client Credentials Flow
 
-The **Client Credentials Flow** is used for **machine-to-machine (M2M) authentication**, where no human user is involved.
+The **Client Credentials Flow** is used for **machine-to-machine (M2M) authentication**, where no human user interaction is involved.
 
-Use this flow when:
+This flow is used when:
 
 - The client is a backend service  
 - No browser login or user interaction is required  
@@ -23,6 +26,8 @@ Use this flow when:
 - Authentication is performed using a client secret  
 
 ### Recommended Client Configuration
+
+Within `keycloak` a `client` should use the following settings (for client credential flow):
 
 | Setting                  | Value          |
 | ------------------------ | -------------- |
@@ -32,9 +37,15 @@ Use this flow when:
 | Service Accounts Enabled | Yes            |
 | Public Client            | No             |
 
+The difference between :
+
+* `client` account: used for use without human interaction (automatic login)
+
+* `user` account: used for use with human interaction (manual login)
+
 ## Obtaining an Access Token Manually
 
-For testing purposes, the Client Credentials Flow can be executed using `curl` against the token endpoint (for example with Keycloak):
+For testing purposes, the `Client Credentials Flow` can be tested using the  `curl` application, against the token endpoint (for example with Keycloak as IDP):
 
 ```bash
 curl -X POST "https://your-keycloak.com/realms/YOUR_REALM/protocol/openid-connect/token" \
@@ -45,7 +56,7 @@ curl -X POST "https://your-keycloak.com/realms/YOUR_REALM/protocol/openid-connec
   -d "scope=c2sim"
 ```
 
-For keycloak test server see example below. The  `client_id` and `client_secret` can be found in `c2sim-server\docker\credentials\c2sim_client_info.json` (dynamic generated):
+To test the `Client Credential Flow` with the `client id` and `client secret`:
 
 ```bash
 curl -X POST "http://localhost:8080/realms/c2sim/protocol/openid-connect/token" \
@@ -56,7 +67,7 @@ curl -X POST "http://localhost:8080/realms/c2sim/protocol/openid-connect/token" 
   -d "scope=c2sim"
 ```
 
-The response will contain a JWT access token.
+The response will contain a JWT access token. A JWT decoder, like [JWT.IO](https://www.jwt.io/), can display the content of the `access token` (JSON notation).
 
 ---
 
@@ -64,16 +75,18 @@ The response will contain a JWT access token.
 
 The client secret is a shared secret used by confidential clients to authenticate with the identity provider.
 
-> ⚠ **Security Notice**
-> 
-> - The client secret must **never** be exposed in frontend or browser-based applications.  
-> - It must only be stored securely on backend systems.  
+!!! warning
+
+    **Security Notice**
+    
+    - The client secret must **never** be exposed in frontend or browser-based applications.
+    - It must only be stored securely on backend systems.
 
 ---
 
 ## OpenID Configuration Discovery
 
-The C2SIM client can the OpenID Connect Discovery mechanism instead of directly configuring the token endpoint.
+The C2SIM client can use the [OpenID Connect Discovery](https://openid.net/specs/openid-connect-discovery-1_0.html) instead of directly configuring the OIDC `token endpoint`.
 
 For Keycloak, the discovery endpoint has the following format:
 
@@ -89,13 +102,35 @@ http://localhost:8080/realms/c2sim/.well-known/openid-configuration
 
 Some libraries will automatically add `/.well-known/openid-configuration` to the URL.
 
-The returned JSON document contains metadata including:
+
+
+The meta data response includes information like:
+
+- `issuer`
+
+- `authorization_endpoint`
+
+- `token_endpoint`
+
+- `userinfo_endpoint`
+
+- `jwks_uri`
+
+- `registration_endpoint`
+
+- `scopes_supported`
+
+- `response_types_supported`
+
+- `grant_types_supported`
+
+The `token_endpoint` contains the url to the `token endpoint`.
 
 ```json
 "token_endpoint": "http://localhost:8080/realms/c2sim/protocol/openid-connect/token"
 ```
 
-The C2SIM client extracts the `token_endpoint` value automatically.
+
 
 ## C2SIM-Specific claims
 
@@ -111,7 +146,7 @@ The `c2sim` scope includes domain-specific claims required by the C2SIM server.
 | messageType                | C2SIM message type            |
 | systemMessageType          | System-level message type     |
 
----
+
 
 ## C2SIM Scope
 
@@ -121,9 +156,9 @@ The scope `c2sim` contains all claims related to C2SIM (see C2SIM specific claim
 
 ## JWT Access Token
 
-The access token in the RESTful API call is a bearer token, also known as JSON Web Token (JWT).
+The access token in the RESTful API call is a bearer token, also known as JSON Web Token ([JWT]([JSON Web Token - Wikipedia](https://en.wikipedia.org/wiki/JSON_Web_Token)).
 
-A JWT is Base64URL-encoded and consists of three parts separated by a dot (`.`):
+A JWT is Base64 URL-encoded and consists of three parts separated by a dot (`.`):
 
 ```
 HEADER.PAYLOAD.SIGNATURE
@@ -160,11 +195,11 @@ HEADER.PAYLOAD.SIGNATURE
 
 Important generic `claims` (not C2SIM specific)
 
-|     |                                                                                                     |
-| --- | --------------------------------------------------------------------------------------------------- |
-| typ | The `Bearer` means the `access token` can be used for REST header  `Authorization: Bearer`          |
-| exp | Expiration time of the `access token` in epoch notation.                                            |
-| aud | Who the token is intended for (resource/server). The C2SIM server can demand a certain values here. |
+|     |                                                                                                               |
+| --- | ------------------------------------------------------------------------------------------------------------- |
+| typ | The `Bearer` means the `access token` can be used for REST header  `Authorization: Bearer`                    |
+| exp | Expiration time of the `access token` in epoch notation. After this timestamp the token is not valid anymore. |
+| aud | Who the token is intended for (resource/server). The C2SIM server can demand the `c2sim` value here.          |
 
 ## Using the JWT in REST Calls
 
@@ -203,3 +238,13 @@ When using OIDC, **all** RESTful calls that include an `Authorization` header **
 If an unencrypted HTTP connection is used, the `access token` can be intercepted using a network monitoring tool (e.g., Wireshark). Because a bearer token grants access to whoever possesses it, an attacker who captures the token could reuse it until it expires.
 
 For convenience, some environments use unencrypted HTTP. However, this is insecure. TLS requires valid, trusted certificates, and self-signed certificates are generally not acceptable in production environments because they cannot be reliably validated by clients.
+
+
+
+## Keycloak
+
+The `C2SIM claims` are stored as `user attributes` (the values of the claim). A `client` in keycloak is assigned to a service-user-account.  
+
+!!! warning
+
+    In Keycloak version 21 and earlier, admins could freely edit user attributes directly in the Admin UI. The later release removed this feature. Attributes are now configured in `User Profile configuration`. The `C2SIM claims` are not default part of this.  The management of C2SIM Claims are done trough an external tool, and not the `Keyclaok Admin UI`.
