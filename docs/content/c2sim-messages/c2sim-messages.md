@@ -1,6 +1,6 @@
 # C2SIM Message
 
-The C2SIM standard defined the RDF schema with the C2SIM ontology. This schema is converted to an XSD schema (with XLST transformation). From this XSD schema JAVA classes are generated (JAXB).
+The C2SIM data is defined the RDF schema with the C2SIM ontology. This schema is converted to an XSD schema (with XLST transformation). From this XSD schema JAVA classes are generated (JAXB).
 
 ![](images/Ontology.png)
 
@@ -58,7 +58,7 @@ The message types are divided  into 5 main categories:
 | SystemAcknowledgeBody    | N/A                                             |
 | SystemMessageBody        | Command message                                 |
 
-Each payload contains one message kind (root element). The enumeration type `C2SimMsgKind` in the package `org.c2sim.lox` is used to identify the message kind. This is based on existing xpath.
+Each payload contains one message kind (root element). The enumeration type `C2SimMsgKind` in the package `org.c2sim.lox` is used to identify the message kind. This is based on existing `xpath`.
 
 | Message kind enumeration         | XPath                                                                |
 | -------------------------------- | -------------------------------------------------------------------- |

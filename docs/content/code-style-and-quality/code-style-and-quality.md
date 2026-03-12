@@ -6,20 +6,18 @@
 
 * Checkstyle = structural/style enforcement
 
-
-
 ## Spotless – Google Java Format
 
- [Spotless Maven Plugin](https://github.com/diffplug/spotless) can be applied to configure source code according **Google Java Style** format. An alternative is [spotify fmt maven plugin](https://github.com/spotify/fmt-maven-plugin) (less option to configure)
+ [Spotless Maven Plugin](https://github.com/diffplug/spotless) can be applied to configure source code according **Google Java Style** format. Also often used is [spotify fmt maven plugin](https://github.com/spotify/fmt-maven-plugin), but has less option for configuration.
 
-| Maven cmd            | Description              |
-| -------------------- | ------------------------ |
-| `mvn spotless:check` | check formatting         |
-| `mvn spotless:apply` | apply formatting changes |
+| Maven cmd            | Description                                                                                                     |
+| -------------------- | --------------------------------------------------------------------------------------------------------------- |
+| `mvn spotless:check` | Check the formatting and throw errors when style is not correct. This is also done in the maven phase `verify`. |
+| `mvn spotless:apply` | This will automatically apply the formatting (removes style errors if present)                                  |
 
 ## Checkstyle – Static Code Rules
 
-[Maven Checkstyle Plugin](https://maven.apache.org/plugins/maven-checkstyle-plugin/) to enforce coding standards beyond formatting.
+[Maven Checkstyle Plugin](https://maven.apache.org/plugins/maven-checkstyle-plugin/) is used to enforce coding standards beyond formatting.
 
 ```
 mvn clean verify

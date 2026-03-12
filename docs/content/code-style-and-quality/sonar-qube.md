@@ -2,23 +2,23 @@
 
 **SonarQube** is a **code quality and security analysis platform** that scans the source code to detect:
 
-- 🐛 Bugs
+- Bugs
 
-- 🔐 Security vulnerabilities
+- Security vulnerabilities
 
-- ⚠️ Code smells
+- Code smells
 
-- 📊 Maintainability issues
+- Maintainability issues
 
-- 📈 Test coverage gaps
+-  Test coverage gaps
 
-- 📉 Technical debt
+- Technical debt
 
-More [information](https://www.sonarsource.com/products/sonarqube)
+More [information on SonarQube](https://www.sonarsource.com/products/sonarqube)
 
 ## Use SonarQube locally
 
-To start the docker Sonar Qube server:
+To start the docker SonarQube server:
 
 /docker/sonarqube
 
@@ -26,7 +26,7 @@ To start the docker Sonar Qube server:
 docker compose up -d
 ```
 
-* Wait for server to start up
+* Wait for SonarQube server to start up
 
 * Open browser on `http://localhost:9000/` (unsecure website)
 
@@ -36,9 +36,7 @@ docker compose up -d
 
 * Create new token (`My Account` => `Security tab` => `User token`) 
 
-* Store the generated token (should start with `squ_`), this is needed for the `mvn` command
-
-
+* Store the generated token (should start with `squ_`), this is needed for the `maven` command
 
 !!! warning  
 
@@ -56,12 +54,19 @@ mvn clean verify sonar:sonar \
   -Dsonar.login=YOUR_TOKEN -DskipTests
 ```
 
+!!! note
+
+    The open `-Dskiptest` is used to speed the process up, but must not be used if `code covergage` is need.
+
+## View analyses
+
 Open the website `http://localhost:9000` and the `c2sim` project should be updated.
+
+
 ![](images/SonarQube.png) 
 
 ## Reset SonarQube
 
 ```
-```bash
 docker compose up -v
 ```

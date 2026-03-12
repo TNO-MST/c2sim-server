@@ -44,7 +44,10 @@ nav:
       - C2SIM State machine: c2sim-server/module-c2sim-statemachine.md
       - C2SIM XML (LOX): c2sim-server/module-c2sim-land-operation-extension.md
     - Documentation generation: c2sim-server/documentation-generation.md
-    - Unit testing: c2sim-server/unit-testing.md
+    - Unit testing: 
+      - Unit testung: c2sim-server/unit-testing.md
+      - Code coverage: unit-testing/jacoco-code-coverage.md
+      - Allure framework: unit-testing/allure.md
     - Configuration: c2sim-server/configuration.md
     - Logging: c2sim-server/logging.md
     - End points: c2sim-server/endpoints.md

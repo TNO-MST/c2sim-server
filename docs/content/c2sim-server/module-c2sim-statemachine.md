@@ -1,6 +1,6 @@
 # Module C2SIM state machine
 
-The C2SIM server uses a formal state machine to control and validate the lifecycle of shared sessions and related server operations.
+The C2SIM server uses a state machine to control and validate the lifecycle of shared sessions and related server operations.
 
 The state machine is implemented using the library:
 

@@ -1,6 +1,6 @@
 # Docker C2SIM development environment
 
-The C2SIM Server is deployed using **Docker Compose** with supporting services (Keycloak, Prometheus, Grafana).  The docker compose can also be used to deploy the c2sim-server but also create a clean build from the source code. 
+The C2SIM Server is deployed using **Docker Compose** with supporting services (Keycloak, Prometheus, Grafana).  The docker compose can also be used to deploy the c2sim-server only, and create a clean build from the source code. 
 
 !!! note
 
@@ -24,15 +24,15 @@ flowchart TB
 
 ## Quick Start
 
-### Build and Run All Services
+### Start all Services
 
 ```bash
 cd docker
-
-# Build from source code and run
-docker compose up --build
 # Run docker image directly (in background)
 docker compose up -d
+
+# Or only start C2SIM-server
+docker compose up c2sim-server -d
 ```
 
 **Services started**:
@@ -45,20 +45,20 @@ docker compose up -d
 | Grafana              | Visualization of metric data                                                          |
 | MkDocs Documentation | Access documentation from docker container                                            |
 
-### Stop Services
+### Stop services
 
 ```bash
 docker-compose down
 ```
 
-### Clean Restart (Remove volumes)
+### Clean restart (remove volumes)
 
 ```bash
 docker-compose down -v
-docker-compose up --build
+docker-compose up -d
 ```
 
-**Check logs**:
+## Check logs
 
 ```bash
 docker-compose logs c2sim-server
@@ -79,3 +79,14 @@ Based on value in `docker/env` the default exposed port numbers:
 | Keycloak                 | http://localhost:8080 (admin with passsword `admin`)  |
 | C2SIM Metric endpoint    | http://localhost:9999/metrics                         |
 | C2SIM health endpoint    | http://localhost:9999/health                          |
+
+## Building C2SIM server with docker
+
+By default the `docker compose` will check if the docker image is local, if not the docker image will be pulled from the docker repository `docker.io`. 
+
+It is also possible to build the C2SIM server from source code with a docker container. 
+
+```
+# Build C2SIM server docker container fresh from source code 
+docker compose build
+```
