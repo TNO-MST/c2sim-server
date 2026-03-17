@@ -1,30 +1,56 @@
-# Quick start C2-SIM Server
+# Quick start C2SIM Server
 
-## Prerequisites (running locally)
+There are several options to deploy the C2SIM server:
 
-### Required Development Software
+* Docker deployment - The fastest option, using a prebuilt Docker image.
+
+* Build and run locally - Build the C2SIM server from source and run it locally.
+
+## Prerequisites
+
+**Deploy C2SIM locally**
+
+| Tool       | Version | Purpose                      |
+| ---------- | ------- | ---------------------------- |
+| **Git**    | Latest  | Version control              |
+| **Docker** | Latest  | Containerization and runtime |
+
+**Required when building locally (without docker)**
 
 | Tool         | Version                           | Purpose                      |
 | ------------ | --------------------------------- | ---------------------------- |
 | **Java JDK** | 21                                | Primary development language |
 | **Maven**    | 3.13.0+                           | Build system                 |
-| **Git**      | Latest                            | Version control              |
-| **Docker**   | Latest                            | Containerization and testing |
 | **IDE**      | IntelliJ IDEA / VS Code / eclipse | Development environment      |
 
-## Project Setup
+## Fetch C2SIM project
 
-### 1. Clone Repository
+Clone the repository from GitHub:
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/TNO-MST/c2sim-server
 ```
 
-### 2. Build Project (locally)
+### Deploy C2SIM-server with docker
+
+When using Docker deployment, only the folder `<root>\docker` is required.
+
+This setup starts the C2SIM server and its related services:
+
+```bash
+cd docker
+docker compose up -d
+```
+
+See the [docker section](./../docker/docker.md) for more information.
+
+## Build project locally
+
+The folder `<root>\server` contains the multi module maven pom.xml 
 
 ```bash
 cd server
-mvn clean generate-sources package
+mvn clean package
 ```
 
 **Expected output**:
@@ -46,31 +72,14 @@ mvn clean generate-sources package
 [INFO] ------------------------------------------------------------------------
 ```
 
-### 3. Run Tests
+The `<root>\server\target` should now contain the C2SIM server. When the `<root>\server\pom.xml` is imported into an IDE,  the C2SIM server can also be started (and debugged) within the IDE. 
+
+### Build Server Using Docker (from Source)
+
+It is also possible to build the C2SIM server inside a Docker container. From the `<root>\docker` folder, run:
 
 ```bash
-mvn test
+docker compose build c2sim-server
 ```
 
-### 4. Code Style Check
-
-```bash
-mvn checkstyle:check
-```
-
-# Docker build
-
-Automated build in docker can de done trough the docker compose. 
-
-```bash
-cd docker
-docker compose build
-```
-
-To start c2sim server server
-
-```bash
-docker compose up -d
-```
-
-More information in docker section.
+This will create/update the `docker image` locally with the latest build.
