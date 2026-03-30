@@ -33,7 +33,7 @@ nav:
     - C2SIM Messages (XML): c2sim-messages/c2sim-messages.md
     - C2SIM Message Examples: c2sim-messages/c2sim-message-examples.md
     - Control flow: c2sim-server/state-machine.md
-      - C2SIM testing app: c2sim-test-client-app.md    
+    - C2SIM testing app: c2sim-test-client-app.md    
   - Getting Started:
       - Quick start: c2sim-server/quick-start.md
       - JAVA C2SIM client: c2sim-client-java.md
