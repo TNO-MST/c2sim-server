@@ -28,8 +28,7 @@ JaCoCo will:
 
 3. Generate a coverage report
 
-!! note
-
+!!! note
     In the pom.xml, generated code (such as XSD and OpenAPI generated classes) is excluded from the code coverage analysis.
     This is because the generated code is assumed to be tested by the tools that produced it.
 
