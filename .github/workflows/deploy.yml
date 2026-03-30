@@ -23,9 +23,6 @@ jobs:
         with:
           python-version: "3.x"
           cache: "pip"
-          
-      - run: pip install mkdocs mkdocs-material mkdocs-mermaid2-plugin  pymdown-extensions
-
       - run: mkdocs gh-deploy --force
 
 
