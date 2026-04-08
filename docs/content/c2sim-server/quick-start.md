@@ -101,7 +101,7 @@ The default endpoint :
 | Internal (running from IDE)       | http://localhost:7777 |
 | External (when running in docker) | http://localhost:9999 |
 
-![](images\C2SIM-server-webinterface.png)
+![](images/C2SIM-server-webinterface.png)
 
 When `docker compose` was used to deploy the `C2SIM server` this [page](./../docker/docker.md) describes all endpoints. 
 
