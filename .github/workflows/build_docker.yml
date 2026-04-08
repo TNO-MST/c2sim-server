@@ -26,13 +26,13 @@ jobs:
           
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v4
-
-      - name: Build and push image
+         
+      - name: Build and push
         uses: docker/build-push-action@v6
         with:
           context: .
           file: ./docker/Dockerfile-c2sim-server
           push: true
-          tags: ghcr.io/${{ github.repository_owner }}/c2sim-server:latest
-          
-          
+          tags: ghcr.io/tno-mst/c2sim-server:latest
+          labels: |
+             org.opencontainers.image.source=${{ github.repositoryUrl }}          
