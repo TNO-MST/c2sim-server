@@ -1,12 +1,12 @@
 # Allure framework
 
-The [Allure Framework](https://github.com/allure-framework) is used to convert the `junit xml report` to a website.
-
-<<work in progress, add documentation...>>
+[Allure Report](https://github.com/allure-framework) is a test reporting tool that turns raw test results into clear, visual, interactive reports.
 
 Allure is integrated in the maven phase `test` and `verify`. 
 
-The build can be forced with:
+## Generate allure website
+
+The `junit tests` generate `xml test result reports`, with `allure:report` a website is generated based on these reports.
 
 ```
 # Run junit test
@@ -21,7 +21,9 @@ mvn allure:report
 mvn allure:serve
 ```
 
-This will start a local webserver on a free port, and opens a browser with the allure page.
+!!! info
+
+    This will start a local webserver on a free port, and opens a browser with the allure page.
 
 ![](images/allure.png)
 

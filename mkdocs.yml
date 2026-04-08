@@ -81,7 +81,6 @@ nav:
 
 markdown_extensions:
   - admonition
-  - codehilite
   - pymdownx.highlight:
       anchor_linenums: true
   - pymdownx.inlinehilite
@@ -103,7 +102,10 @@ markdown_extensions:
 
 extra:
  mermaid: true  
+ 
+
   
 plugins:
   - search
-  - mermaid2
+  - mermaid2:
+      javascript: https://unpkg.com/mermaid@10/dist/mermaid.min.js

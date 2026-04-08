@@ -53,7 +53,7 @@ The `C2SIM-SERVER` starts in `UNINITIALIZED` state. In order to send 'orders' an
 * C2SIM Message `ShareScenario` (`INITIALIZING` => `INITIALIZED`)
 * C2SIM Message `StartScenario` (`INITIALIZED` => `RUNNING`)
 
-Examples of these `XML` messages can be found the [here](C2SIM-example-messages.md). 
+Examples of these `XML` messages can be found the [here](./../c2sim-messages/c2sim-message-examples.md). 
 
 Sending the C2SIM Messages,  open the `publish` section:
 ![Publish](images/Publish.png)

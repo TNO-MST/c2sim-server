@@ -15,10 +15,13 @@ The [MSG-211 Report](https://publications.sto.nato.int/publications/STO%20Educat
 The vision behind C2SIM is seamless interoperability within a coalition environment, where:
 
 - Nations use their own C2 systems
+
 - Systems interoperate using shared C2 standards
+
 - National simulations interoperate using Modeling & Simulation (M&S) standards, such as:
-  - HLA (High Level Architecture)
-  - DIS (Distributed Interactive Simulation)
+  
+    - HLA (High Level Architecture)
+    - DIS (Distributed Interactive Simulation)
 
 The term **“Coalition”** reflects a higher level of integration than traditional *federated* simulation environments such as HLA. In C2SIM, interoperability occurs at the operational C2 level across a *system of systems*.
 

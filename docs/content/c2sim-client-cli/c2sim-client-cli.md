@@ -172,7 +172,5 @@ The C2SIM Server page `/status`  shows:
 - Active **shared sessions**
 
 - Connected **clients**
-  
-  
 
 ![](images/status.png)

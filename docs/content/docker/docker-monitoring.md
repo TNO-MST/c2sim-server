@@ -27,4 +27,4 @@ curl http://localhost:9999/api/c2sim/session/list
 
 ## Metrics
 
-See [documentation](./.../metrics/c2sim-metrics/)
+See [documentation](./../metrics/c2sim-metrics.md)

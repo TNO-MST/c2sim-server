@@ -102,8 +102,6 @@ http://localhost:8080/realms/c2sim/.well-known/openid-configuration
 
 Some libraries will automatically add `/.well-known/openid-configuration` to the URL.
 
-
-
 The meta data response includes information like:
 
 - `issuer`
@@ -130,8 +128,6 @@ The `token_endpoint` contains the url to the `token endpoint`.
 "token_endpoint": "http://localhost:8080/realms/c2sim/protocol/openid-connect/token"
 ```
 
-
-
 ## C2SIM-Specific claims
 
 The `c2sim` scope includes domain-specific claims required by the C2SIM server.
@@ -146,8 +142,6 @@ The `c2sim` scope includes domain-specific claims required by the C2SIM server.
 | messageType                | C2SIM message type            |
 | systemMessageType          | System-level message type     |
 
-
-
 ## C2SIM Scope
 
 The scope `c2sim` contains all claims related to C2SIM (see C2SIM specific claims)
@@ -156,7 +150,7 @@ The scope `c2sim` contains all claims related to C2SIM (see C2SIM specific claim
 
 ## JWT Access Token
 
-The access token in the RESTful API call is a bearer token, also known as JSON Web Token ([JWT]([JSON Web Token - Wikipedia](https://en.wikipedia.org/wiki/JSON_Web_Token)).
+The access token in the RESTful API call is a bearer token, also known as JSON Web Token ([JWT](https://en.wikipedia.org/wiki/JSON_Web_Token)).
 
 A JWT is Base64 URL-encoded and consists of three parts separated by a dot (`.`):
 
@@ -238,8 +232,6 @@ When using OIDC, **all** RESTful calls that include an `Authorization` header **
 If an unencrypted HTTP connection is used, the `access token` can be intercepted using a network monitoring tool (e.g., Wireshark). Because a bearer token grants access to whoever possesses it, an attacker who captures the token could reuse it until it expires.
 
 For convenience, some environments use unencrypted HTTP. However, this is insecure. TLS requires valid, trusted certificates, and self-signed certificates are generally not acceptable in production environments because they cannot be reliably validated by clients.
-
-
 
 ## Keycloak
 

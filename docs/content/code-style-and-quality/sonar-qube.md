@@ -10,7 +10,7 @@
 
 - Maintainability issues
 
--  Test coverage gaps
+- Test coverage gaps
 
 - Technical debt
 
@@ -20,9 +20,8 @@ More [information on SonarQube](https://www.sonarsource.com/products/sonarqube)
 
 To start the docker SonarQube server:
 
-/docker/sonarqube
-
 ```bash
+cd <root>/docker/sonarqube
 docker compose up -d
 ```
 
@@ -51,21 +50,22 @@ From the `C2SIM-SERVER` root folder (with `pom.xml`) run:
 ```bash
 mvn clean verify sonar:sonar \
   -Dsonar.host.url=http://localhost:9000 \
-  -Dsonar.login=YOUR_TOKEN -DskipTests
+  -Dsonar.login=YOUR_TOKEN
 ```
 
 !!! note
 
-    The open `-Dskiptest` is used to speed the process up, but must not be used if `code covergage` is need.
+    The `-Dskiptest` can be used to speed up the process (junit test are skipped). However then the `code covergage` is not updated in sonarqube.
 
 ## View analyses
 
 Open the website `http://localhost:9000` and the `c2sim` project should be updated.
 
-
 ![](images/SonarQube.png) 
 
 ## Reset SonarQube
+
+The results are stored in a persistent `docker volume`. Clear the `docker volume` to reset SonarQube.
 
 ```
 docker compose up -v

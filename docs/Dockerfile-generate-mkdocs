@@ -1,0 +1,29 @@
+# ---------- Stage 1: Build MkDocs ----------
+FROM python:3.12-slim AS builder
+
+WORKDIR /mkdocs_build
+ENV NO_MKDOCS_2_WARNING=1
+
+COPY requirements.txt /mkdocs_build
+
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY mkdocs.yml /mkdocs_build
+COPY ./docs/content/ /mkdocs_build/docs/content/
+
+
+# Build static site
+RUN mkdocs build --clean --strict -f /mkdocs_build/mkdocs.yml  -d /generated/site
+
+
+# ---------- Stage 2: Serve with nginx ----------
+FROM nginx:alpine
+
+# Copy generated site from builder
+COPY --from=builder /generated/site /usr/share/nginx/html
+
+# Expose port
+EXPOSE 80
+
+# Start nginx
+CMD ["nginx", "-g", "daemon off;"]

@@ -1,6 +1,6 @@
 # Docker C2SIM development environment
 
-The C2SIM Server is deployed using **Docker Compose** with supporting services (Keycloak, Prometheus, Grafana).  The docker compose can also be used to deploy the c2sim-server only, and create a clean build from the source code. 
+The C2SIM Server can be deployed using **Docker Compose**. The docker compose includes supporting services like Keycloak, Prometheus, Grafana.  The docker compose can also be used to deploy the c2sim-server only, and create a clean containerized build from the source code. 
 
 !!! note
 
@@ -37,13 +37,15 @@ docker compose up c2sim-server -d
 
 **Services started**:
 
-| Component            |                                                                                       |
-| -------------------- | ------------------------------------------------------------------------------------- |
-| C2SIM Server         | The C2SIM server                                                                      |
-| Keycloak             | Identity provider, initialized with test client credentials to test the c2sim claims. |
-| Prometheus           | Collection of metric data                                                             |
-| Grafana              | Visualization of metric data                                                          |
-| MkDocs Documentation | Access documentation from docker container                                            |
+| Component            | Description                                                                                             |
+| -------------------- | ------------------------------------------------------------------------------------------------------- |
+| C2SIM Server         | The C2SIM server                                                                                        |
+| Keycloak             | Identity provider, initialized with test client credentials to test the c2sim claims.                   |
+| Prometheus           | Collection of metric data. Prometheus is automatically configured to collect metrics from C2SIM server. |
+| Grafana              | Visualization of metric data. A example dashboard is included in the deployment.                        |
+| MkDocs Documentation | Access documentation from docker container                                                              |
+
+The C2SIM server is now ready to serve C2SIM clients. The endpoints in the section `End points` are now accessible. 
 
 ### Stop services
 
@@ -66,7 +68,7 @@ docker-compose logs c2sim-server
 
 ## End points
 
-Based on value in `docker/env` the default exposed port numbers:
+Based on value in `docker/.env` the default exposed port numbers:
 
 | Name                     | URL                                                   |
 | ------------------------ | ----------------------------------------------------- |
