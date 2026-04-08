@@ -9,14 +9,30 @@ jobs:
   docker:
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: read
+      packages: write  
+      
     steps:
-      - name: Checkout repo
-        uses: :contentReference[oaicite:0]{index=0}@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
+      - name: Log in to GHCR
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          
       - name: Set up Docker Buildx
-        uses: :contentReference[oaicite:1]{index=1}@v3
+        uses: docker/setup-buildx-action@v4
 
-      - name: Build Docker image
-        run: |
-          docker build -f ./docker/Dockerfile-c2sim-server -t c2sim-server:latest .
+      - name: Build and push image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./docker/Dockerfile-c2sim-server
+          push: true
+          tags: ghcr.io/${{ github.repository_owner }}/c2sim-server:latest
+          
           
