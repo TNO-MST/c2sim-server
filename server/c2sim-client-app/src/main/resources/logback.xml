@@ -1,0 +1,34 @@
+<configuration>
+    <appender name="CLIENT_LOGS" class="ch.qos.logback.classic.sift.SiftingAppender">
+        <discriminator class="ch.qos.logback.classic.sift.MDCBasedDiscriminator">
+            <key>INSTANCE_ID</key>
+            <defaultValue>unknown</defaultValue>
+        </discriminator>
+
+        <sift>
+            <appender name="FILE-${INSTANCE_ID}" class="ch.qos.logback.core.rolling.RollingFileAppender">
+                <file>logs/client-${INSTANCE_ID}.log</file>
+                <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                    <fileNamePattern>logs/client-${INSTANCE_ID}.%d{yyyy-MM-dd}.log</fileNamePattern>
+                    <maxHistory>7</maxHistory>
+                </rollingPolicy>
+                <encoder>
+                    <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+                </encoder>
+            </appender>
+        </sift>
+    </appender>
+
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss} %highlight(%msg) - %logger{0} [%thread]%n</pattern>
+        </encoder>
+    </appender>
+    <logger name="org.c2sim.client_app" level="DEBUG" additivity="false">
+        <appender-ref ref="CLIENT_LOGS" />
+    </logger>
+     <root level="DEBUG">
+        <appender-ref ref="CONSOLE"/>
+      </root>
+</configuration>

@@ -1,0 +1,90 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.c2sim</groupId>
+		<artifactId>c2sim</artifactId>
+		<version>1.0.3</version>
+	</parent>
+	<artifactId>c2sim-statemachine</artifactId>
+	<name>c2sim-statemachine</name>
+	<description>C2SIM State machine library</description>
+	<url>https://github.com/TNO-MST/c2sim-server</url>
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+		</license>
+	</licenses>
+	<developers>
+		<developer>
+			<name>TNO Mission Simulation and Training</name>
+			<email>noreply@tno-mst.github.io</email>
+			<organization>TNO</organization>
+			<organizationUrl>https://tno-mst.github.io</organizationUrl>
+		</developer>
+	</developers>
+	<issueManagement>
+		<url>https://github.com/TNO-MST/c2sim-server/issues</url>
+	</issueManagement>
+	<packaging>jar</packaging>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>io.qameta.allure</groupId>
+				<artifactId>allure-maven</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+	<dependencies>
+		<!-- SLF4J API (compile-time logging facade) -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
+		<!-- Logback (runtime binding + implementation) -->
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.c2sim</groupId>
+			<artifactId>lox</artifactId>
+		</dependency>
+		<!-- State machine library -->
+		<!-- https://mvnrepository.com/artifact/com.github.stateless4j/stateless4j -->
+		<dependency>
+			<groupId>com.github.stateless4j</groupId>
+			<artifactId>stateless4j</artifactId>
+			<version>${stateless4j.version}</version>
+		</dependency>
+		<!-- JUNIT test -->
+		<!-- JUnit Jupiter API + Engine -->
+		<!-- Gives you org.junit.jupiter.api.* -->
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-api</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<!-- Needed at runtime so tests can actually execute -->
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-junit-jupiter</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.qameta.allure</groupId>
+			<artifactId>allure-junit5</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+</project>

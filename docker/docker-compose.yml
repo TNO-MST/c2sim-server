@@ -1,0 +1,82 @@
+
+services:
+  c2sim-server:
+    image: docker.io/kluiverjh/c2sim-server:latest
+    build:
+      context: ./..
+      dockerfile: ./docker/Dockerfile-c2sim-server
+    container_name: c2sim-server
+    ports:
+      - "${C2SIM_SERVER_PORT}:7777"
+    environment:
+      - JAVA_OPTS=-Xms256m -Xmx512m
+      - C2SIM_EXTERNAL_HOSTNAME=${C2SIM_EXTERNAL_HOSTNAME}
+      - C2SIM_EXTERNAL_PORT_NUMBER=${C2SIM_SERVER_PORT}
+      - C2SIM_BEARER_PUBLIC_KEY=${C2SIM_BEARER_PUBLIC_KEY}
+      - C2SIM_IDENTITY_PROVIDER_URL=${C2SIM_IDENTITY_PROVIDER_URL}
+      - C2SIM_AUTH_MODE=${C2SIM_AUTH_MODE}
+    restart: unless-stopped
+    networks: [monitoring]
+
+  keycloak:
+    # image: quay.io/keycloak/keycloak:24.0.1
+    # In version 24 the GUI interface to change claim attributes was removed
+    # changing is still possible programatically (done also in startup script)
+    image: quay.io/keycloak/keycloak:21.1
+    container_name: keycloak
+    command: start-dev 
+    ports:
+      - "${KEYCLOACK_PORT}:8080"   
+    environment:
+      REALM_NAME: c2sim
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+      KC_HEALTH_ENABLED: "true"
+    
+    
+
+  keycloak-init:
+    build:
+      context: ./init/kc-admin-ts
+      dockerfile: Dockerfile
+    environment:
+      KEYCLOAK_URL: http://keycloak:8080
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+      REALM: c2sim
+    volumes:
+      - ./credentials:/app/credentials      
+    restart: "no"
+    
+  prometheus:
+    image: prom/prometheus:v3
+    container_name: prometheus
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--log.level=error"
+    ports:
+      - "${PROMETHEUS_PORT}:9090"
+    networks: [monitoring]
+
+  grafana:
+    image: grafana/grafana:12.4
+    container_name: grafana
+    ports:
+      - "${GRAFANA_PORT}:3000"
+    environment:
+      - GF_LOG_LEVEL=error
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD}
+      - GF_AUTH_ANONYMOUS_ENABLED=true        # allow anonymous
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Viewer     # read-only role for anon
+      - GF_USERS_ALLOW_SIGN_UP=false
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning
+      - ./grafana/dashboards:/var/lib/grafana/dashboards    
+    networks: [monitoring]
+
+networks:
+  monitoring:
+    driver: bridge    

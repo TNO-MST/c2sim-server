@@ -1,0 +1,244 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.c2sim</groupId>
+        <artifactId>c2sim</artifactId>
+        <version>1.0.3</version>
+    </parent>
+
+    <artifactId>c2sim-client</artifactId>
+
+    <name>c2sim-client</name>
+    <description>C2SIM-Client library</description>
+    <url>https://github.com/TNO-MST/c2sim-server</url>
+
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>TNO Mission Simulation and Training</name>
+            <email>noreply@tno-mst.github.io</email>
+            <organization>TNO</organization>
+            <organizationUrl>https://tno-mst.github.io</organizationUrl>
+        </developer>
+    </developers>
+
+    <issueManagement>
+        <url>https://github.com/TNO-MST/c2sim-server/issues</url>
+    </issueManagement>
+	
+    <packaging>jar</packaging>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <!-- Exclude generated code -->
+                        <exclude>**/org/c2sim/client/model/**</exclude>
+                        <exclude>**/org/c2sim/client/invoker/**</exclude>
+                        <exclude>**/org/c2sim/client/api/**</exclude>
+                    </excludes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <!-- Auto generated code excluded -->
+                    <excludePackageNames>
+                        org.c2sim.client.invoke:org.c2sim.client.invoke.*:
+                        org.c2sim.client.model:org.c2sim.client.model.*:
+                        org.c2sim.client.api:org.c2sim.client.api.*
+                    </excludePackageNames>
+                </configuration>
+            </plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>io.qameta.allure</groupId>
+				<artifactId>allure-maven</artifactId>
+			</plugin>
+			<plugin>
+                <groupId>org.openapitools</groupId>
+                <artifactId>openapi-generator-maven-plugin</artifactId>
+                <version>${openapi-generator-maven-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>generate-java-client</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${project.basedir}/../../open-api-spec/c2sim-server-spec.yaml</inputSpec>
+                            <generatorName>java</generatorName>
+
+                            <!-- Output folder -->
+                            <output>${project.build.directory}/generated-sources/openapi</output>
+
+                            <!-- Optional package structure -->
+                            <apiPackage>org.c2sim.client.api</apiPackage>
+                            <modelPackage>org.c2sim.client.model</modelPackage>
+                            <invokerPackage>org.c2sim.client.invoker</invokerPackage>
+
+                            <!-- Optional config options -->
+                            <configOptions>
+                                <dateLibrary>java8</dateLibrary>
+                                <library>okhttp-gson</library>
+                                <useJakartaEe>true</useJakartaEe>
+                            </configOptions>
+
+                            <!-- Disable generated tests (and docs, optional) -->
+                            <globalProperties>
+                                <apiTests>false</apiTests>
+                                <modelTests>false</modelTests>
+
+                            </globalProperties>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+    <dependencies>
+        <!-- SLF4J API (compile-time logging facade) -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+
+        <!-- Logback (runtime binding + implementation) -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>logging-interceptor</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.annotation</groupId>
+            <artifactId>jakarta.annotation-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <!-- extension layer on top of Gson (use by code generator) -->
+            <groupId>io.gsonfire</groupId>
+            <artifactId>gson-fire</artifactId>
+            <version>${gson-fire.version}</version>
+        </dependency>
+        <!-- JWT -->
+        <dependency>
+            <groupId>com.nimbusds</groupId>
+            <artifactId>oauth2-oidc-sdk</artifactId>
+            <version>${nimbus-oauth2-oidc-sdk.version}</version>
+        </dependency>
+        <!-- random ID creation -->
+        <dependency>
+            <groupId>com.aventrix.jnanoid</groupId>
+            <artifactId>jnanoid</artifactId>
+            <version>2.0.0</version>
+        </dependency>
+
+
+        <!-- JUNIT test -->
+        <!-- JUnit Jupiter API + Engine -->
+        <!-- Gives you org.junit.jupiter.api.* -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Needed at runtime so tests can actually execute -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Source: https://mvnrepository.com/artifact/com.squareup.okhttp3/mockwebserver -->
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>mockwebserver</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+
+        <!-- Javalin core -->
+        <dependency>
+            <groupId>io.javalin</groupId>
+            <artifactId>javalin</artifactId>
+            <version>${javalin.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.javalin</groupId>
+            <artifactId>javalin-testtools</artifactId>
+            <version>${javalin.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.c2sim</groupId>
+            <artifactId>c2sim-server</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.c2sim</groupId>
+            <artifactId>lox</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.c2sim</groupId>
+            <artifactId>c2sim-statemachine</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.qameta.allure</groupId>
+            <artifactId>allure-junit5</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>

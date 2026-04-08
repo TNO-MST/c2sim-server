@@ -1,0 +1,5 @@
+<configuration>
+
+    <logger name="org.jose4j" level="ERROR"/>
+
+</configuration>

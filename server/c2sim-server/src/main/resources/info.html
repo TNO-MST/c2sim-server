@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>C2SIM Server</title>
+    <style>
+        :root {
+          --accent: #0078d4;
+          --accent-hover: #005ea2;
+          --bg: #f7f9fb;
+          --text: #222;
+          --card-bg: #fff;
+          --radius: 12px;
+          --shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+          margin: 0;
+          padding: 40px;
+          font-family: "Segoe UI", Roboto, sans-serif;
+          background-color: var(--bg);
+          color: var(--text);
+        }
+
+        .container {
+          max-width: 700px;
+          margin: 80px auto;
+          background: var(--card-bg);
+          border-radius: var(--radius);
+          box-shadow: var(--shadow);
+          padding: 40px 60px;
+          text-align: center;
+          animation: fadeIn 0.8s ease-in-out;
+        }
+
+        h1 {
+          margin-top: 0;
+          color: var(--accent);
+          font-size: 2em;
+          letter-spacing: 0.5px;
+        }
+
+        ul {
+          list-style-type: none;
+          padding: 0;
+          margin-top: 30px;
+        }
+
+        li {
+          margin: 15px 0;
+        }
+
+        a {
+          display: inline-block;
+          text-decoration: none;
+          color: var(--accent);
+          font-weight: 600;
+          font-size: 1.1em;
+          transition: all 0.25s ease;
+          border: 2px solid var(--accent);
+          border-radius: var(--radius);
+          padding: 10px 18px;
+        }
+
+        a:hover {
+          background-color: var(--accent);
+          color: white;
+          transform: translateY(-2px);
+          box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        footer {
+          margin-top: 40px;
+          font-size: 0.9em;
+          color: #666;
+        }
+
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>C2SIM Server {{version}}</h1>
+    <ul>
+        <li><a href="docs"> C2SIM Server Documentation</a></li>
+        <li><a href="openapi-ui.html"> Explore & Test RESTful APIs</a></li>
+        <li><a href="openapi.yaml"> Get OpenAPI Specification (OAS)</a></li>
+        <li><a href="/status"> Show C2SIM server status</a></li>
+        <li><a href="/health"> Health endpoint</a></li>
+        <li><a href="/configuration">C2SIM server configuration</a></li>
+        <li><a href="/metrics"> Open telemetry endpoint</a></li>
+    </ul>
+    <footer>Build {{build}}</footer>
+</div>
+</body>
+</html>

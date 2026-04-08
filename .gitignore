@@ -1,1 +1,15 @@
+server/c2sim-client/logs
+server/c2sim-client/target
+server/c2sim-client-app/target
+server/c2sim-land-operation-extension/target
+server/c2sim-server/target
+server/c2sim-statemachine/target
+server/c2sim-authorizer/target
+server/logs
+server/target
+server/open-api-javalin-server-stub/target
 site
+c2sim-client-cli/target
+.idea/
+.allure/
+allure-results/

@@ -1,0 +1,6 @@
+===============================================================================
+The following components with associated licenses are used in this product:
+-	https://github.com/javalin, Apache-2.0
+-	https://github.com/qos-ch/slf4j, MIT
+TODO
+===============================================================================

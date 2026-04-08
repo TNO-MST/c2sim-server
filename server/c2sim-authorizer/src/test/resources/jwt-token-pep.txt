@@ -1,0 +1,50 @@
+eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJ2NnA3dE9KQlpMNlFhT0FyWHdFdDVGZEJJc0JyemhxSjZWR2lfck51LTI4In0.eyJleHAiOjE3NDY4NzExNDcsImlhdCI6MTc0Njg1NjE0NywianRpIjoiOThlY2YyYmEtZDhiZC00YzUyLTkwM2ItZDI3MmJlN2U5NTlhIiwiaXNzIjoiaHR0cDovL2FwcC1tc2dkb2MwNS5oZXgudG5vLm5sOjMyMTIzL3JlYWxtcy9obGEiLCJhdWQiOlsiaGxhIiwiYzJzaW0iLCI5MDI0Zjc0Yi02OTBjLTRiNGEtYWZhMS1jZjRmZWIwMjU0ZmQiLCJhY2NvdW50Il0sInN1YiI6IjExMzJhNGZjLTAzZTMtNDg1Ny1iNjk0LTU5YTRhYjFiMzMxOCIsInR5cCI6IkJlYXJlciIsImF6cCI6IlBFUCIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiKiJdLCJyZWFsbV9hY2Nlc3MiOnsicm9sZXMiOlsib2ZmbGluZV9hY2Nlc3MiLCJkZWZhdWx0LXJvbGVzLWhsYSIsInVtYV9hdXRob3JpemF0aW9uIl19LCJyZXNvdXJjZV9hY2Nlc3MiOnsiYWNjb3VudCI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsIm1hbmFnZS1hY2NvdW50LWxpbmtzIiwidmlldy1wcm9maWxlIl19fSwic2NvcGUiOiJwcm9maWxlIGMyc2ltIGVtYWlsIGhsYSIsImNvbW11bmljYXRpdmVBY3RUeXBlQ29kZSI6IkFjY2VwdDtBZ3JlZTtDb25maXJtO0luZm9ybTtQcm9wb3NlO1JlcXVlc3QiLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImNsaWVudEhvc3QiOiIxMC40Mi4wLjAiLCJzZWN1cml0eUNsYXNzaWZpY2F0aW9uQ29kZSI6IlVuY2xhc3NpZmllZCIsIm1lc3NhZ2VUeXBlIjoiQzJTSU1Jbml0aWFsaXphdGlvbjtEb21haW5NZXNzYWdlO1N5c3RlbUFja25vd2xlZGdlbWVudDtTeXN0ZW1NZXNzYWdlIiwic3lzdGVtTWVzc2FnZVR5cGUiOiJBTlkiLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJzZXJ2aWNlLWFjY291bnQtcGVwIiwidG9SZWNlaXZpbmdTeXN0ZW0iOiJBTlkiLCJjbGllbnRBZGRyZXNzIjoiMTAuNDIuMC4wIiwicmVwbHlUb1N5c3RlbSI6IkFOWSIsImZyb21TZW5kaW5nU3lzdGVtIjoiTE9YX05MRCIsImNsaWVudF9pZCI6IlBFUCJ9.M7rAdXZbYcCQzyaS-WAhBWTPbzs-Nxy3x1fhV14JGeMncKisvzzJpOJ5cEFhI0zPEU5VjzfKpG-zQ95Z3YsNUyNqHy6zp3LTWnnNeTzJxkjUtT9gdSmzcXY9nNooXQN0yGtHSbVxDtP8H6yvQatkyL_BWfLUPjmxP526oFi_8ptHVHtPTqrh2-ukp9tvZj19Cz9AJHIVMNKeEQobXaGhsVVFI98GJq6C2xqIgH67MSqpXOi8c18a_IxfMaB6P1pyK-XpfNV6LaNvXXV8GQfxB5gXQaxZ1pv1b5tkMJgwmddAqNfUUbDU5t8zOK71TAXGO1lpc51zMkrPyp9wJoxrUw
+
+{
+  "exp": 1746871147,
+  "iat": 1746856147,
+  "jti": "98ecf2ba-d8bd-4c52-903b-d272be7e959a",
+  "iss": "http://app-msgdoc05.hex.tno.nl:32123/realms/hla",
+  "aud": [
+    "hla",
+    "c2sim",
+    "9024f74b-690c-4b4a-afa1-cf4feb0254fd",
+    "account"
+  ],
+  "sub": "1132a4fc-03e3-4857-b694-59a4ab1b3318",
+  "typ": "Bearer",
+  "azp": "PEP",
+  "acr": "1",
+  "allowed-origins": [
+    "*"
+  ],
+  "realm_access": {
+    "roles": [
+      "offline_access",
+      "default-roles-hla",
+      "uma_authorization"
+    ]
+  },
+  "resource_access": {
+    "account": {
+      "roles": [
+        "manage-account",
+        "manage-account-links",
+        "view-profile"
+      ]
+    }
+  },
+  "scope": "profile c2sim email hla",
+  "communicativeActTypeCode": "Accept;Agree;Confirm;Inform;Propose;Request",
+  "email_verified": false,
+  "clientHost": "10.42.0.0",
+  "securityClassificationCode": "Unclassified",
+  "messageType": "C2SIMInitialization;DomainMessage;SystemAcknowledgement;SystemMessage",
+  "systemMessageType": "ANY",
+  "preferred_username": "service-account-pep",
+  "toReceivingSystem": "ANY",
+  "clientAddress": "10.42.0.0",
+  "replyToSystem": "ANY",
+  "fromSendingSystem": "LOX_NLD",
+  "client_id": "PEP"
+}

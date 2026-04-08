@@ -1,0 +1,35 @@
+<Message xmlns="http://www.sisostds.org/schemas/C2SIM/1.1">
+    <C2SIMHeader>
+        <CommunicativeActTypeCode>Inform</CommunicativeActTypeCode>
+        <ConversationID>88a26297-ce81-4acf-9675-afd182ec2682</ConversationID>
+        <FromSendingSystem>LIMITED-ACCESS-SYSTEM</FromSendingSystem>
+        <MessageID>dfd6e370-cc9d-4942-bf18-56987485ab59</MessageID>
+        <Protocol>SISO-STD-C2SIM</Protocol>
+
+        <ProtocolVersion>1.0.2</ProtocolVersion>
+        <SecurityClassificationCode>Unclassified</SecurityClassificationCode>
+        <SendingTime>
+            <IsoDateTime>2025-05-16T09:34:03Z</IsoDateTime>
+        </SendingTime>
+        <ToReceivingSystem>ALL</ToReceivingSystem>
+    </C2SIMHeader>
+    <MessageBody xmlns="http://www.sisostds.org/schemas/C2SIM/1.1">
+        <DomainMessageBody>
+            <ReportBody>
+                <FromSender>670cfe5e-6c43-f267-ad7f-bd6e739def24</FromSender>
+                <ToReceiver>00000000-0000-0000-0000-000000000000</ToReceiver>
+                <ReportContent>
+                    <PositionReportContent>
+                        <TimeOfObservation>
+                            <DateTime><IsoDateTime>2025-04-28T20:20:34Z</IsoDateTime></DateTime>
+                        </TimeOfObservation>
+                        <Location><GeodeticCoordinate><Latitude>58.587574960011</Latitude><Longitude>16.1675437215972</Longitude></GeodeticCoordinate></Location>
+                        <SubjectEntity>670cfe5e-6c43-f267-ad7f-bd6e739def24</SubjectEntity>
+                    </PositionReportContent>
+                </ReportContent>
+                <ReportID>7e40c3a6-f4e4-4107-bd42-9ea8e4f6d33d</ReportID>
+                <ReportingEntity>670cfe5e-6c43-f267-ad7f-bd6e739def24</ReportingEntity>
+            </ReportBody>
+        </DomainMessageBody>
+    </MessageBody>
+</Message>

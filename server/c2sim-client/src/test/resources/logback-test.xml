@@ -1,0 +1,12 @@
+<configuration>
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <!-- <pattern>JUNIT TEST: [%thread] %-5level %class{0} -  %highlight(%msg){FATAL=red}%n</pattern> -->
+            <pattern>JUNIT TEST: %-5level - %highlight(%msg){FATAL=red} [%logger]%n</pattern>
+        </encoder>
+    </appender>
+
+    <root level="DEBUG">
+        <appender-ref ref="CONSOLE"/>
+    </root>
+</configuration>

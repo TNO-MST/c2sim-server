@@ -1,0 +1,71 @@
+# MKDocs build
+# Based on <root>\c2sim-server\docs\Dockerfile-generate-mkdocs
+
+FROM python:3.12-slim AS documentation
+
+WORKDIR /mkdocs_build
+ENV NO_MKDOCS_2_WARNING=1
+
+COPY requirements.txt /mkdocs_build
+
+RUN pip install --no-cache-dir -r /mkdocs_build/requirements.txt
+
+COPY mkdocs.yml /mkdocs_build
+COPY ./docs/content/ /mkdocs_build/docs/content/
+
+
+# Build static site in /generated/site
+RUN mkdocs build --clean --strict -f /mkdocs_build/mkdocs.yml  -d /generated/site
+
+
+# ---- Build stage ----
+FROM maven:3.9.9-eclipse-temurin-21 AS build
+WORKDIR /build
+
+# 1) Cache deps
+COPY ./server/pom.xml /build/server/pom.xml
+COPY ./server/c2sim-client-app/pom.xml /build/server/c2sim-client-app/pom.xml
+COPY ./server/c2sim-client/pom.xml /build/server/c2sim-client/pom.xml
+COPY ./server/c2sim-land-operation-extension/pom.xml /build/server/c2sim-land-operation-extension/pom.xml
+COPY ./server/c2sim-server/pom.xml /build/server/c2sim-server/pom.xml
+COPY ./server/c2sim-statemachine/pom.xml /build/server/c2sim-statemachine/pom.xml
+COPY ./server/c2sim-authorizer/pom.xml /build/server/c2sim-authorizer/pom.xml
+COPY ./server/open-api-javalin-server-stub/pom.xml /build/server/open-api-javalin-server-stub/pom.xml
+
+
+# 2) Pre-fetch deps (warm .m2 cache)
+
+RUN --mount=type=cache,target=/root/.m2 \
+    cd server && mvn -B -q -DskipTests dependency:go-offline
+	
+# 3) Build
+COPY ./server/ /build/server
+COPY ./open-api-spec/ /build/open-api-spec
+
+RUN cd server && mvn -q -DskipTests package
+
+
+
+# ---- Runtime stage ----
+FROM eclipse-temurin:21-jre
+ENV PORT=7777 \
+    JAVA_OPTS="-XX:MaxRAMPercentage=75 -XX:+UseContainerSupport -Dfile.encoding=UTF-8"
+WORKDIR /app
+
+
+# Copy the built jar (any one) and rename to app.jar
+COPY --from=build /build/server/c2sim-server/target/c2sim-server-*.jar /app/
+COPY --from=build /build/server/c2sim-server/target/config /app/config/
+
+RUN sh -c 'set -e; JAR=$(ls -1 /app/*.jar | head -n1); mv "$JAR" /app/server.jar'
+
+# Copy documentation
+
+COPY --from=documentation /generated/site /app/docs
+
+EXPOSE ${PORT}
+
+CMD ["sh", "-c", "java $JAVA_OPTS -jar /app/server.jar --port=${PORT}"]
+
+
+

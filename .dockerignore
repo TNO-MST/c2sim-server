@@ -1,0 +1,43 @@
+# Build output
+target/
+build/
+out/
+classes/
+
+# IDE / Editor files
+.idea/
+.vscode/
+*.iml
+*.classpath
+*.project
+*.settings/
+
+# Git & metadata
+.git/
+.gitignore
+.gitattributes
+
+# OS / Editor junk
+.DS_Store
+Thumbs.db
+*.swp
+*.bak
+*.tmp
+*.log
+
+# Tests / coverage
+test-output/
+*.exec
+*.jacoco*
+
+# Docker / CI
+docker-compose*.yml
+*.env
+
+docs/.venv
+
+# Virtual environments
+.env
+.venv
+env/
+venv/

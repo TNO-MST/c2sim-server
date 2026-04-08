@@ -1,0 +1,48 @@
+eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJ2NnA3dE9KQlpMNlFhT0FyWHdFdDVGZEJJc0JyemhxSjZWR2lfck51LTI4In0.eyJleHAiOjE3NDk5NzI4NDIsImlhdCI6MTc0NzM4MDg0MiwianRpIjoiZmNkM2UyODgtMjcwYy00YzcyLWJhYTQtMzAzY2E1NGYxMTkzIiwiaXNzIjoiaHR0cDovL2FwcC1tc2dkb2MwNy5oZXgudG5vLm5sOjMyMTIzL3JlYWxtcy9obGEiLCJhdWQiOlsiNWIyYjE4ODUtM2Y0Yi00NTZjLTk2ZTYtMTAzOTcwYmQxZmZlIiwiaGxhIiwiYzJzaW0iLCJhY2NvdW50Il0sInN1YiI6IjEyMmFjYzMxLTA4ZDAtNDY3ZS05YjBjLTNiODJkMmI3NTQxZiIsInR5cCI6IkJlYXJlciIsImF6cCI6InRlc3QtY2xpZW50LWxpbWl0ZWQtYWNjZXNzIiwiYWNyIjoiMSIsInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJvZmZsaW5lX2FjY2VzcyIsImRlZmF1bHQtcm9sZXMtaGxhIiwidW1hX2F1dGhvcml6YXRpb24iXX0sInJlc291cmNlX2FjY2VzcyI6eyJhY2NvdW50Ijp7InJvbGVzIjpbIm1hbmFnZS1hY2NvdW50IiwibWFuYWdlLWFjY291bnQtbGlua3MiLCJ2aWV3LXByb2ZpbGUiXX19LCJzY29wZSI6InByb2ZpbGUgdGVzdC11c2VyLXN5c3RlbS0wMSBjMnNpbSBlbWFpbCBobGEiLCJjb21tdW5pY2F0aXZlQWN0VHlwZUNvZGUiOiJSZXF1ZXN0O0luZm9ybSIsImNsaWVudEhvc3QiOiIxMC40Mi4yLjAiLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsInNlY3VyaXR5Q2xhc3NpZmljYXRpb25Db2RlIjoiVW5jbGFzc2lmaWVkIiwibWVzc2FnZVR5cGUiOiJTeXN0ZW1NZXNzYWdlIiwic3lzdGVtTWVzc2FnZVR5cGUiOiJRVUVSWSIsInByZWZlcnJlZF91c2VybmFtZSI6InNlcnZpY2UtYWNjb3VudC10ZXN0LWNsaWVudC1saW1pdGVkLWFjY2VzcyIsInRvUmVjZWl2aW5nU3lzdGVtIjoiQU5ZIiwiY2xpZW50QWRkcmVzcyI6IjEwLjQyLjIuMCIsInJlcGx5VG9TeXN0ZW0iOiJBTlkiLCJmcm9tU2VuZGluZ1N5c3RlbSI6IkxJTUlURUQtQUNDRVNTLVNZU1RFTSIsImNsaWVudF9pZCI6InRlc3QtY2xpZW50LWxpbWl0ZWQtYWNjZXNzIn0.OWV1ZKVcN5oYH8AA73EhbIzPfiyNZd38Dn_23NmytXrgsQabGJI5nejX7EM0ipV5-_i-jYQOdNxCVvZV9MzYlliJWBml-RNHAYWPlFXnOdcjUPLJRAKpfSon7PZMBb98zRZhSuqo4eEUZhT6RThoxFoqSZyREpwNZzwTBHNRVQeQnihNPUiLECF17FVDuI5ujEM12C3Gp-hM53DwcPxqQ91jZoaSnV9oxcAfpwpN0dnu4Swx9m5muczU6Q-0m93gkaoHPlsw7lwzQAMJuTpISN0r_K_5-s2MbPcO3SX9J50UngG_W23_HCsbvwTsxraX1sk2FzsNd3kQIB8_MYmlCw
+
+{
+  "exp": 1749972842,
+  "iat": 1747380842,
+  "jti": "fcd3e288-270c-4c72-baa4-303ca54f1193",
+  "iss": "http://app-msgdoc07.hex.tno.nl:32123/realms/hla",
+  "aud": [
+    "5b2b1885-3f4b-456c-96e6-103970bd1ffe",
+    "hla",
+    "c2sim",
+    "account"
+  ],
+  "sub": "122acc31-08d0-467e-9b0c-3b82d2b7541f",
+  "typ": "Bearer",
+  "azp": "test-client-limited-access",
+  "acr": "1",
+  "realm_access": {
+    "roles": [
+      "offline_access",
+      "default-roles-hla",
+      "uma_authorization"
+    ]
+  },
+  "resource_access": {
+    "account": {
+      "roles": [
+        "manage-account",
+        "manage-account-links",
+        "view-profile"
+      ]
+    }
+  },
+  "scope": "profile test-user-system-01 c2sim email hla",
+  "communicativeActTypeCode": "Request;Inform",
+  "clientHost": "10.42.2.0",
+  "email_verified": false,
+  "securityClassificationCode": "Unclassified",
+  "messageType": "SystemMessage",
+  "systemMessageType": "QUERY",
+  "preferred_username": "service-account-test-client-limited-access",
+  "toReceivingSystem": "ANY",
+  "clientAddress": "10.42.2.0",
+  "replyToSystem": "ANY",
+  "fromSendingSystem": "LIMITED-ACCESS-SYSTEM",
+  "client_id": "test-client-limited-access"
+}
+}

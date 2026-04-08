@@ -1,0 +1,609 @@
+<project>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.c2sim</groupId>
+    <artifactId>c2sim</artifactId>
+    <version>1.0.3</version>
+    <packaging>pom</packaging>
+    <modules>
+        <module>c2sim-server</module>
+        <module>c2sim-client</module>
+        <module>c2sim-statemachine</module>
+        <module>open-api-javalin-server-stub</module>
+        <!-- Code generated from open api spec -->
+        <module>c2sim-land-operation-extension</module>
+        <module>c2sim-client-app</module>
+        <module>c2sim-authorizer</module>
+    </modules>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <java.version>21</java.version>
+        <maven.compiler.release>${java.version}</maven.compiler.release>
+        <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ss</maven.build.timestamp.format>
+
+        <!-- Java version -->
+        <!-- This must match project.version: -->
+        <c2sim-server.version>1.0.3</c2sim-server.version>
+
+        <!-- Code generator generates kotlin source code -->
+        <!-- https://mvnrepository.com/artifact/org.jetbrains.kotlin/kotlin-maven-plugin/versions -->
+        <kotlin.version>2.3.20</kotlin.version>
+
+        <!-- Maven plugins (https://mvnrepository.com/) -->
+        <maven-compiler-plugin.version>3.15.0</maven-compiler-plugin.version>
+        <maven-jar-plugin.version>3.5.0</maven-jar-plugin.version>
+        <maven-javadoc-plugin.version>3.12.0</maven-javadoc-plugin.version>
+        <maven-enforcer-plugin.version>3.6.2</maven-enforcer-plugin.version>
+        <maven-checkstyle-plugin.version>3.6.0</maven-checkstyle-plugin.version>
+        <maven-dependency-plugin.version>3.10.0</maven-dependency-plugin.version>
+        <maven-surefire-plugin.version>3.5.5</maven-surefire-plugin.version>
+        <maven-surefire-report-plugin.version>3.5.5</maven-surefire-report-plugin.version>
+        <maven-resources-plugin.version>3.5.0</maven-resources-plugin.version>
+        <maven-shade-plugin.version>3.6.2</maven-shade-plugin.version>
+        <allure-maven-plugin.version>2.17.0</allure-maven-plugin.version>
+        <exec-maven-plugin.version>3.6.3</exec-maven-plugin.version>
+        <jacoco-maven-plugin.version>0.8.14</jacoco-maven-plugin.version>
+        <spotless-maven-plugin.version>3.4.0</spotless-maven-plugin.version>
+        <license-maven-plugin.version>2.7.1</license-maven-plugin.version>
+        <jaxb2-maven-plugin.version>4.1.0</jaxb2-maven-plugin.version> <!-- Version 4 => JAXB 4 -->
+        <build-helper-maven-plugin.version>3.6.1</build-helper-maven-plugin.version>
+        <openapi-generator-maven-plugin.version>7.16.0</openapi-generator-maven-plugin.version>
+
+        <!-- Only used in module open-api-javalin-stub (generated kotlin code) -->
+
+        <slf4j.version>2.0.16</slf4j.version>
+        <logback.version>1.5.29</logback.version>
+
+        <javalin.version>7.1.0</javalin.version>
+        <javalin.openapi.version>7.1.1-rc.2</javalin.openapi.version>
+        <okhttp3.version>4.12.0</okhttp3.version> <!-- This is version 4 of okhttp3 (not compatible with 5) -->
+        <nimbus-jose-jwt.version>10.9</nimbus-jose-jwt.version>
+        <nimbus-oauth2-oidc-sdk.version>11.37</nimbus-oauth2-oidc-sdk.version> <!-- full OIDC and JWT library (complex) -->
+        <jose4j.version>0.9.6</jose4j.version> <!-- lightweight JWT library (simple) -->
+        <jupiter.version>5.10.2</jupiter.version>
+        <jaxb.version>4.0.5</jaxb.version> <!-- Jakarta XML Bind API -->
+        <jakarta.validation-api.version>3.1.1</jakarta.validation-api.version>
+        <jakarta.activation-api.version>2.1.4</jakarta.activation-api.version>
+        <jakarta.annotation-api.version>3.0.0</jakarta.annotation-api.version>
+        <allure.version>2.33.0</allure.version>
+        <jackson.version>2.21.2</jackson.version> <!-- This is jackson version 2  -->
+        <micrometer.version>1.16.4</micrometer.version>
+        <gson.version>2.13.2</gson.version>
+        <gson-fire.version>1.9.0</gson-fire.version> <!-- used by code generator -->
+        <google.guice.version>7.0.0</google.guice.version>
+        <error_prone_annotations.version>2.48.0</error_prone_annotations.version>
+        <joda-time.version>2.14.1</joda-time.version>
+        <stateless4j.version>2.6.0</stateless4j.version> <!-- https://github.com/stateless4j/stateless4j -->
+
+        <!-- IntelliJ supports only junit 5, 2025.3 support junit 6 -->
+        <mockito.version>5.20.0</mockito.version>
+
+        <checkstyle.suppressions>${maven.multiModuleProjectDirectory}/config/checkstyle/suppressions.xml
+        </checkstyle.suppressions>
+        <checkstyle.config>${maven.multiModuleProjectDirectory}/config/checkstyle/checkstyle.xml</checkstyle.config>
+        <!-- Exclude generated code -->
+        <sonar.exclusions>
+            **/generated-sources/**,
+            **/generated-test-sources/**,
+            **/*Grpc.java,
+            **/*Proto.java,
+            **/*Api.kt,
+            **/*Model.kt
+        </sonar.exclusions>
+        <sonar.test.exclusions>
+            **/generated-test-sources/**
+        </sonar.test.exclusions>
+        <!-- Sonar -->
+        <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
+        <sonar.coverage.jacoco.xmlReportPaths>
+            ${project.basedir}/**/target/site/jacoco/jacoco.xml
+        </sonar.coverage.jacoco.xmlReportPaths>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- allure -->
+            <dependency>
+                <groupId>io.qameta.allure</groupId>
+                <artifactId>allure-bom</artifactId>
+                <version>${allure.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <!-- Logging for all modules -->
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-bom</artifactId>
+                <version>${slf4j.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <!-- Logback (runtime binding + implementation) -->
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+                <version>${logback.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-bom</artifactId>
+                <version>${kotlin.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson</groupId>
+                <artifactId>jackson-bom</artifactId>
+                <version>${jackson.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.squareup.okhttp3</groupId>
+                <artifactId>okhttp-bom</artifactId>
+                <version>${okhttp3.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <!-- Jakarta XML Bind API -->
+            <dependency>
+                <groupId>jakarta.xml.bind</groupId>
+                <artifactId>jakarta.xml.bind-api</artifactId>
+                <version>${jaxb.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>jakarta.validation</groupId>
+                <artifactId>jakarta.validation-api</artifactId>
+                <version>${jakarta.validation-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>jakarta.activation</groupId>
+                <artifactId>jakarta.activation-api</artifactId>
+                <version>${jakarta.activation-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>jakarta.annotation</groupId>
+                <artifactId>jakarta.annotation-api</artifactId>
+                <version>${jakarta.annotation-api.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <!-- JAXB Runtime Implementation -->
+            <dependency>
+                <groupId>org.glassfish.jaxb</groupId>
+                <artifactId>jaxb-runtime</artifactId>
+                <version>${jaxb.version}</version>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/org.junit/junit-bom -->
+            <dependency>
+                <groupId>org.junit</groupId>
+                <artifactId>junit-bom</artifactId>
+                <version>${jupiter.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-junit-jupiter</artifactId>
+                <version>${mockito.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-core</artifactId>
+                <version>${mockito.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.c2sim</groupId>
+                <artifactId>open-api-javalin-server-stub</artifactId>
+                <version>${c2sim-server.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.c2sim</groupId>
+                <artifactId>lox</artifactId>
+                <version>${c2sim-server.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.c2sim</groupId>
+                <artifactId>c2sim-client</artifactId>
+                <version>${c2sim-server.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.c2sim</groupId>
+                <artifactId>c2sim-statemachine</artifactId>
+                <version>${c2sim-server.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.c2sim</groupId>
+                <artifactId>c2sim-server</artifactId>
+                <version>${c2sim-server.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.c2sim</groupId>
+                <artifactId>c2sim-authorizer</artifactId>
+                <version>${c2sim-server.version}</version>
+            </dependency>
+            <!-- Micrometer -->
+            <dependency>
+                <groupId>io.micrometer</groupId>
+                <artifactId>micrometer-bom</artifactId>
+                <version>${micrometer.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <!-- Jetty: is used by javalin -->
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-bom</artifactId>
+                <version>12.1.8</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.google.code.gson</groupId>
+                <artifactId>gson</artifactId>
+                <version>${gson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.errorprone</groupId>
+                <artifactId>error_prone_annotations</artifactId>
+                <version>${error_prone_annotations.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+    <build>
+        <pluginManagement>
+            <plugins>
+                <!-- Allure report: activated per-module by declaring this plugin in <plugins>.
+                     Results from all modules are aggregated in the root target/allure-results/. -->
+                <plugin>
+                    <groupId>io.qameta.allure</groupId>
+                    <artifactId>allure-maven</artifactId>
+                    <version>${allure-maven-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.jacoco</groupId>
+                    <artifactId>jacoco-maven-plugin</artifactId>
+                    <version>${jacoco-maven-plugin.version}</version>
+                </plugin>
+                <plugin>
+                   <groupId>org.apache.maven.plugins</groupId>
+                   <artifactId>maven-resources-plugin</artifactId>
+                   <version>${maven-resources-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-shade-plugin</artifactId>
+                    <version>${maven-shade-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>build-helper-maven-plugin</artifactId>
+                    <version>${build-helper-maven-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${maven-compiler-plugin.version}</version>
+                    <configuration>
+                        <release>${java.version}</release>
+                        <compilerArgs>
+                            <arg>-parameters</arg>
+                        </compilerArgs>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>${maven-jar-plugin.version}</version>
+                    <configuration>
+                        <archive>
+                            <manifestEntries>
+                                <Implementation-Title>${project.name}</Implementation-Title>
+                                <Implementation-Version>${project.version}</Implementation-Version>
+                                <Build-Jdk>${java.version}</Build-Jdk>
+                                <Build-Time>${maven.build.timestamp}</Build-Time>
+                            </manifestEntries>
+                        </archive>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>exec-maven-plugin</artifactId>
+                    <version>${exec-maven-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>jaxb2-maven-plugin</artifactId>
+                    <version>${jaxb2-maven-plugin.version}</version>
+                </plugin>
+
+                <!-- Spotless (code styling) -->
+                <!-- Enabled for all modules in plugin section -->
+                <plugin>
+                    <groupId>com.diffplug.spotless</groupId>
+                    <artifactId>spotless-maven-plugin</artifactId>
+                    <version>${spotless-maven-plugin.version}</version>
+                    <configuration>
+                        <java>
+                            <!-- Use Spotless built-in Google Java formatter -->
+                            <googleJavaFormat>
+                                <!-- use the latest version of Google Java Format -->
+                                <version>1.22.0</version>
+                                <!-- optional: style can be "AOSP" or "GOOGLE" -->
+                                <style>GOOGLE</style>
+                            </googleJavaFormat>
+                            <!-- Which files to format -->
+                            <includes>
+                                <include>src/**/*.java</include>
+                            </includes>
+                            <!-- Optional extras -->
+                            <removeUnusedImports/>
+                            <trimTrailingWhitespace/>
+                            <endWithNewline/>
+                        </java>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-checkstyle-plugin</artifactId>
+                    <version>${maven-checkstyle-plugin.version}</version>
+                    <configuration>
+                        <configLocation>
+                            ${maven.multiModuleProjectDirectory}/config/checkstyle/checkstyle.xml
+                        </configLocation>
+                        <suppressionsLocation>
+                            ${maven.multiModuleProjectDirectory}/config/checkstyle/suppressions.xml
+                        </suppressionsLocation>
+                        <consoleOutput>true</consoleOutput>
+                        <failsOnError>true</failsOnError>
+                        <linkXRef>false</linkXRef>
+                    </configuration>
+                </plugin>
+                <plugin>
+                   <groupId>org.apache.maven.plugins</groupId>
+                   <artifactId>maven-javadoc-plugin</artifactId>
+                   <version>${maven-javadoc-plugin.version}</version>
+                </plugin>
+
+                <!-- Copy mock agent to build folder -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <version>${maven-dependency-plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <id>copy-mockito-agent</id>
+                            <phase>process-test-classes</phase>
+                            <goals>
+                                <goal>copy</goal>
+                            </goals>
+                            <configuration>
+                                <artifactItems>
+                                    <artifactItem>
+                                        <groupId>org.mockito</groupId>
+                                        <artifactId>mockito-core</artifactId>
+                                        <version>${mockito.version}</version>
+                                        <destFileName>mockito-agent.jar</destFileName>
+                                    </artifactItem>
+                                </artifactItems>
+                                <outputDirectory>${project.build.directory}</outputDirectory>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+                <!-- Running JUnit tests -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>${maven-surefire-plugin.version}</version>
+                    <configuration>
+                        <argLine>${argLine} -javaagent:${project.build.directory}/mockito-agent.jar</argLine>
+                        <useModulePath>false</useModulePath>
+                        <systemPropertyVariables>
+                            <!-- All modules write to the shared root allure-results dir -->
+                            <allure.results.directory>${session.executionRootDirectory}/target/allure-results
+                            </allure.results.directory>
+                            <!--<allure.label.subSuite>${project.artifactId}</allure.label.subSuite>-->
+                        </systemPropertyVariables>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+        <plugins>
+            <!-- unit testing code coverage -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <!-- Per-module coverage report: inherited by all child modules -->
+                    <execution>
+                        <id>report</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- Aggregated Allure report from all modules, generated in root target -->
+            <plugin>
+                <groupId>io.qameta.allure</groupId>
+                <artifactId>allure-maven</artifactId>
+                <inherited>false</inherited>
+                <executions>
+                    <execution>
+                        <id>allure-aggregate-report</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                        <configuration>
+                            <resultsDirectory>${project.build.directory}/allure-results</resultsDirectory>
+                            <reportDirectory>${project.build.directory}/site/allure-report</reportDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <executions>
+
+                    <!-- Per-module check -->
+                    <execution>
+                        <id>checkstyle</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                    <!-- Aggregated report -->
+                    <execution>
+                        <id>checkstyle-aggregate</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>checkstyle-aggregate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- Enable javadoc for all modules (mvn javadoc:javadoc) -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <!-- Ignore javadoc for generated code -->
+                    <sourceFileExcludes>
+                        <exclude>**/generated-sources/**</exclude>
+                    </sourceFileExcludes>
+                    <!-- Auto generated code excluded -->
+                    <excludePackageNames>
+                        org.c2sim.lox.schema:org.c2sim.lox.schema.*:
+                        org.c2sim.client.api:org.c2sim.client.api.*:
+                        org.c2sim.client.model:org.c2sim.client.model.*:
+                        org.c2sim.client.invoker:org.c2sim.client.invoker.*
+                    </excludePackageNames>
+                    <includeDependencySources>false</includeDependencySources>
+                    <doclint>none</doclint>
+                </configuration>
+                <executions>
+                    <!-- Per-module javadoc jar -->
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                    <!-- Aggregated javadoc (root only) -->
+                    <execution>
+                        <id>aggregate-docs</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>aggregate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <version>${license-maven-plugin.version}</version>
+                <inherited>false</inherited>
+                <executions>
+                    <!-- markdown license report -->
+                    <execution>
+                        <id>aggregate-licenses</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>aggregate-add-third-party</goal>
+                        </goals>
+                        <configuration>
+                            <thirdPartyFilename>THIRD-PARTY.md</thirdPartyFilename>
+                            <!-- Force output in ROOT folder -->
+                            <outputDirectory>${session.executionRootDirectory}/licenses</outputDirectory>
+                            <generateBundle>true</generateBundle>
+                            <!-- Custom table template -->
+                            <fileTemplate>
+                                ${project.basedir}/licenses/third-party-table.ftl
+                            </fileTemplate>
+
+                            <includeTransitiveDependencies>true</includeTransitiveDependencies>
+                            <excludedScopes>test</excludedScopes>
+                        </configuration>
+                    </execution>
+                    <!-- HTML license report -->
+                    <execution>
+                        <id>aggregate-licenses-html</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>aggregate-add-third-party</goal>
+                        </goals>
+                        <configuration>
+                            <thirdPartyFilename>THIRD-PARTY.html</thirdPartyFilename>
+                            <outputDirectory>${session.executionRootDirectory}/licenses</outputDirectory>
+                            <fileTemplate>${project.basedir}/licenses/third-party-html.ftl</fileTemplate>
+                            <generateBundle>true</generateBundle>
+                            <includeTransitiveDependencies>true</includeTransitiveDependencies>
+                            <excludedScopes>test</excludedScopes>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-report-plugin</artifactId>
+                <version>${maven-surefire-report-plugin.version}</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-mockito-agent</id>
+                        <phase>process-test-classes</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.mockito</groupId>
+                                    <artifactId>mockito-core</artifactId>
+                                    <version>${mockito.version}</version>
+                                    <destFileName>mockito-agent.jar</destFileName>
+                                </artifactItem>
+                            </artifactItems>
+                            <outputDirectory>${project.build.directory}</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- prevent mix up of different version of libraries -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>${maven-enforcer-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <dependencyConvergence/>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

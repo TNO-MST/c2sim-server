@@ -1,0 +1,26 @@
+<c2sim:Message xmlns:c2sim="http://www.sisostds.org/schemas/C2SIM/1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sisostds.org/schemas/C2SIM/1.1 C2SIM_SMX_LOX_CWIX2025.xsd">
+    <c2sim:C2SIMHeader>
+        <c2sim:CommunicativeActTypeCode>Confirm</c2sim:CommunicativeActTypeCode>
+        <c2sim:ConversationID>0041d386-fd4f-4876-8c62-af4ec4afeba4</c2sim:ConversationID>
+        <c2sim:FromSendingSystem>A</c2sim:FromSendingSystem>
+        <c2sim:MessageID>79f18d41-7b77-4a67-882e-25ab7fe866a1</c2sim:MessageID>
+        <c2sim:Protocol>SISO-STD-C2SIM</c2sim:Protocol>
+        <c2sim:ProtocolVersion>1.0.2</c2sim:ProtocolVersion>
+        <c2sim:ToReceivingSystem>N</c2sim:ToReceivingSystem>
+    </c2sim:C2SIMHeader>
+    <c2sim:MessageBody>
+        <c2sim:C2SIMInitializationBody>
+            <c2sim:ObjectDefinitions/>
+            <c2sim:ScenarioSetting>
+                <c2sim:DateTime>
+                    <c2sim:IsoDateTime>0000-00-00T00:00:00Z</c2sim:IsoDateTime>
+                </c2sim:DateTime>
+                <c2sim:Version>String</c2sim:Version>
+            </c2sim:ScenarioSetting>
+            <c2sim:SystemEntityList>
+                <c2sim:ActorReference>00000000-0000-0000-0000-000000000000</c2sim:ActorReference>
+                <c2sim:SystemName>String</c2sim:SystemName>
+            </c2sim:SystemEntityList>
+        </c2sim:C2SIMInitializationBody>
+    </c2sim:MessageBody>
+</c2sim:Message>

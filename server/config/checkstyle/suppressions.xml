@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<!DOCTYPE suppressions PUBLIC
+        "-//Checkstyle//DTD SuppressionFilter Configuration 1.2//EN"
+        "https://checkstyle.org/dtds/suppressions_1_2.dtd">
+<suppressions>
+
+  <!-- 🔹 Ignore generated sources -->
+  <suppress files="[/\\]target[/\\]generated-sources[/\\]" checks=".*"/>
+  <suppress files="[/\\]src[/\\]generated[/\\]" checks=".*"/>
+  <suppress files="[/\\]build[/\\]" checks=".*"/>
+
+  <!-- 🔹 Ignore OpenAPI / Swagger generated client or server code -->
+  <suppress files="[/\\]openapi[/\\]" checks=".*"/>
+  <suppress files="[/\\]swagger[/\\]" checks=".*"/>
+
+  <!-- 🔹 Ignore Protobuf generated classes -->
+  <suppress files="[/\\]proto[/\\]" checks=".*"/>
+  <suppress files=".*\.pb\.java" checks=".*"/>
+  <suppress files=".*\.grpc\.java" checks=".*"/>
+
+  <!-- 🔹 Ignore Test sources for style (but still check for correctness) -->
+  <suppress files="[/\\]src[/\\]test[/\\]" checks="Javadoc.*"/>
+  <suppress files="[/\\]src[/\\]test[/\\]" checks="MethodLength"/>
+  <suppress files="[/\\]src[/\\]test[/\\]" checks="ParameterNumber"/>
+
+  <!-- 🔹 Ignore specific files or patterns -->
+  <suppress files=".*[/\\]Temporary.*\.java" checks=".*"/>
+  <suppress files=".*[/\\]Experimental.*\.java" checks=".*"/>
+
+  <!-- 🔹 Allow longer lines in certain directories (like config or examples) -->
+  <suppress files="[/\\]examples[/\\]" checks="LineLength"/>
+  <suppress files="[/\\]config[/\\]" checks="LineLength"/>
+
+  <!-- 🔹 Suppress overly strict naming rules for records and DTOs -->
+  <suppress files=".*Dto\.java" checks=".*NameCheck"/>
+  <suppress files=".*Record\.java" checks=".*NameCheck"/>
+
+  <!-- 🔹 Optional: ignore deprecated packages -->
+  <suppress files="[/\\]legacy[/\\]" checks=".*"/>
+
+</suppressions>

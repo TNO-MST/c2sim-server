@@ -1,0 +1,411 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 3,
+  "links": [],
+  "panels": [
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "bytes"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "id": 6,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.2.1",
+      "targets": [
+        {
+          "editorMode": "builder",
+          "expr": "increase(c2sim_client_msg_bytes_sent_total{c2sim_app=\"c2sim-server\", c2sim_shared_session=~\"$sharedsession\", c2sim_system_name=~\"$systemname\"}[$__range])",
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "C2SIM Message size send by system '$systemname'",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "dark-red",
+            "mode": "fixed"
+          },
+          "decimals": 0,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 8
+      },
+      "id": 5,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "value_and_name",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.2.1",
+      "targets": [
+        {
+          "editorMode": "builder",
+          "expr": "increase(c2sim_client_msg_invalid_count_total{c2sim_app=\"c2sim-server\", c2sim_shared_session=~\"$sharedsession\", c2sim_system_name=~\"$systemname\", c2sim_error_kind=~\"$errorkind\"}[$__range])",
+          "legendFormat": "ERROR {{ c2sim_error_kind }}",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Total  invalid C2SIM messages (${__from:date:YY-MM-DD HH:mm:ss} → ${__to:date:HH:mm:ss})",
+      "type": "stat"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 15
+      },
+      "id": 3,
+      "panels": [],
+      "repeat": "sharedsession",
+      "title": "Valid C2SIM messages",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 0,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 16
+      },
+      "id": 2,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "value_and_name",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.2.1",
+      "targets": [
+        {
+          "editorMode": "builder",
+          "expr": "increase(c2sim_client_msg_valid_count_total{c2sim_app=\"c2sim-server\", c2sim_shared_session=~\"$sharedsession\", c2sim_system_name=~\"$systemname\", c2sim_msg_kind=~\"$msgtype\"}[$__range])",
+          "legendFormat": "MSG KIND {{ c2sim_msg_kind }}",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Total  valid C2SIM messages (${__from:date:YY-MM-DD HH:mm:ss} → ${__to:date:HH:mm:ss})",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 0,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 10,
+        "x": 12,
+        "y": 16
+      },
+      "id": 1,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "value_and_name",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.2.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "builder",
+          "expr": "rate(c2sim_client_msg_valid_count_total{c2sim_app=\"c2sim-server\", c2sim_shared_session=~\"$sharedsession\", c2sim_system_name=~\"$systemname\", c2sim_msg_kind=~\"$msgtype\"}[1m]) * 60",
+          "interval": "",
+          "legendFormat": "MSG KIND {{ c2sim_msg_kind }}",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Valid C2SIM messages (per minute)",
+      "type": "stat"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 23
+      },
+      "id": 4,
+      "panels": [],
+      "repeat": "sharedsession",
+      "title": "Invalid C2SIM messages",
+      "type": "row"
+    }
+  ],
+  "preload": false,
+  "schemaVersion": 42,
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "allowCustomValue": false,
+        "current": {
+          "text": "All",
+          "value": "$__all"
+        },
+        "definition": "label_values(c2sim_client_msg_valid_count_total,c2sim_shared_session)",
+        "includeAll": true,
+        "label": "C2SIM Shared session",
+        "name": "sharedsession",
+        "options": [],
+        "query": {
+          "qryType": 1,
+          "query": "label_values(c2sim_client_msg_valid_count_total,c2sim_shared_session)",
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
+        "type": "query"
+      },
+      {
+        "allowCustomValue": false,
+        "current": {
+          "text": "NLD-VRFORCES",
+          "value": "NLD-VRFORCES"
+        },
+        "definition": "label_values(c2sim_client_msg_valid_count_total,c2sim_system_name)",
+        "includeAll": true,
+        "label": "System name",
+        "name": "systemname",
+        "options": [],
+        "query": {
+          "qryType": 1,
+          "query": "label_values(c2sim_client_msg_valid_count_total,c2sim_system_name)",
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
+        "type": "query"
+      },
+      {
+        "allowCustomValue": false,
+        "current": {
+          "text": "All",
+          "value": "$__all"
+        },
+        "definition": "label_values(c2sim_client_msg_valid_count_total,c2sim_msg_kind)",
+        "includeAll": true,
+        "label": "C2SIM MSG TYPE",
+        "name": "msgtype",
+        "options": [],
+        "query": {
+          "qryType": 1,
+          "query": "label_values(c2sim_client_msg_valid_count_total,c2sim_msg_kind)",
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
+        "type": "query"
+      },
+      {
+        "allowCustomValue": false,
+        "current": {
+          "text": "All",
+          "value": "$__all"
+        },
+        "definition": "label_values(c2sim_client_msg_invalid_count_total,c2sim_error_kind)",
+        "includeAll": true,
+        "label": "Error kind",
+        "name": "errorkind",
+        "options": [],
+        "query": {
+          "qryType": 1,
+          "query": "label_values(c2sim_client_msg_invalid_count_total,c2sim_error_kind)",
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
+        "type": "query"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-12h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "C2SIM System - Send C2SIM messages",
+  "uid": "adppqcm",
+  "version": 1
+}

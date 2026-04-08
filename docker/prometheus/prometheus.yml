@@ -1,0 +1,7 @@
+global:
+  scrape_interval: 5s
+scrape_configs:
+  - job_name: 'javalin'
+    static_configs:
+      - targets: ['c2sim-server:7777']   # docker-compose service name
+    metrics_path: /metrics
