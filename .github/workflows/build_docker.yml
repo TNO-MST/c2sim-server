@@ -1,0 +1,22 @@
+name: Build Docker Image
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: :contentReference[oaicite:0]{index=0}@v4
+
+      - name: Set up Docker Buildx
+        uses: :contentReference[oaicite:1]{index=1}@v3
+
+      - name: Build Docker image
+        run: |
+          docker build -f ./docker/Dockerfile-c2sim-server -t c2sim-server:latest .
+          
