@@ -19,7 +19,7 @@
 
 	<scm>
 		<connection>scm:git:git://github.com/TNO-MST/c2sim-server.git</connection>
-		<developerConnection>scm:git:ssh://github.com:TNO-MST/c2sim-server.git</developerConnection>
+		<developerConnection>scm:git:ssh://github.com/TNO-MST/c2sim-server.git</developerConnection>
 		<url>https://github.com/TNO-MST/c2sim-server/tree/main</url>
 	  <tag>c2sim-1.0.3</tag>
   </scm>
