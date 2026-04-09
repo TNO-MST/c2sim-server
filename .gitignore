@@ -13,3 +13,5 @@ c2sim-client-cli/target
 .idea/
 .allure/
 allure-results/
+server/release.properties
+server/licenses/
