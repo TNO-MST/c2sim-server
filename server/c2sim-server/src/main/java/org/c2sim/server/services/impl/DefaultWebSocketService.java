@@ -53,10 +53,7 @@ public class DefaultWebSocketService implements WebSocketService {
     this.c2SimService = c2SimService;
   }
 
-  /**
-     Invoked when there is a new WebSocket incoming connection
-   */
-
+  /** Invoked when there is a new WebSocket incoming connection */
   public void onNewWebSocket(WsConfig webSocket) {
     webSocket.onConnect(this::handleConnect);
     webSocket.onMessage(this::handleMessage);

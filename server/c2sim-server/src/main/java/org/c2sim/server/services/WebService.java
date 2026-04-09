@@ -39,6 +39,4 @@ public interface WebService {
    * @throws AuthorisationException if the builder cannot be constructed (e.g. invalid OIDC config)
    */
   C2SimClaimsBuilder getClaimsBuilder() throws AuthorisationException;
-
-
 }

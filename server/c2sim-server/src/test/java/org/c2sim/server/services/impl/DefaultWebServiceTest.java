@@ -43,8 +43,8 @@ class DefaultWebServiceTest {
     when(configService.getDocsDirectory()).thenReturn(null);
     // when(configService.getConfigEndpointIsExposed()).thenReturn(false);
 
-    webService = new DefaultWebService(
-        mapper, configService, c2SimService, metricService, webSocketService);
+    webService =
+        new DefaultWebService(mapper, configService, c2SimService, metricService, webSocketService);
   }
 
   @Test

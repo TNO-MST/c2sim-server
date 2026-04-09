@@ -38,8 +38,8 @@ class C2SimClientTest {
     var c2SimService = Mockito.mock(C2SimService.class);
     var metricService = Mockito.mock(MetricService.class);
     var webSocketService = Mockito.mock(WebSocketService.class);
-    var webService = new DefaultWebService(
-        mapper, configService, c2SimService, metricService, webSocketService);
+    var webService =
+        new DefaultWebService(mapper, configService, c2SimService, metricService, webSocketService);
 
     when(configService.getWebServerPortNumber()).thenReturn(7777);
     var x = new ArrayList<DynamicSessionInfo>();

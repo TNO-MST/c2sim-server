@@ -15,7 +15,6 @@ import io.javalin.http.staticfiles.Location;
 import io.javalin.json.JavalinJackson;
 import io.javalin.micrometer.MicrometerPlugin;
 import io.javalin.openapi.plugin.swagger.SwaggerPlugin;
-import io.javalin.websocket.WsConfig;
 import io.micrometer.core.instrument.binder.jvm.JvmMemoryMetrics;
 import io.micrometer.core.instrument.binder.jvm.JvmThreadMetrics;
 import io.micrometer.core.instrument.binder.system.ProcessorMetrics;
@@ -112,9 +111,6 @@ public class DefaultWebService implements WebService {
             + "disable with  chrome://flags/#block-insecure-private-network-requests");
   }
 
-
-
-
   private static void handleGlobalRestLogging(Context ctx, float executionTimeMs) {
     var execTime = String.format("%.2f", executionTimeMs);
     if (loggerRest.isTraceEnabled()) {
@@ -126,8 +122,6 @@ public class DefaultWebService implements WebService {
           execTime);
     }
   }
-
-
 
   private static void setupMetrics(
       boolean isEnabled, JavalinConfig javalinConfig, MetricService metricService) {
@@ -287,24 +281,30 @@ public class DefaultWebService implements WebService {
               // Add all REST routes from Open API spec
               RestRoutes.register(
                   javalinConfig,
-                  sessionApi, notificationApi, publishApi,
-                  configService, metricService, c2SimService, webSocketService);
+                  sessionApi,
+                  notificationApi,
+                  publishApi,
+                  configService,
+                  metricService,
+                  c2SimService,
+                  webSocketService);
               javalinConfig.routes.beforeMatched(JavalinAuthHandler::addSecurityToAllEndpoints);
               // Must return XML instead of JSON:
-              javalinConfig.routes.before("/api/c2sim/session/{sessionId}/initialization",
+              javalinConfig.routes.before(
+                  "/api/c2sim/session/{sessionId}/initialization",
                   this::handleSpecialCaseRestOperationInitialization);
 
               javalinConfig.routes.before(this::handleBefore); // Client tracking id
               javalinConfig.routes.after(this::handleAfter);
 
               // Set exception handling:
-              javalinConfig.routes.exception(C2SimException.class, this::handleRESTFulC2SimRestException);
+              javalinConfig.routes.exception(
+                  C2SimException.class, this::handleRESTFulC2SimRestException);
               // Handle all exceptions thrown in REST controller
               javalinConfig.routes.exception(Exception.class, this::handleRESTFulExceptions);
-              javalinConfig.routes.exception(AuthorisationException.class, this::handleAuthorizationException);
-
+              javalinConfig.routes.exception(
+                  AuthorisationException.class, this::handleAuthorizationException);
             });
-
   }
 
   /**
@@ -376,20 +376,17 @@ public class DefaultWebService implements WebService {
   // Generated code returns JSON, need XML (intercept call)
   private void handleSpecialCaseRestOperationInitialization(Context ctx) {
 
-          var clientId = ctx.header(ContextHelper.ATTRIB_HEADER_PARAM_CLIENT_ID);
-          if (clientId == null) {
-            clientId = "";
-          }
-          var sessionId = ctx.pathParam("sessionId");
-          var result = sessionApiServiceImpl.getSessionInitialization(clientId, sessionId, ctx);
-          ctx.contentType("application/xml");
+    var clientId = ctx.header(ContextHelper.ATTRIB_HEADER_PARAM_CLIENT_ID);
+    if (clientId == null) {
+      clientId = "";
+    }
+    var sessionId = ctx.pathParam("sessionId");
+    var result = sessionApiServiceImpl.getSessionInitialization(clientId, sessionId, ctx);
+    ctx.contentType("application/xml");
 
-          ctx.result(result);
-          ctx.skipRemainingHandlers();
-
+    ctx.result(result);
+    ctx.skipRemainingHandlers();
   }
-
-
 
   private void handleAuthorizationException(AuthorisationException e, Context ctx) {
     var trackingId = ContextHelper.getAttributeValue(ctx, ATTRIB_TRACKING_ID);
@@ -493,6 +490,4 @@ public class DefaultWebService implements WebService {
   public Javalin getJavalin() {
     return appServer;
   }
-
-
 }
