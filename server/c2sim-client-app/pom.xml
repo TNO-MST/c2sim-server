@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>nl.tno</groupId>
 		<artifactId>c2sim</artifactId>
-		<version>1.0.3-SNAPSHOT</version>
+		<version>1.0.3</version>
 	</parent>
 	<artifactId>c2sim-client-app</artifactId>
 	<name>c2sim-client-app</name>
