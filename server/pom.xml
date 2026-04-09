@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>nl.tno</groupId>
 	<artifactId>c2sim</artifactId>
-	<version>1.0.3</version>
+	<version>1.0.3-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>c2sim</name>
 	<description>C2SIM-server multi-module project</description>
@@ -18,11 +18,11 @@
 	</modules>
 
 	<scm>
-		<connection>scm:git:git://github.com/TNO-MST/c2sim-server.git</connection>
-		<developerConnection>scm:git:ssh://github.com/TNO-MST/c2sim-server.git</developerConnection>
-		<url>https://github.com/TNO-MST/c2sim-server/tree/main</url>
-	  <tag>c2sim-1.0.3</tag>
-  </scm>
+		<connection>scm:git:https://github.com/TNO-MST/c2sim-server.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com/TNO-MST/c2sim-server.git</developerConnection>
+		<url>https://github.com/TNO-MST/c2sim-server</url>
+		<tag>HEAD</tag>
+	</scm>
 	<profiles>
 		<profile>
 			<id>release</id>
@@ -62,7 +62,7 @@
 		<maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ss</maven.build.timestamp.format>
 		<!-- Java version -->
 		<!-- This must match project.version: -->
-		<c2sim-server.version>1.0.3</c2sim-server.version>
+		<c2sim-server.version>1.0.3-SNAPSHOT</c2sim-server.version>
 		<!-- Code generator generates kotlin source code -->
 		<!-- https://mvnrepository.com/artifact/org.jetbrains.kotlin/kotlin-maven-plugin/versions -->
 		<kotlin.version>2.3.20</kotlin.version>
@@ -390,9 +390,9 @@
 								<include>src/**/*.java</include>
 							</includes>
 							<!-- Optional extras -->
-							<removeUnusedImports />
-							<trimTrailingWhitespace />
-							<endWithNewline />
+							<removeUnusedImports/>
+							<trimTrailingWhitespace/>
+							<endWithNewline/>
 						</java>
 					</configuration>
 				</plugin>
@@ -666,7 +666,7 @@
 						</goals>
 						<configuration>
 							<rules>
-								<dependencyConvergence />
+								<dependencyConvergence/>
 							</rules>
 						</configuration>
 					</execution>
