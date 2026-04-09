@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>nl.tno</groupId>
 		<artifactId>c2sim</artifactId>
-		<version>1.0.4-SNAPSHOT</version>
+		<version>1.0.3-SNAPSHOT</version>
 	</parent>
 	<artifactId>c2sim-statemachine</artifactId>
 	<name>c2sim-statemachine</name>

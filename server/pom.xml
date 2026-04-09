@@ -2,9 +2,10 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>nl.tno</groupId>
 	<artifactId>c2sim</artifactId>
-	<version>1.0.4-SNAPSHOT</version>
+	<version>1.0.3-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>c2sim</name>
+	<url>https://github.com/TNO-MST/c2sim-server</url>
 	<description>C2SIM-server multi-module project</description>
 	<modules>
 		<module>c2sim-server</module>
@@ -62,7 +63,7 @@
 		<maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ss</maven.build.timestamp.format>
 		<!-- Java version -->
 		<!-- This must match project.version: -->
-		<c2sim-server.version>1.0.4-SNAPSHOT</c2sim-server.version>
+		<c2sim-server.version>1.0.3-SNAPSHOT</c2sim-server.version>
 		<!-- Code generator generates kotlin source code -->
 		<!-- https://mvnrepository.com/artifact/org.jetbrains.kotlin/kotlin-maven-plugin/versions -->
 		<kotlin.version>2.3.20</kotlin.version>
@@ -79,6 +80,7 @@
 		<maven-shade-plugin.version>3.6.2</maven-shade-plugin.version>
 		<maven-release-plugin.version>3.3.1</maven-release-plugin.version>
 		<maven-gpg-plugin.version>3.2.8</maven-gpg-plugin.version>
+		<maven-source-plugin.version>3.4.0</maven-source-plugin.version>
 		<allure-maven-plugin.version>2.17.0</allure-maven-plugin.version>
 		<exec-maven-plugin.version>3.6.3</exec-maven-plugin.version>
 		<jacoco-maven-plugin.version>0.8.14</jacoco-maven-plugin.version>
@@ -462,6 +464,20 @@
 			</plugins>
 		</pluginManagement>
 		<plugins>
+		<plugin>
+  <groupId>org.apache.maven.plugins</groupId>
+  <artifactId>maven-source-plugin</artifactId>
+  <version>${maven-source-plugin.version}</version>
+  <executions>
+    <execution>
+      <id>attach-sources</id>
+      <phase>verify</phase>
+      <goals>
+        <goal>jar-no-fork</goal>
+      </goals>
+    </execution>
+  </executions>
+</plugin>
 			<plugin>
 				<groupId>org.sonatype.central</groupId>
 				<artifactId>central-publishing-maven-plugin</artifactId>
