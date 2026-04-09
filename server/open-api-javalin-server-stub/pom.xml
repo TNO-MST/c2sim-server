@@ -1,162 +1,167 @@
 <project>
-  <parent>
-    <groupId>org.c2sim</groupId>
-    <artifactId>c2sim</artifactId>
-    <version>1.0.3</version>
-  </parent>
-  <modelVersion>4.0.0</modelVersion>
-  <artifactId>open-api-javalin-server-stub</artifactId>
-  <packaging>jar</packaging>
-
-	
+	<parent>
+		<groupId>org.c2sim</groupId>
+		<artifactId>c2sim</artifactId>
+		<version>1.0.3-SNAPSHOT</version>
+	</parent>
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>open-api-javalin-server-stub</artifactId>
+	<packaging>jar</packaging>
 	<name>open-api-javalin-server-stub</name>
-    <description>C2SIM-Server generated server stub (based on C2SIM OpenAPI)</description>
-    <url>https://github.com/TNO-MST/c2sim-server</url>
-
-    <licenses>
-        <license>
-            <name>The Apache Software License, Version 2.0</name>
-            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
-        </license>
-    </licenses>
-
-    <developers>
-        <developer>
-            <name>TNO Mission Simulation and Training</name>
-            <email>noreply@tno-mst.github.io</email>
-            <organization>TNO</organization>
-            <organizationUrl>https://tno-mst.github.io</organizationUrl>
-        </developer>
-    </developers>
-
-    <issueManagement>
-        <url>https://github.com/TNO-MST/c2sim-server/issues</url>
-    </issueManagement>
-
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.jetbrains.kotlin</groupId>
-        <artifactId>kotlin-bom</artifactId>
-        <version>${kotlin.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
+	<description>C2SIM-Server generated server stub (based on C2SIM OpenAPI)</description>
+	<url>https://github.com/TNO-MST/c2sim-server</url>
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+		</license>
+	</licenses>
+	<developers>
+		<developer>
+			<name>TNO Mission Simulation and Training</name>
+			<email>noreply@tno-mst.github.io</email>
+			<organization>TNO</organization>
+			<organizationUrl>https://tno-mst.github.io</organizationUrl>
+		</developer>
+	</developers>
+	<issueManagement>
+		<url>https://github.com/TNO-MST/c2sim-server/issues</url>
+	</issueManagement>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.jetbrains.kotlin</groupId>
+				<artifactId>kotlin-bom</artifactId>
+				<version>${kotlin.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+	<build>
+		<plugins>
+			<!-- Kotlin compiler -->
+			<plugin>
+				<groupId>org.jetbrains.kotlin</groupId>
+				<artifactId>kotlin-maven-plugin</artifactId>
+				<version>${kotlin.version}</version>
+				<executions>
+					<execution>
+						<id>compile</id>
+						<phase>compile</phase>
+						<goals>
+							<goal>compile</goal>
+						</goals>
+						<configuration>
+							<jvmTarget>${maven.compiler.release}</jvmTarget>
+							<!-- The JAVA version -->
+							<sourceDirs>
+								<sourceDir>${project.basedir}/src/generated-sources/kotlin/javalin7</sourceDir>
+							</sourceDirs>
+						</configuration>
+					</execution>
+					<execution>
+						<id>test-compile</id>
+						<phase>test-compile</phase>
+						<goals>
+							<goal>test-compile</goal>
+						</goals>
+						<configuration>
+							<jvmTarget>${maven.compiler.release}</jvmTarget>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- OpenAPI generator -->
+			<plugin>
+				<groupId>org.openapitools</groupId>
+				<artifactId>openapi-generator-maven-plugin</artifactId>
+				<version>${openapi-generator-maven-plugin.version}</version>
+				<executions>
+					<execution>
+						<id>generate-javalin-server</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<inputSpec>${project.basedir}/../../open-api-spec/c2sim-server-spec.yaml</inputSpec>
+							<generatorName>kotlin-server</generatorName>
+							<!-- Want to store generated code in GIT (track changes) -->
+							<output>${project.basedir}</output>
+							<!-- Disable Impl files via .openapi-generator-ignore -->
+							<ignoreFileOverride>${project.basedir}/src/main/resources/.openapi-generator-ignore</ignoreFileOverride>
+							<templateDirectory>${project.basedir}/src/main/resources/openapi-templates</templateDirectory>
+							<configOptions>
+								<!-- Generate Javalin 6 server stub -->
+								<!-- There is no javalin 7 option (yet) in openapi-generator-maven-plugin -->
+								<!-- Used mustache templates from javalin 6 (and changed to javalin API 7 (1 change)), see templateDirectory -->
+								<library>javalin6</library>
+								<!-- Packages (recommended to set both) -->
+								<packageName>org.c2sim.server.api</packageName>
+								<apiPackage>org.c2sim.server.api.apis</apiPackage>
+								<modelPackage>org.c2sim.server.api.model</modelPackage>
+								<!-- Generate Kotlin, so use a Kotlin folder name -->
+								<sourceFolder>src/generated-sources/kotlin/javalin7</sourceFolder>
+								<verbose>true</verbose>
+							</configOptions>
+							<additionalProperties>
+								<addGeneratedAnnotation>true</addGeneratedAnnotation>
+							</additionalProperties>
+							<!-- We usually keep this true; generator tracks spec hash -->
+							<skipIfSpecIsUnchanged>false</skipIfSpecIsUnchanged>
+							<!-- Only generate files that are used (no examples) -->
+							<generateSupportingFiles>false</generateSupportingFiles>
+							<addCompileSourceRoot>false</addCompileSourceRoot>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<!-- the generator generates CR LF endings, this gives GIT diff problems -->
+				<groupId>com.diffplug.spotless</groupId>
+				<artifactId>spotless-maven-plugin</artifactId>
+				<version>${spotless-maven-plugin.version}</version>
+				<configuration>
+					<formats>
+						<format>
+							<includes>
+								<include>src/generated-sources/kotlin/**/*.kt</include>
+							</includes>
+							<!-- ONLY this matters -->
+							<lineEndings>UNIX</lineEndings>
+						</format>
+					</formats>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>process-sources</phase>
+						<goals>
+							<goal>apply</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+	<dependencies>
+		<dependency>
+			<groupId>io.javalin</groupId>
+			<artifactId>javalin</artifactId>
+			<version>${javalin.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jetbrains.kotlin</groupId>
+			<artifactId>kotlin-stdlib-jdk8</artifactId>
+		</dependency>
+		<!-- Jackson for JSON serialization -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.module</groupId>
+			<artifactId>jackson-module-kotlin</artifactId>
+		</dependency>
 	</dependencies>
-  </dependencyManagement>
-	  
-  <build>
-    <plugins>
-      <!-- Kotlin compiler -->
-      <plugin>
-        <groupId>org.jetbrains.kotlin</groupId>
-        <artifactId>kotlin-maven-plugin</artifactId>
-        <version>${kotlin.version}</version>
-        <executions>
-          <execution>
-            <id>compile</id>
-            <phase>compile</phase>
-            <goals><goal>compile</goal></goals>
-			<configuration>
-                <jvmTarget>${maven.compiler.release}</jvmTarget> <!-- The JAVA version -->
-              <sourceDirs>
-                <sourceDir>${project.basedir}/src/generated-sources/kotlin/javalin7</sourceDir>
-              </sourceDirs>
-            </configuration>
-          </execution>
-          <execution>
-            <id>test-compile</id>
-            <phase>test-compile</phase>
-            <goals><goal>test-compile</goal></goals>
-            <configuration>
-              <jvmTarget>${maven.compiler.release}</jvmTarget>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
-      <!-- OpenAPI generator -->
-      <plugin>
-        <groupId>org.openapitools</groupId>
-        <artifactId>openapi-generator-maven-plugin</artifactId>
-        <version>${openapi-generator-maven-plugin.version}</version>
-        <executions>
-          <execution>
-            <id>generate-javalin-server</id>
-            <phase>generate-sources</phase>
-            <goals>
-			  <goal>generate</goal>
-			</goals>
-            <configuration>
-              <inputSpec>${project.basedir}/../../open-api-spec/c2sim-server-spec.yaml</inputSpec>
-              <generatorName>kotlin-server</generatorName>
-
-              <!-- Want to store generated code in GIT (track changes) -->
-              <output>${project.basedir}</output>
-
-              <!-- Disable Impl files via .openapi-generator-ignore -->
-              <ignoreFileOverride>${project.basedir}/src/main/resources/.openapi-generator-ignore</ignoreFileOverride>
-
-
-              <templateDirectory>${project.basedir}/src/main/resources/openapi-templates</templateDirectory>
-
-
-              <configOptions>
-                <!-- Generate Javalin 6 server stub -->
-                <!-- There is no javalin 7 option (yet) in openapi-generator-maven-plugin -->
-                <!-- Used mustache templates from javalin 6 (and changed to javalin API 7 (1 change)), see templateDirectory -->
-
-                <library>javalin6</library>
-
-                <!-- Packages (recommended to set both) -->
-                <packageName>org.c2sim.server.api</packageName>
-                <apiPackage>org.c2sim.server.api.apis</apiPackage>
-                <modelPackage>org.c2sim.server.api.model</modelPackage>
-
-                <!-- Generate Kotlin, so use a Kotlin folder name -->
-                <sourceFolder>src/generated-sources/kotlin/javalin7</sourceFolder>
-
-                <verbose>true</verbose>
-              </configOptions>
-
-              <additionalProperties>
-                <addGeneratedAnnotation>true</addGeneratedAnnotation>
-              </additionalProperties>
-
-              <!-- We usually keep this true; generator tracks spec hash -->
-              <skipIfSpecIsUnchanged>false</skipIfSpecIsUnchanged>
-
-              <!-- Only generate files that are used (no examples) -->
-              <generateSupportingFiles>false</generateSupportingFiles>
-
-
-              <addCompileSourceRoot>false</addCompileSourceRoot>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
-    </plugins>
-  </build>
-
-  <dependencies>
-    <dependency>
-      <groupId>io.javalin</groupId>
-      <artifactId>javalin</artifactId>
-      <version>${javalin.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.jetbrains.kotlin</groupId>
-      <artifactId>kotlin-stdlib-jdk8</artifactId>
-    </dependency>
-	  <!-- Jackson for JSON serialization -->
-  <dependency>
-    <groupId>com.fasterxml.jackson.core</groupId>
-    <artifactId>jackson-databind</artifactId>
-  </dependency>
-  <dependency>
-    <groupId>com.fasterxml.jackson.module</groupId>
-    <artifactId>jackson-module-kotlin</artifactId>
-  </dependency>
-  </dependencies>
 </project>
