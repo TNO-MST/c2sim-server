@@ -5,7 +5,7 @@
 	<version>1.0.3-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>c2sim</name>
-    <description>C2SIM-server multi-module project</description>
+	<description>C2SIM-server multi-module project</description>
 	<modules>
 		<module>c2sim-server</module>
 		<module>c2sim-client</module>
@@ -16,22 +16,12 @@
 		<module>c2sim-client-app</module>
 		<module>c2sim-authorizer</module>
 	</modules>
+
 	<scm>
-		<connection>scm:git:https://github.com/TNO-MST/c2sim-server.git</connection>
-		<developerConnection>scm:git:git@github.com:TNO-MST/c2sim-server.git</developerConnection>
-		<url>https://github.com/TNO-MST/c2sim-server</url>
-		<tag>HEAD</tag>
+		<connection>scm:git:git://github.com/TNO-MST/c2sim-server.git</connection>
+		<developerConnection>scm:git:ssh://github.com:TNO-MST/c2sim-server.git</developerConnection>
+		<url>https://github.com/TNO-MST/c2sim-server/tree/main</url>
 	</scm>
-	<distributionManagement>
-		<repository>
-			<id>ossrh</id>
-			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-		</repository>
-		<snapshotRepository>
-			<id>ossrh</id>
-			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-		</snapshotRepository>
-	</distributionManagement>
 	<profiles>
 		<profile>
 			<id>release</id>
@@ -472,14 +462,12 @@
 		</pluginManagement>
 		<plugins>
 			<plugin>
-				<groupId>org.sonatype.plugins</groupId>
-				<artifactId>nexus-staging-maven-plugin</artifactId>
-				<version>1.6.13</version>
+				<groupId>org.sonatype.central</groupId>
+				<artifactId>central-publishing-maven-plugin</artifactId>
+				<version>0.10.0</version>
 				<extensions>true</extensions>
 				<configuration>
-					<serverId>ossrh</serverId>
-					<nexusUrl>https://oss.sonatype.org/</nexusUrl>
-					<autoReleaseAfterClose>true</autoReleaseAfterClose>
+					<publishingServerId>central</publishingServerId>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -490,7 +478,6 @@
 					<autoVersionSubmodules>true</autoVersionSubmodules>
 					<useReleaseProfile>false</useReleaseProfile>
 					<releaseProfiles>release</releaseProfiles>
-					<goals>deploy</goals>
 				</configuration>
 			</plugin>
 			<!-- unit testing code coverage -->
