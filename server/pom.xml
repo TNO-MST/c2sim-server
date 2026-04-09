@@ -1,6 +1,6 @@
 <project>
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.c2sim</groupId>
+	<groupId>nl.tno</groupId>
 	<artifactId>c2sim</artifactId>
 	<version>1.0.3-SNAPSHOT</version>
 	<packaging>pom</packaging>
@@ -256,32 +256,32 @@
 				<scope>test</scope>
 			</dependency>
 			<dependency>
-				<groupId>org.c2sim</groupId>
+				<groupId>nl.tno</groupId>
 				<artifactId>open-api-javalin-server-stub</artifactId>
 				<version>${c2sim-server.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>org.c2sim</groupId>
+				<groupId>nl.tno</groupId>
 				<artifactId>lox</artifactId>
 				<version>${c2sim-server.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>org.c2sim</groupId>
+				<groupId>nl.tno</groupId>
 				<artifactId>c2sim-client</artifactId>
 				<version>${c2sim-server.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>org.c2sim</groupId>
+				<groupId>nl.tno</groupId>
 				<artifactId>c2sim-statemachine</artifactId>
 				<version>${c2sim-server.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>org.c2sim</groupId>
+				<groupId>nl.tno</groupId>
 				<artifactId>c2sim-server</artifactId>
 				<version>${c2sim-server.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>org.c2sim</groupId>
+				<groupId>nl.tno</groupId>
 				<artifactId>c2sim-authorizer</artifactId>
 				<version>${c2sim-server.version}</version>
 			</dependency>

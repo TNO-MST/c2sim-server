@@ -1,6 +1,6 @@
 <project>
 	<parent>
-		<groupId>org.c2sim</groupId>
+		<groupId>nl.tno</groupId>
 		<artifactId>c2sim</artifactId>
 		<version>1.0.3-SNAPSHOT</version>
 	</parent>
