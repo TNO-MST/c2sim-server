@@ -64,6 +64,20 @@ public class HealthObservationTypeBuilder {
    * Sets the strength percentage. Updates an existing strength entry if one is already present,
    * otherwise adds a new {@link EntityHealthStatusType} with a {@link StrengthType}.
    *
+   * @param percentage the strength as a percentage (0–100). Value is converted to int!
+   * @return this builder
+   */
+  public HealthObservationTypeBuilder strength(Float percentage) {
+    if (percentage == null) {
+      return this;
+    }
+    return strength(percentage.intValue());
+  }
+
+  /**
+   * Sets the strength percentage. Updates an existing strength entry if one is already present,
+   * otherwise adds a new {@link EntityHealthStatusType} with a {@link StrengthType}.
+   *
    * @param percentage the strength as a percentage (0–100)
    * @return this builder
    */
