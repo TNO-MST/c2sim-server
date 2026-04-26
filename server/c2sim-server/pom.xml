@@ -35,9 +35,7 @@
     <url>https://github.com/TNO-MST/c2sim-server/issues</url>
   </issueManagement>
 
-  <properties>
-    <maven.deploy.skip>true</maven.deploy.skip>
-  </properties>
+  <properties></properties>
 
   <dependencies>
     <!-- SLF4J API (compile-time logging facade) -->
