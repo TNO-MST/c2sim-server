@@ -1,6 +1,6 @@
 # Maven central deployment
 
-The packages are published under the `nl.tno` namespace on the` on [maven central repository](https://central.sonatype.com/). 
+The packages are published under the `nl.tno` namespace on the on [maven central repository](https://central.sonatype.com/). 
 
 ## GPG package signing
 
@@ -52,154 +52,25 @@ The GPG private key has an `pass phrase`.
 Set the ENV variable `MAVEN_GPG_PASSPHRASE` to the GPG pass phrase. Otherwise the pass phrase will be asked.
 ```
 
-## Dry-run publish packages to maven (deploy phase)
+## Maven release plugin
 
-**1.) Build project**
+Initially the [maven release plugin](https://maven.apache.org/maven-release/maven-release-plugin/) was used. The main reasons why switch to manually publishing:
 
-Verify with a normal build if the project is valid.
+* Not all modules need to be published to`maven repository`. The can be excluded from maven release with `maven.deploy.skip`, however then the version of the modules are not updated by the maven release plugin then anymore.
 
-```
-mvn clean verify
-```
-
-If the `verify`fails on style errors, some can be fixed automatically with `mvn spotless:apply`.
-
-Validates:
-
-- build works
-- unit tests pass
-- javadoc + sources generated
-- GPG signing phase is reachable
+* When an error occurs in the `mvn release:prepare`, the revert can be painful because parts are already pushed to GIT.
 
 !!! note
 
-    Each maven package must have <module name>.jar, <module name>-javadoc.jar and <module name>-sources.jar in the `/target`folder of the module.
+    Maven release plugin is not used anymore!
 
-**2.) Verify PGP signing**
+## Plugin 'central-publishing-maven-plugin'
 
-Validate if the .jar can be signed with the PGP key:
-
-```
-mvn verify -P release 
-```
-
-**3.) Do dry-run**
-
-A dry-run can be done:
-
-```
-mvn release:prepare -DdryRun=true
-mvn release:perform -DdryRun=true
-```
-
-Validates:
-
-- calculates versions
-- checks SCM
-- simulates commits + tags
-- does NOT change anything
-
-## Release maven package
-
-This section explains how to deploy the packages to maven.
-
-!!! warning
-
-    Once published in maven reposiotry the packages are immutable. 
-
-**What does the maven release plugin?**
-
-First phase `mvn release:prepare`
-
-1.) Pre-checks on complete project :
-
-* No uncommitted changes (GIT)
-
-* The POM modules use `-SNAPSHOT` in version
-
-2.) Ask release version, and new SNAPSHOT version
-
-Based on the current version in the POM.xml it will propose a release version, by default this is the current version without the `-SNAPSHOT`. The new SNAPSHOT version is by default the old SNAPSHOT version increased with one. The default values are good.
-
-3.) Update the `POM.XML` in all modules to use the `release version`
-
-4.) Commit the `POM.XML`  changes (release version) from all modules to GitHub (GIT)
-
-5.) Create a `GIT TAG` for the committed release version. 
-
-For example `git tag c2sim-1.0.3`.
-
-6.) Update `POM.XML` in all modules to use new `SNAPSHOT version`
-
-7.) .) Commit the `POM.XML` changes (SNAPSHOT version) from all modules to GitHub (GIT)
-
-This is the text `[release] prepare for next development iteration` in GIT
-
-Second phase `release:perform`
-
-1.) Clean checkout of release version
-
-2.) Then run `mvn clean deploy`
-
-!!! note
-
-    All POM modules share the same version number, indicating that the modules belong to each other.
-
-To deploy the packages to maven:
-
-```
-mvn release:prepare
-mvn release:perform 
-```
-
-[Confirm the release in Maven Central](https://central.sonatype.com/publishing/deployments)
+The maven plugin [central-publishing-maven-plugin](https://central.sonatype.org/publish/publish-portal-maven/) is used to deploy the packages to the maven repository.  The initial idea was to only publish a subsection of the POM with the option  `<maven.deploy.skip>true</maven.deploy.skip>` in `properties` (pom.xml). This caused problems, therefor all packages are published.
 
 
 
-## Revert release change
-
-```
-mvn release:clean
-If GIT tag is created:
-git tag -d c2sim-<version>
-git push origin :refs/tags/c2sim-<version>
-```
-
-See also [Publish to maven central repository (sonatype)](https://central.sonatype.org/publish/publish-portal-maven/#wait-for-publishing)
-
-## Manual release (without maven release plugin)
-
-What the `maven release plugin` does automatically, can also be done manually (more control):
-
-```
-# release version
-mvn versions:set -DnewVersion=<version> -DprocessAllModules=true -DgenerateBackupPoms=false
-
-# verify build
-mvn clean verify
-
-# commit + tag
-git commit -am "release <version>"
-git tag c2sim-<version>
-
-# push
-git push && git push --tags
-
-# deploy
-mvn clean deploy
-
-# next snapshot
-mvn build-helper:parse-version versions:set \
-  -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.nextIncrementalVersion}-SNAPSHOT \
-  -DgenerateBackupPoms=false
-
-git commit -am "[release] prepare for next development iteration"
-git push
-```
-
-## Central maven
-
-In the `<users>/.m2/settings.xml` there must be an access token for maven central (sonatype). It must be named `central`.
+To be able to deploy to Maven Central, the `<users>/.m2/settings.xml` the 'central' entry must contain an `sonatype access token`. An access token can be created in the [sonatype website (Maven Central Repo)](https://central.sonatype.com/usertoken). 
 
 ```
 <settings>
@@ -212,3 +83,133 @@ In the `<users>/.m2/settings.xml` there must be an access token for maven centra
   </servers>
 </settings>
 ```
+
+## Setting POM module versions
+
+To show the current version used in the POM modules use:
+
+```
+mvn help:evaluate -Dexpression=project.version -q -DforceStdout
+```
+
+This maven command will automatically updated all POM modules to the supplied version number.
+
+```
+mvn versions:set -DnewVersion="<version>" -DprocessAllModules=true -DgenerateBackupPoms=false
+```
+
+With `mvn versions:set` the all version related operations can be done, there are some helper methods also possible:
+
+**Strip "-SNAPSHOT"** from version
+
+```
+mvn versions:set -DremoveSnapshot=true versions:commit -DprocessAllModules=true -DgenerateBackupPoms=false
+```
+
+**Create new SNAPSHOT version**
+
+There is also `maven plugin` to automatically increase the version number. 
+
+```
+mvn build-helper:parse-version versions:set -DnewVersion="${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.nextIncrementalVersion}-SNAPSHOT" -DgenerateBackupPoms=false
+```
+
+!!! note
+
+    This project has the approach that all POM modules should use the same version!
+
+## Create  Central Maven Repo package release
+
+This is the same process as the [central-publishing-maven-plugin](https://central.sonatype.org/publish/publish-portal-maven/) does.
+
+**1.) Check out latest version**
+
+**2.) Build project**
+
+```
+cd <root>/server
+mvn clean verify
+```
+
+If the `verify`fails on style errors, some can be fixed automatically with `mvn spotless:apply`.
+
+```
+mvn package
+git status
+```
+
+The project should build, and there should not be any GIT changes.  
+
+All POM modules (for maven packages mandatory) should have in the `target` folder:
+
+* <module name>.jar
+
+* <module name>-sources.jar
+
+* <module name>-javadoc.jar
+
+**3.) Do clean checkout (optional)**
+
+**4.) Remove `-SNAPSHOT` from version in POM modules**
+
+```
+mvn versions:set -DremoveSnapshot=true versions:commit -DprocessAllModules=true -DgenerateBackupPoms=false
+```
+
+Check with GIT  diff changes if this is the desired version.
+
+**5.) Build the project**
+
+The version change should not have an impact on the code, make sure:
+
+```
+mvn clean package
+```
+
+**6.) Verify package signing**
+
+All `maven central repo` must be signed, check if the signing process is configured well:
+
+```
+mvn verify
+```
+
+The PGP pass phrase will be asked during build. 
+
+**7.) Commit the release version to GitHub and create a release tag**
+
+```bash
+git commit -am "release <version>"
+git tag c2sim-<version>
+
+# push
+git push 
+git push --tags
+```
+
+**8.) Deploy the release build**
+
+This step upload the packages to the `central maven repo`.
+
+```
+mvn clean deploy -P publish 
+```
+
+**9.) Create a new working version (SNAPSHOT)**
+
+```
+mvn build-helper:parse-version versions:set -DnewVersion="${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.nextIncrementalVersion}-SNAPSHOT" -DgenerateBackupPoms=false
+```
+
+## [Confirm the release in Maven Central](https://central.sonatype.com/publishing/deployments)
+
+## Revert release change
+
+```
+mvn release:clean
+If GIT tag is created:
+git tag -d c2sim-<version>
+git push origin :refs/tags/c2sim-<version>
+```
+
+See also [Publish to maven central repository (sonatype)](https://central.sonatype.org/publish/publish-portal-maven/#wait-for-publishing)
