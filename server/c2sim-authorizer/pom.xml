@@ -4,7 +4,7 @@
   <parent>
     <groupId>nl.tno</groupId>
     <artifactId>c2sim</artifactId>
-    <version>1.0.3</version>
+    <version>1.0.4-SNAPSHOT</version>
   </parent>
   <artifactId>c2sim-authorizer</artifactId>
   <name>c2sim-authorizer</name>

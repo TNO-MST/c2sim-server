@@ -171,7 +171,7 @@ mvn clean package
 All `maven central repo` must be signed, check if the signing process is configured well:
 
 ```
-mvn verify
+mvn verify -P release
 ```
 
 The PGP pass phrase will be asked during build. 
@@ -192,8 +192,10 @@ git push --tags
 This step upload the packages to the `central maven repo`.
 
 ```
-mvn clean deploy -P publish 
+mvn clean deploy -P release
 ```
+
+[Confirm the release in Maven Central]([Maven Central: Publishing](https://central.sonatype.com/publishing/deployments))
 
 **9.) Create a new working version (SNAPSHOT)**
 
@@ -201,7 +203,7 @@ mvn clean deploy -P publish
 mvn build-helper:parse-version versions:set -DnewVersion="${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.nextIncrementalVersion}-SNAPSHOT" -DgenerateBackupPoms=false
 ```
 
-## [Confirm the release in Maven Central](https://central.sonatype.com/publishing/deployments)
+# 
 
 ## Revert release change
 
