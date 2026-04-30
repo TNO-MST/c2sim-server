@@ -24,9 +24,9 @@ Add the C2SIM client library to your Maven `pom.xml`:
 
 ```xml
 <dependency>
-    <groupId>org.c2sim</groupId>
+    <groupId>nl.tno</groupId>
     <artifactId>c2sim-client</artifactId>
-    <version>1.0.2-federates</version>
+    <version>1.0.3</version>
 </dependency>
 ```
 
