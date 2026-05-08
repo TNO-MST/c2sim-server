@@ -49,8 +49,8 @@ public class ReportBodyTypeBuilder {
    * @param toReceiver the UUID of the receiving system
    * @return this builder
    */
-  public ReportBodyTypeBuilder toReceiver(UUID toReceiver) {
-    reportBody.setToReceiver(toReceiver.toString());
+  public ReportBodyTypeBuilder addToReceiver(UUID toReceiver) {
+    reportBody.getToReceiver().add(toReceiver.toString());
     return this;
   }
 

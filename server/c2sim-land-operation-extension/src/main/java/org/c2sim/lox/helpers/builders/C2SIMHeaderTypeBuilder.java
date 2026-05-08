@@ -113,12 +113,24 @@ public class C2SIMHeaderTypeBuilder {
     /**
      * Set toReceivingSystems in header
      *
-     * @param systems systems to send to
+     * @param system systems to send to
      * @return builder object
      */
-    public C2SIMHeaderTypeBuilder toReceivingSystem( String systems ) {
+    public C2SIMHeaderTypeBuilder toReceivingSystem( String system ) {
+        Objects.requireNonNull(system);
+        this.header.getToReceivingSystem().add(system);
+        return this;
+    }
+
+    /**
+     * Set toReceivingSystems in header
+     *
+     * @param systems systems from
+     * @return builder object
+     */
+    public C2SIMHeaderTypeBuilder toReceivingSystems( String[] systems ) {
         Objects.requireNonNull(systems);
-        this.header.setToReceivingSystem(systems);
+        this.header.getToReceivingSystem().addAll(java.util.Arrays.asList(systems));
         return this;
     }
 
@@ -160,8 +172,6 @@ public class C2SIMHeaderTypeBuilder {
             header.setConversationID("00000000-0000-0000-0000-000000000000");
         }
 
-        header.setSecurityClassificationCode(null); // Not used; will be removed
-        header.setCommunicativeActTypeCode(CommunicativeActTypeCodeType.ACCEPT); // Not used; will be removed
         return header;
     }
 }

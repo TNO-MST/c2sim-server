@@ -121,7 +121,7 @@
         <artifactId>jaxb2-maven-plugin</artifactId>
         <configuration>
           <sources>
-            <source>src/main/resources/lox/xsd/2025</source>
+            <source>src/main/resources/lox/xsd/2026</source>
           </sources>
           <xjbSources>
             <xjbSource>src/main/resources/lox/binding.xjb</xjbSource>

@@ -31,7 +31,8 @@ class LoxXsdValidatorCustomXsdTest {
   @Test()
   void validateC2SIMInitialization_extra_field_own_namespace() {
 
-    String xsdResourcePath = "xsd/C2SIM_SMX_LOX_CWIX2025_WITH_MODIFICATION.xsd";
+
+    String xsdResourcePath = "xsd/C2SIM_SMX_LOX_2.0.0-cwix2026_WITH_MODIFICATION.xsd";
     String xmlResourcePath = "lox/C2SIMInitialization_extra_field.xml";
 
     String xml = null;
@@ -74,7 +75,7 @@ class LoxXsdValidatorCustomXsdTest {
 
   @Test()
   void validateC2SIMInitialization_extra_field_same_namespace() {
-    String xsdResourcePath = "xsd/C2SIM_SMX_LOX_CWIX2025_WITH_MODIFICATION_1_1.xsd";
+    String xsdResourcePath = "xsd/C2SIM_SMX_LOX_2.0.0-cwix2026_WITH_MODIFICATION_1_1.xsd";
     String xmlResourcePath = "lox/C2SIMInitialization_extra_field_1_1.xml";
     String xml = null;
     try (InputStream inputStream =
@@ -107,7 +108,7 @@ class LoxXsdValidatorCustomXsdTest {
       Assertions.assertFalse(validationOrg.isValid());
       Assertions.assertEquals(1, (long) validationOrg.getValidationsErrors().size());
       Assertions.assertEquals(
-          "cvc-complex-type.2.4.d: Invalid content was found starting with element 'c2sim:CheckingXsdSchema'. No child element is expected at this point.",
+          "cvc-complex-type.2.4.a: Invalid content was found starting with element '{\"http://www.sisostds.org/schemas/C2SIM/2.0.0-cwix2026\":CheckingXsdSchema}'. One of '{\"http://www.sisostds.org/schemas/C2SIM/2.0.0-cwix2026\":ToReceivingSystem}' is expected.",
           validationOrg.getValidationsErrors().getFirst().getMessage());
 
     } catch (ValidationException ex) {

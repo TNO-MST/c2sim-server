@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <MessageBody xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-             xsi:schemaLocation="http://www.sisostds.org/schemas/C2SIM/1.1 ../Schema/C2SIM/C2SIM_SMX_LOX_CWIX2023v2.xsd"
-             xmlns="http://www.sisostds.org/schemas/C2SIM/1.1"
+
+             xmlns="http://www.sisostds.org/schemas/C2SIM/2.0.0-cwix2026"
 >
     <DomainMessageBody>
         <!-- Operations Order Mission Rehearsal for MSG-201 CWIX 2023 -->

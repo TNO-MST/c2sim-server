@@ -1,6 +1,8 @@
 package org.c2sim.lox.helpers.builders;
 
 import java.time.Instant;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 import org.c2sim.lox.schema.*;
 
@@ -41,7 +43,21 @@ public class OrderBodyTypeBuilder {
    * @return this builder
    */
   public OrderBodyTypeBuilder toReceiver(UUID receiver) {
-    order.setToReceiver(receiver.toString());
+    order.getToReceiver().add(receiver.toString());
+    return this;
+  }
+
+  /**
+   * Sets the receiver of the order.
+   *
+   * @param receivers the UUIDs of the receiving systems
+   * @return this builder
+   */
+  public OrderBodyTypeBuilder toReceivers(UUID[] receivers) {
+    String[] ids = Arrays.stream(receivers)
+            .map(UUID::toString)
+            .toArray(String[]::new);
+    order.getToReceiver().addAll(List.of(ids));
     return this;
   }
 

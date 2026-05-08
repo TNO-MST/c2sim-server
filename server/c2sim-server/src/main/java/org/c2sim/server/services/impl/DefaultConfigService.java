@@ -88,8 +88,11 @@ public class DefaultConfigService implements ConfigService {
           Boolean.class,
           Config::asBool);
 
+  private static final String DEFAULT_SHARED_SESSION_LEGACY_NAME = "legacy";
+  private static final String DEFAULT_SHARED_SESSION_LEGACY_SCHEMA_VERSION = "1.0.2";
+
   private static final String DEFAULT_SHARED_SESSION_NAME = "default";
-  private static final String DEFAULT_SHARED_SESSION_SCHEMA_VERSION = "1.0.2";
+  private static final String DEFAULT_SHARED_SESSION_SCHEMA_VERSION = "2.0.0";
   private final Config cfg;
   private ServerConfigurationData serverConfig;
   private final EnvService envService;
@@ -207,6 +210,12 @@ public class DefaultConfigService implements ConfigService {
               .setDisplayName(DEFAULT_SHARED_SESSION_NAME)
               .setC2SimSchemaVersion(DEFAULT_SHARED_SESSION_SCHEMA_VERSION)
               .setDescription("Default shared session"));
+      serverConfig.addSession(
+              new ServerConfigurationData.DefaultSessionCfg()
+                      .setSharedSessionName(DEFAULT_SHARED_SESSION_LEGACY_NAME)
+                      .setDisplayName(DEFAULT_SHARED_SESSION_LEGACY_NAME)
+                      .setC2SimSchemaVersion(DEFAULT_SHARED_SESSION_LEGACY_SCHEMA_VERSION)
+                      .setDescription("Previous C2SIM schema v1.0.2"));
       try {
         JsonFileReader.writeJsonFile(configFile, serverConfig);
       } catch (IOException e) {
