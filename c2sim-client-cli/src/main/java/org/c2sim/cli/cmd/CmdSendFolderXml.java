@@ -251,7 +251,6 @@ public class CmdSendFolderXml extends MenuCommand {
         sb.append("C2SIMHeaderType:");
 
         // sb.append("\n  authorizationHeader=").append(header.getAuthorizationHeader().));
-        sb.append("\n-   communicativeActTypeCode=").append(header.getCommunicativeActTypeCode());
         sb.append("\n-   conversationID=").append(isNull(header.getConversationID()));
         sb.append("\n-   fromSendingSystem=").append(isNull(header.getFromSendingSystem()));
         sb.append("\n-   inReplyToMessageID=").append(isNull(header.getInReplyToMessageID()));
@@ -259,9 +258,7 @@ public class CmdSendFolderXml extends MenuCommand {
         sb.append("\n-   protocol=").append(isNull(header.getProtocol()));
         sb.append("\n-   protocolVersion=").append(isNull(header.getProtocolVersion()));
         sb.append("\n-   replyToSystem=").append(isNull(header.getReplyToSystem()));
-        sb.append("\n-   securityClassificationCode=").append(header.getSecurityClassificationCode());
         sb.append("\n-   sendingTime=").append(header.getSendingTime());
-        sb.append("\n-   toReceivingSystem=").append(isNull(header.getToReceivingSystem()));
 
         sb.append("\n\n");
 

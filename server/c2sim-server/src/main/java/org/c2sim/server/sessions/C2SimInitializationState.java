@@ -4,8 +4,12 @@ import static org.c2sim.lox.helpers.MessageTypeHelper.writeMessageAsString;
 
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+
+import org.c2sim.lox.LoxSchemaInfo;
 import org.c2sim.lox.exceptions.LoxException;
 import org.c2sim.lox.helpers.C2SIMInitializationBodyTypeHelper;
 import org.c2sim.lox.helpers.MessageTypeHelper;
@@ -58,7 +62,7 @@ class C2SimInitializationState {
    * @param currentState the current state-machine state
    * @throws C2SimException if not in INITIALIZING state, or if the body cannot be decoded
    */
-  void receive(ByteArrayInputStream xmlStream, State currentState) {
+  void receivedInitializationMsg(ByteArrayInputStream xmlStream, State currentState) {
     if (currentState != State.INITIALIZING) {
       throw new C2SimException(
           C2SimException.ErrorCode.C2SIM_INITIALIZATION_MSG_INVALID_STATE,
@@ -67,15 +71,29 @@ class C2SimInitializationState {
               currentState));
     }
     try {
+      // Must be a C2SIMInitializationBody message!
+      // The LOX library is build with JAXB for a specific XSD version
+
       var msg = MessageTypeHelper.readMessage(xmlStream);
-      set(msg.getMessageBody().getC2SIMInitializationBody());
+      if ((msg != null) && msg.getMessageBody() != null && msg.getMessageBody().getC2SIMInitializationBody() != null) {
+        set(msg.getMessageBody().getC2SIMInitializationBody());
+      } else {
+          throw new C2SimException(
+                C2SimException.ErrorCode.C2SIM_INITIALIZATION_MSG_DECODE_FAILURE,
+                        "Failed to load the C2SIM initialization",
+                  new HashMap<>(Map.of(C2SimException.PROP_LOX_NAMESPACE, LoxSchemaInfo.getC2SimNamespace())));
+      }
     } catch (LoxException e) {
+
       throw new C2SimException(
           C2SimException.ErrorCode.C2SIM_INITIALIZATION_MSG_DECODE_FAILURE,
           String.format(
-              "Failed to convert C2SIM initialization message to object, error: %s",
-              e.getMessage()));
+              "Failed to load the C2SIM initialization, error: %s",
+              e.getMessage()),
+              new HashMap<>(Map.of(C2SimException.PROP_LOX_NAMESPACE, LoxSchemaInfo.getC2SimNamespace())));
     }
+
+
   }
 
   /**

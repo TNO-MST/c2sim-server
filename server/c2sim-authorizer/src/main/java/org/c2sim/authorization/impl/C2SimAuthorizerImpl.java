@@ -5,10 +5,8 @@ import java.util.stream.Collectors;
 import org.c2sim.authorization.interfaces.C2SimAuthorizer;
 import org.c2sim.authorization.interfaces.C2SimClaims;
 import org.c2sim.authorization.lox.enums.*;
-import org.c2sim.lox.schema.CommunicativeActTypeCodeType;
 import org.c2sim.lox.schema.MessageBodyType;
 import org.c2sim.lox.schema.MessageType;
-import org.c2sim.lox.schema.SecurityClassificationCodeType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,10 +37,7 @@ public record C2SimAuthorizerImpl(C2SimClaims c2SimClaims) implements C2SimAutho
     }
     try {
       List<AuthorizationResult> checks = new ArrayList<>();
-      // Check CommunicativeActTypeCode
-      var act = requiredPermission.getC2SIMHeader().getCommunicativeActTypeCode();
-      checks.add(authorizeCommunicativeActTypeCode(act));
-
+      
       // Check message type
       var msgType = getMessageEnumType(requiredPermission.getMessageBody());
       checks.add(authorizeMessageType(msgType));
@@ -61,16 +56,6 @@ public record C2SimAuthorizerImpl(C2SimClaims c2SimClaims) implements C2SimAutho
       }
       checks.add(authorizeReplyToSystem(replyToSystem));
 
-      // Check To Receiving system
-      var receivingSystem = requiredPermission.getC2SIMHeader().getToReceivingSystem();
-      if (receivingSystem == null) {
-        receivingSystem = "";
-      }
-      checks.add(authorizeToReceivingSystem(Set.of(receivingSystem))); // TODO when multiple systems
-
-      // Check SecurityClassificationCode
-      var classificationCode = requiredPermission.getC2SIMHeader().getSecurityClassificationCode();
-      checks.add(authorizeSecurityClassificationCode(classificationCode));
 
       // Protocol
       if (!protocol.equals(requiredPermission.getC2SIMHeader().getProtocol())) {
@@ -135,23 +120,6 @@ public record C2SimAuthorizerImpl(C2SimClaims c2SimClaims) implements C2SimAutho
   }
 
   @Override
-  public AuthorizationResult authorizeCommunicativeActTypeCode(
-      CommunicativeActTypeCodeType requiredPermission) {
-    if (requiredPermission == null) {
-      return AuthorizationResult.OK;
-    }
-    var enumAsString = requiredPermission.value();
-    return (c2SimClaims.getCommunicativeActTypeCode().getHasPermissionFor(enumAsString))
-        ? AuthorizationResult.OK
-        : AuthorizationResult.create(
-            AuthorizationResult.Code.UNAUTHORIZED,
-            getAccessDeniedMsg(
-                C2SimClaims.COMMUNICATIVE_ACT_TYPE_CODE,
-                c2SimClaims.getCommunicativeActTypeCode().toText(),
-                requiredPermission.value()));
-  }
-
-  @Override
   public AuthorizationResult authorizeFromSendingSystem(String requiredPermission) {
     Objects.requireNonNull(requiredPermission);
     // Assume there is always one sender in the requiredPermission!
@@ -178,20 +146,7 @@ public record C2SimAuthorizerImpl(C2SimClaims c2SimClaims) implements C2SimAutho
                 requiredPermission));
   }
 
-  @Override
-  public AuthorizationResult authorizeSecurityClassificationCode(
-      SecurityClassificationCodeType requiredPermission) {
-    var enumAsText = requiredPermission != null ? requiredPermission.value() : "Unclassified";
-    return (c2SimClaims.getSecurityClassificationCode().getHasPermissionFor(enumAsText))
-        ? AuthorizationResult.OK
-        : AuthorizationResult.create(
-            AuthorizationResult.Code.UNAUTHORIZED,
-            getAccessDeniedMsg(
-                C2SimClaims.SECURITY_CLASSIFICATION_CODE,
-                c2SimClaims.getSecurityClassificationCode().toText(),
-                enumAsText));
-  }
-
+ 
   @Override
   public AuthorizationResult authorizeToReceivingSystem(Set<String> requiredPermission) {
     Objects.requireNonNull(requiredPermission);

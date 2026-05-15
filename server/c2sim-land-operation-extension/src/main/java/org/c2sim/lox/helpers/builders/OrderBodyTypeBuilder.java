@@ -43,7 +43,10 @@ public class OrderBodyTypeBuilder {
    * @return this builder
    */
   public OrderBodyTypeBuilder toReceiver(UUID receiver) {
-    order.getToReceiver().add(receiver.toString());
+    if (receiver != null) {
+      order.getToReceiver().add(receiver.toString());
+    }
+
     return this;
   }
 

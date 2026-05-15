@@ -61,27 +61,27 @@ class C2SimClientStreamingTest {
   private C2SimClient clientA;
   private C2SimClient clientB;
 
-  private static MessageType createTaskStatusMsg() {
-    var header = XmlFactoryHelper.createC2SimHeader("systemName");
-    return MessageTypeBuilder.create()
-        .c2SIMHeader(header)
-        .messageBody(
-            MessageBodyTypeBuilder.create()
-                .domainMessageBody(
-                    DomainMessageBodyTypeBuilder.create()
-                        .reportBody(
-                            ReportBodyTypeBuilder.create()
-                                .reportID(UUID.randomUUID())
-                                .fromSender(UUID.randomUUID())
-                                .toReceiver(UUID.randomUUID())
-                                .reportingEntity(UUID.randomUUID())
-                                .addTaskStatusReport(
-                                    TaskStatusTypeBuilder.create()
-                                        .currentTask(UUID.randomUUID())
-                                        .timeOfObservation(Instant.now())
-                                        .taskStatusCode(TaskStatusCodeType.TASKCMPLT)))))
-        .build();
-  }
+   private static MessageType createTaskStatusMsg() {
+     var header = XmlFactoryHelper.createC2SimHeader("systemName");
+     return MessageTypeBuilder.create()
+         .c2SIMHeader(header)
+         .messageBody(
+             MessageBodyTypeBuilder.create()
+                 .domainMessageBody(
+                     DomainMessageBodyTypeBuilder.create()
+                         .reportBody(
+                             ReportBodyTypeBuilder.create()
+                                 .reportID(UUID.randomUUID())
+                                 .fromSender(UUID.randomUUID())
+                                 .addToReceiver(UUID.randomUUID())
+                                 .reportingEntity(UUID.randomUUID())
+                                 .addTaskStatusReport(
+                                     TaskStatusTypeBuilder.create()
+                                         .currentTask(UUID.randomUUID())
+                                         .timeOfObservation(Instant.now())
+                                         .taskStatusCode(TaskStatusCodeType.TASKCMPLT)))))
+         .build();
+   }
 
   private static C2SimClient.C2SimClientListener createListener() {
     return new C2SimClient.C2SimClientListener() {

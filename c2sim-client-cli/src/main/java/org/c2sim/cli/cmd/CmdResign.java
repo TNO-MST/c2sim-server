@@ -22,7 +22,7 @@ public class CmdResign extends MenuCommand {
         Console.clearScreen();
         Console.printBanner("Resign from shared session, and disconnect stream...");
         try {
-            mainMenu.getClient().disconnect();
+            mainMenu.getClient().resignAndDisconnect();
             Console.success("Resigned.");
         } catch (C2SimRestException | ApiException e) {
             ExceptionHandler.handle(e);

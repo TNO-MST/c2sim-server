@@ -141,6 +141,9 @@ public class PositionReportContentTypeBuilder {
    * @return this builder
    */
   public PositionReportContentTypeBuilder strength(int percentage) {
+    if (percentage < 0 || percentage > 100) {
+      throw new IllegalArgumentException("Strength should be between 0..100 pro cent ");
+    }
     var x =
         report.getEntityHealthStatus().stream()
             .filter(item -> item.getStrength() != null)
@@ -158,6 +161,16 @@ public class PositionReportContentTypeBuilder {
   }
 
   /**
+   * Removes the strength percentage.
+   * @return this builder
+   */
+  public PositionReportContentTypeBuilder removeStrength() {
+    report.getEntityHealthStatus()
+            .removeIf(item -> item.getStrength() != null);
+    return this;
+  }
+
+  /**
    * Sets the operational status. Updates an existing operational-status entry if one is already
    * present, otherwise adds a new {@link EntityHealthStatusType}.
    *
@@ -165,17 +178,23 @@ public class PositionReportContentTypeBuilder {
    * @return this builder
    */
   public PositionReportContentTypeBuilder operationalStatus(OperationalStatusCodeType status) {
+    if (status == null) {
+      report.getEntityHealthStatus()
+              .removeIf(item -> item.getOperationalStatus() != null);
+      return this;
+    }
+    // Add status
     var x =
         report.getEntityHealthStatus().stream()
             .filter(item -> item.getOperationalStatus() != null)
             .findAny();
     if (x.isPresent()) {
-      x.get().getOperationalStatus().setOperationalStatusCode(status);
-    } else {
-      var operationalstatus = new OperationalStatusType();
-      operationalstatus.setOperationalStatusCode(status);
+        x.get().getOperationalStatus().setOperationalStatusCode(status);
+    } else  {
+      var operationalStatus = new OperationalStatusType();
+      operationalStatus.setOperationalStatusCode(status);
       var ehs = new EntityHealthStatusType();
-      ehs.setOperationalStatus(operationalstatus);
+      ehs.setOperationalStatus(operationalStatus);
       report.getEntityHealthStatus().add(ehs);
     }
     return this;
@@ -215,6 +234,17 @@ public class PositionReportContentTypeBuilder {
   public PositionReportContentType build() {
     if (report.getTimeOfObservation() == null) {
       throw new IllegalArgumentException("TimeOfObservation is null");
+    }
+    if (report.getEntityHealthStatus().stream()
+            .filter(item -> item.getOperationalStatus() != null)
+            .count() > 1) {
+      throw new IllegalArgumentException("Multiple operational status entries found");
+    }
+    if (report.getEntityHealthStatus().stream()
+            .filter(item -> item.getStrength() != null)
+            .count() > 1)
+    {
+      throw new IllegalArgumentException("Multiple strength entries found");
     }
     return report;
   }

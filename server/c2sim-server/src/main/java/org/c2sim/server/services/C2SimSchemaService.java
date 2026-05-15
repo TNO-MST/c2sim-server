@@ -1,6 +1,8 @@
 package org.c2sim.server.services;
 
 import java.io.InputStream;
+
+import org.c2sim.lox.exceptions.ValidationException;
 import org.c2sim.lox.validation.LoxXsdValidator;
 
 /**
@@ -25,7 +27,7 @@ public interface C2SimSchemaService {
    * @param xmlStream the XML content to validate
    * @return the {@link LoxXsdValidator} result containing any errors, warnings, or fatal errors
    */
-  LoxXsdValidator validate(String schemaVersion, InputStream xmlStream);
+  LoxXsdValidator validate(String schemaVersion, InputStream xmlStream) throws ValidationException;
 
   /**
    * Checks whether the given schema version is supported by this server.
