@@ -6,13 +6,13 @@
 
     <groupId>org.c2sim</groupId>
     <artifactId>c2sim-client-cli</artifactId>
-    <version>1.0.3</version>
+    <version>2.0.0</version>
     <packaging>jar</packaging>
 
     <properties>
         <maven.compiler.release>21</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <c2sim.version>1.0.3</c2sim.version>
+        <c2sim.version>2.0.0-SNAPSHOT</c2sim.version>
     </properties>
 
     <!--
@@ -36,7 +36,7 @@
 
         <!-- C2SIM client library (REST + WebSocket + state machine) -->
         <dependency>
-            <groupId>org.c2sim</groupId>
+            <groupId>nl.tno</groupId>
             <artifactId>c2sim-client</artifactId>
             <version>${c2sim.version}</version>
         </dependency>
