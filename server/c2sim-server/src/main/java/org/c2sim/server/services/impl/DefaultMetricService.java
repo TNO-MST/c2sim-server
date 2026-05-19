@@ -139,7 +139,7 @@ public class DefaultMetricService implements MetricService {
             Counter counter =
                     Counter.builder(METRIC_NAME_MSG_INVALID_TOTAL)
                             .description(
-                                    "Number of invalid C2SIM messages send by system (C2SIM client) for a shared session")
+                             "Number of invalid C2SIM messages send by system (C2SIM client) for a shared session")
                             .tag(METRIC_ATTRIB_SHARED_SESSION_NAME, sharedSessionName)
                             .tag(METRIC_ATTRIB_SYSTEM_NAME, systemName)
                             .tag(METRIC_ATTRIB_ERROR_KIND, errorType.toString())
@@ -204,7 +204,7 @@ public class DefaultMetricService implements MetricService {
             Counter counter =
                     Counter.builder(METRIC_NAME_BYTES_SEND)
                             .description(
-                                    "Total size in bytes received (C2SIM XML MSG) by C2SIM server from C2SIM client (system)")
+                             "Total size in bytes received (C2SIM XML MSG) by C2SIM server from C2SIM client (system)")
                             .tag(METRIC_ATTRIB_SHARED_SESSION_NAME, sharedSessionName)
                             .tag(METRIC_ATTRIB_SYSTEM_NAME, systemName)
                             .register(registry);
