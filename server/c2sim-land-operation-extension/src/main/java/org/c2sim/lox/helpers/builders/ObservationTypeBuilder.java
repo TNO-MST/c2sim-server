@@ -59,12 +59,12 @@ public class ObservationTypeBuilder {
   /**
    * Creates an {@link ObservationType} holding a subject object observation.
    *
-   * @param subjectObjectObservation a builder whose {@link SubjectTypeObservationTypeBuilder#build()} result is
-   *     used
+   * @param subjectObjectObservation a builder whose {@link
+   *     SubjectTypeObservationTypeBuilder#build()} result is used
    * @return an {@link ObservationType} with the subject object observation set
    */
   public static ObservationType createSubjectObjectObservation(
-          SubjectTypeObservationTypeBuilder subjectObjectObservation) {
+      SubjectTypeObservationTypeBuilder subjectObjectObservation) {
     var ob = new ObservationType();
     ob.setSubjectTypeObservation(subjectObjectObservation.build());
     return ob;
@@ -77,8 +77,7 @@ public class ObservationTypeBuilder {
    *     used
    * @return an {@link ObservationType} with the name observation set
    */
-  public static ObservationType createNameObservation(
-          NameObservationTypeBuilder nameObservation) {
+  public static ObservationType createNameObservation(NameObservationTypeBuilder nameObservation) {
     var ob = new ObservationType();
     ob.setNameObservation(nameObservation.build());
     return ob;
@@ -87,18 +86,16 @@ public class ObservationTypeBuilder {
   /**
    * Creates an {@link ObservationType} holding a name observation.
    *
-   * @param activityObservation a builder whose {@link ActivityObservationTypeBuilder#build()} result is
-   *     used
+   * @param activityObservation a builder whose {@link ActivityObservationTypeBuilder#build()}
+   *     result is used
    * @return an {@link ObservationType} with the name observation set
    */
   public static ObservationType createActivityObservation(
-          ActivityObservationTypeBuilder activityObservation) {
+      ActivityObservationTypeBuilder activityObservation) {
     var ob = new ObservationType();
     ob.setActivityObservation(activityObservation.build());
     return ob;
   }
-
-
 
   /**
    * Creates an {@link ObservationType} holding a resource observation.

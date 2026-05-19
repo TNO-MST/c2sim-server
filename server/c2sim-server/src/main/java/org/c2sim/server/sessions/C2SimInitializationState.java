@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
 import org.c2sim.lox.LoxSchemaInfo;
 import org.c2sim.lox.exceptions.LoxException;
 import org.c2sim.lox.helpers.C2SIMInitializationBodyTypeHelper;
@@ -75,25 +74,25 @@ class C2SimInitializationState {
       // The LOX library is build with JAXB for a specific XSD version
 
       var msg = MessageTypeHelper.readMessage(xmlStream);
-      if ((msg != null) && msg.getMessageBody() != null && msg.getMessageBody().getC2SIMInitializationBody() != null) {
+      if ((msg != null)
+          && msg.getMessageBody() != null
+          && msg.getMessageBody().getC2SIMInitializationBody() != null) {
         set(msg.getMessageBody().getC2SIMInitializationBody());
       } else {
-          throw new C2SimException(
-                C2SimException.ErrorCode.C2SIM_INITIALIZATION_MSG_DECODE_FAILURE,
-                        "Failed to load the C2SIM initialization",
-                  new HashMap<>(Map.of(C2SimException.PROP_LOX_NAMESPACE, LoxSchemaInfo.getC2SimNamespace())));
+        throw new C2SimException(
+            C2SimException.ErrorCode.C2SIM_INITIALIZATION_MSG_DECODE_FAILURE,
+            "Failed to load the C2SIM initialization",
+            new HashMap<>(
+                Map.of(C2SimException.PROP_LOX_NAMESPACE, LoxSchemaInfo.getC2SimNamespace())));
       }
     } catch (LoxException e) {
 
       throw new C2SimException(
           C2SimException.ErrorCode.C2SIM_INITIALIZATION_MSG_DECODE_FAILURE,
-          String.format(
-              "Failed to load the C2SIM initialization, error: %s",
-              e.getMessage()),
-              new HashMap<>(Map.of(C2SimException.PROP_LOX_NAMESPACE, LoxSchemaInfo.getC2SimNamespace())));
+          String.format("Failed to load the C2SIM initialization, error: %s", e.getMessage()),
+          new HashMap<>(
+              Map.of(C2SimException.PROP_LOX_NAMESPACE, LoxSchemaInfo.getC2SimNamespace())));
     }
-
-
   }
 
   /**

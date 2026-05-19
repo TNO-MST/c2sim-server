@@ -26,7 +26,6 @@ import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.util.Objects;
 import java.util.UUID;
-
 import org.c2sim.authorization.exceptions.AuthorisationException;
 import org.c2sim.authorization.impl.C2SimClaimsBuilder;
 import org.c2sim.server.api.apis.NotificationsApi;
@@ -157,22 +156,22 @@ public class DefaultWebService implements WebService {
       C2SimException.ErrorCode errorCode) {
     return switch (errorCode.getCodeEnum()) {
       case C2SIM_MSG_SIZE_EXCEEDED,
-              SHARED_SESSION_NOT_FOUND,
-              NO_CLIENT_ID,
-              CLIENT_ID_NOT_EXIST,
-              C2SIM_MSG_NOT_ALLOWED_IN_STATE,
-              C2SIM_INITIALIZATION_MSG_INVALID_STATE,
-              STATE_TRANSITION_NOT_ALLOWED,
-              INITIALIZATION_NOT_COMPLETED,
-              SHARED_SESSION_ALREADY_EXIST ->
+          SHARED_SESSION_NOT_FOUND,
+          NO_CLIENT_ID,
+          CLIENT_ID_NOT_EXIST,
+          C2SIM_MSG_NOT_ALLOWED_IN_STATE,
+          C2SIM_INITIALIZATION_MSG_INVALID_STATE,
+          STATE_TRANSITION_NOT_ALLOWED,
+          INITIALIZATION_NOT_COMPLETED,
+          SHARED_SESSION_ALREADY_EXIST ->
           MetricService.MetricInvalidMsgReasonType.BAD_REQUEST;
       case C2SIM_MSG_DECODING_ERROR,
-              XSD_VALIDATION_ERROR,
-              XSD_VALIDATION_FAILURE,
-              C2SIM_INITIALIZATION_MSG_DECODE_FAILURE,
-              C2SIM_ROOT_ELEMENT_MUST_BE_MESSAGE,
-              C2SIM_INVALID_HEADER,
-              C2SIM_SCHEMA_NOT_SUPPORTED ->
+          XSD_VALIDATION_ERROR,
+          XSD_VALIDATION_FAILURE,
+          C2SIM_INITIALIZATION_MSG_DECODE_FAILURE,
+          C2SIM_ROOT_ELEMENT_MUST_BE_MESSAGE,
+          C2SIM_INVALID_HEADER,
+          C2SIM_SCHEMA_NOT_SUPPORTED ->
           MetricService.MetricInvalidMsgReasonType.INVALID_FORMAT;
       case AUTHORIZATION_FAILURE -> MetricService.MetricInvalidMsgReasonType.UNAUTHORIZED;
       default -> MetricService.MetricInvalidMsgReasonType.OTHER;
@@ -415,12 +414,11 @@ public class DefaultWebService implements WebService {
     var systemName = (header != null) ? header.getFromSendingSystem() : "UNKNOWN";
     if (systemName == null) {
       systemName = "UNKNOWN";
-
     }
     updateMetricsForFailedRequests(c2SimRestException, sharedSessionName, systemName);
     logger.error(
-        "Return REST STATUS BAD_REQUEST(400): Session '{}': "+
-                "Request '{}' by system '{}' with tracking id '{}' failed: {} ({}) ",
+        "Return REST STATUS BAD_REQUEST(400): Session '{}': "
+            + "Request '{}' by system '{}' with tracking id '{}' failed: {} ({}) ",
         sharedSessionName,
         ctx.req().getRequestURI(),
         systemName,
@@ -443,7 +441,7 @@ public class DefaultWebService implements WebService {
     try {
       var errorCode = C2SimException.ErrorCode.fromCode(c2SimRestException.getError().getCode());
       metricService.incInvalidMessagesSendByC2SimClient(
-              sharedSessionName, systemName, convertToMetricCategory(errorCode));
+          sharedSessionName, systemName, convertToMetricCategory(errorCode));
     } catch (Exception e) {
       logger.error("Metric incInvalidMessagesSendByC2SimClient failed: {}", e.getMessage(), e);
     }
@@ -455,18 +453,19 @@ public class DefaultWebService implements WebService {
     // Check for error: use ctx.body()
 
     // used for lookup
-    var errorId =  UUID.randomUUID().toString().replace("-", "").substring(0, 8);
+    var errorId = UUID.randomUUID().toString().replace("-", "").substring(0, 8);
 
     logger.error(
-        "Request '{}' with tracking id '{}' failed (#ticket {}):\n"+
-                "- Unhandled exception in C2SIM server handling REST call : {}",
+        "Request '{}' with tracking id '{}' failed (#ticket {}):\n"
+            + "- Unhandled exception in C2SIM server handling REST call : {}",
         ctx.req().getRequestURI(),
         trackingId,
         errorId,
         e.getMessage(),
-            e);
+        e);
 
-    ctx.result(String.format("C2SIM Internal Server Error: ticket %s (see C2SIM server log)", errorId));
+    ctx.result(
+        String.format("C2SIM Internal Server Error: ticket %s (see C2SIM server log)", errorId));
     ctx.status(HttpStatus.INTERNAL_SERVER_ERROR);
   }
 

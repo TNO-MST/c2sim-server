@@ -21,7 +21,6 @@ import org.c2sim.lox.helpers.MessageTypeHelper;
 import org.c2sim.lox.sax.ExtractC2SimHeader;
 import org.c2sim.lox.schema.C2SIMHeaderType;
 import org.c2sim.lox.schema.C2SIMInitializationBodyType;
-import org.c2sim.lox.validation.LoxXsdValidator;
 import org.c2sim.server.api.models.DynamicSessionInfo;
 import org.c2sim.server.api.models.RequestJoinSession;
 import org.c2sim.server.api.models.SessionInfo;
@@ -186,8 +185,6 @@ public class SharedSession {
     String toXmlString() {
       return new String(xml, StandardCharsets.UTF_8);
     }
-
-
   }
 
   private C2SimMessageContext buildMessageContext(InputStream xmlDoc) {
@@ -220,7 +217,7 @@ public class SharedSession {
         throw new C2SimException(
             C2SimException.ErrorCode.XSD_VALIDATION_FAILURE,
             "XSD validation failed: " + ve.getMessage(),
-                new HashMap<>(Map.of(C2SimException.PROP_SCHEMA_VERSION, schemaVersion)));
+            new HashMap<>(Map.of(C2SimException.PROP_SCHEMA_VERSION, schemaVersion)));
       }
     }
   }

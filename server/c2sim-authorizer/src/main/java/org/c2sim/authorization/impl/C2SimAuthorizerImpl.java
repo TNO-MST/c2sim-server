@@ -37,7 +37,7 @@ public record C2SimAuthorizerImpl(C2SimClaims c2SimClaims) implements C2SimAutho
     }
     try {
       List<AuthorizationResult> checks = new ArrayList<>();
-      
+
       // Check message type
       var msgType = getMessageEnumType(requiredPermission.getMessageBody());
       checks.add(authorizeMessageType(msgType));
@@ -55,7 +55,6 @@ public record C2SimAuthorizerImpl(C2SimClaims c2SimClaims) implements C2SimAutho
         replyToSystem = "";
       }
       checks.add(authorizeReplyToSystem(replyToSystem));
-
 
       // Protocol
       if (!protocol.equals(requiredPermission.getC2SIMHeader().getProtocol())) {
@@ -146,7 +145,6 @@ public record C2SimAuthorizerImpl(C2SimClaims c2SimClaims) implements C2SimAutho
                 requiredPermission));
   }
 
- 
   @Override
   public AuthorizationResult authorizeToReceivingSystem(Set<String> requiredPermission) {
     Objects.requireNonNull(requiredPermission);

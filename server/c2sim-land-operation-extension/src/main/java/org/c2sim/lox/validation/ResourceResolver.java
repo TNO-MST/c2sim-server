@@ -81,7 +81,6 @@ public class ResourceResolver implements LSResourceResolver {
       }
     }
 
-
     // 3) If still null, give up so the parser can try its default resolution
     if (in == null) {
       logger.error(

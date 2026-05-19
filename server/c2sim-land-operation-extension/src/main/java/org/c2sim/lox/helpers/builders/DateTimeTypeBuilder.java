@@ -2,7 +2,6 @@ package org.c2sim.lox.helpers.builders;
 
 import java.time.Instant;
 import java.util.Objects;
-
 import org.c2sim.lox.helpers.DateTimeTypeHelper;
 import org.c2sim.lox.schema.DateTimeType;
 

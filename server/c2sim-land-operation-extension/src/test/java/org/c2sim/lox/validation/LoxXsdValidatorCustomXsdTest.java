@@ -31,7 +31,6 @@ class LoxXsdValidatorCustomXsdTest {
   @Test()
   void validateC2SIMInitialization_extra_field_own_namespace() {
 
-
     String xsdResourcePath = "xsd/C2SIM_SMX_LOX_2.0.0-cwix2026_WITH_MODIFICATION.xsd";
     String xmlResourcePath = "lox/C2SIMInitialization_extra_field.xml";
 

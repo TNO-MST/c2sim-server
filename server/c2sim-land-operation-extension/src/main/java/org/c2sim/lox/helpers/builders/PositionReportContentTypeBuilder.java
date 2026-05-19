@@ -162,11 +162,11 @@ public class PositionReportContentTypeBuilder {
 
   /**
    * Removes the strength percentage.
+   *
    * @return this builder
    */
   public PositionReportContentTypeBuilder removeStrength() {
-    report.getEntityHealthStatus()
-            .removeIf(item -> item.getStrength() != null);
+    report.getEntityHealthStatus().removeIf(item -> item.getStrength() != null);
     return this;
   }
 
@@ -179,8 +179,7 @@ public class PositionReportContentTypeBuilder {
    */
   public PositionReportContentTypeBuilder operationalStatus(OperationalStatusCodeType status) {
     if (status == null) {
-      report.getEntityHealthStatus()
-              .removeIf(item -> item.getOperationalStatus() != null);
+      report.getEntityHealthStatus().removeIf(item -> item.getOperationalStatus() != null);
       return this;
     }
     // Add status
@@ -189,8 +188,8 @@ public class PositionReportContentTypeBuilder {
             .filter(item -> item.getOperationalStatus() != null)
             .findAny();
     if (x.isPresent()) {
-        x.get().getOperationalStatus().setOperationalStatusCode(status);
-    } else  {
+      x.get().getOperationalStatus().setOperationalStatusCode(status);
+    } else {
       var operationalStatus = new OperationalStatusType();
       operationalStatus.setOperationalStatusCode(status);
       var ehs = new EntityHealthStatusType();
@@ -237,12 +236,12 @@ public class PositionReportContentTypeBuilder {
     }
     if (report.getEntityHealthStatus().stream()
             .filter(item -> item.getOperationalStatus() != null)
-            .count() > 1) {
+            .count()
+        > 1) {
       throw new IllegalArgumentException("Multiple operational status entries found");
     }
-    if (report.getEntityHealthStatus().stream()
-            .filter(item -> item.getStrength() != null)
-            .count() > 1) {
+    if (report.getEntityHealthStatus().stream().filter(item -> item.getStrength() != null).count()
+        > 1) {
       throw new IllegalArgumentException("Multiple strength entries found");
     }
     return report;

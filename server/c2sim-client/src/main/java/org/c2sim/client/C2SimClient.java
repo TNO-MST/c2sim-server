@@ -123,10 +123,13 @@ public class C2SimClient {
       httpClientBuilder.addInterceptor(new AuthInterceptor(builder.oidcProvider));
     }
 
-    var httpClient = httpClientBuilder
-            .connectTimeout(builder.connectTimeoutInSec, TimeUnit.SECONDS)   // Time to establish connection
-            .readTimeout(builder.readTimeoutInSec, TimeUnit.SECONDS)      // Time waiting for server response
-            .writeTimeout(builder.writeTimeoutInSec, TimeUnit.SECONDS)     // Time sending request body
+    var httpClient =
+        httpClientBuilder
+            .connectTimeout(
+                builder.connectTimeoutInSec, TimeUnit.SECONDS) // Time to establish connection
+            .readTimeout(
+                builder.readTimeoutInSec, TimeUnit.SECONDS) // Time waiting for server response
+            .writeTimeout(builder.writeTimeoutInSec, TimeUnit.SECONDS) // Time sending request body
             .callTimeout(builder.callTimeoutInSec, TimeUnit.SECONDS)
             .build();
     if ((builder.sharedSessionName != null) && (!sharedSessionName.isEmpty())) {
@@ -476,10 +479,12 @@ public class C2SimClient {
   private void attemptConnection() {
     try {
       joinSharedSession();
-    } catch (C2SimRestException | ApiException | C2ClientException  e) {
-      LoggingHelper.logRestException(logger, e,
-              String.format("%s: Failed to join to C2SIM server '%s'",
-                      getDebugPrefix(), this.getBasePathUrl()));
+    } catch (C2SimRestException | ApiException | C2ClientException e) {
+      LoggingHelper.logRestException(
+          logger,
+          e,
+          String.format(
+              "%s: Failed to join to C2SIM server '%s'", getDebugPrefix(), this.getBasePathUrl()));
 
       var retry = c2simClientListener.onJoinFailed(this, e);
       if (retry) {
@@ -837,11 +842,11 @@ public class C2SimClient {
   private void beforeSendToClient(MessageQueue.C2SimMessage msg) {
     switch (msg.kind()) {
       case RESET_SCENARIO,
-              PAUSE_SCENARIO,
-              START_SCENARIO,
-              SHARE_SCENARIO,
-              RESUME_SCENARIO,
-              SUBMIT_INITIALIZATION ->
+          PAUSE_SCENARIO,
+          START_SCENARIO,
+          SHARE_SCENARIO,
+          RESUME_SCENARIO,
+          SUBMIT_INITIALIZATION ->
           // These messages are state change events
           syncStateMachine(); // Just fetch the new state from the C2SIM server
 
@@ -990,11 +995,10 @@ public class C2SimClient {
     private String systemName = null;
     private C2SimClientListener listener = C2SimClientListener.DEFAULT;
 
-    private long connectTimeoutInSec = 10;   // Time to establish connection
-    private long readTimeoutInSec = 10;       // Time waiting for server response
-    private long writeTimeoutInSec = 10;      // Time sending request body
+    private long connectTimeoutInSec = 10; // Time to establish connection
+    private long readTimeoutInSec = 10; // Time waiting for server response
+    private long writeTimeoutInSec = 10; // Time sending request body
     private long callTimeoutInSec = 0; // 0 seconds (no timeout) Overall request timeout
-
 
     /**
      * Sets the C2SIM server base URL from a {@link URI}.
@@ -1154,6 +1158,7 @@ public class C2SimClient {
       this.connectTimeoutInSec = timeoutInSec;
       return this;
     }
+
     /**
      * Time waiting for server response
      *
@@ -1164,6 +1169,7 @@ public class C2SimClient {
       this.readTimeoutInSec = timeoutInSec;
       return this;
     }
+
     /**
      * Time sending request body
      *
@@ -1174,6 +1180,7 @@ public class C2SimClient {
       this.writeTimeoutInSec = timeoutInSec;
       return this;
     }
+
     /**
      * Overall request timeout; 0 seconds (no timeout)
      *
@@ -1184,9 +1191,6 @@ public class C2SimClient {
       this.callTimeoutInSec = timeoutInSec;
       return this;
     }
-
-
-
 
     /**
      * Builds and returns the configured {@link C2SimClient}.

@@ -57,9 +57,7 @@ public class OrderBodyTypeBuilder {
    * @return this builder
    */
   public OrderBodyTypeBuilder toReceivers(UUID[] receivers) {
-    String[] ids = Arrays.stream(receivers)
-            .map(UUID::toString)
-            .toArray(String[]::new);
+    String[] ids = Arrays.stream(receivers).map(UUID::toString).toArray(String[]::new);
     order.getToReceiver().addAll(List.of(ids));
     return this;
   }

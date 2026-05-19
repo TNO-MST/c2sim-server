@@ -1,7 +1,6 @@
 package org.c2sim.server.services;
 
 import java.io.InputStream;
-
 import org.c2sim.lox.exceptions.ValidationException;
 import org.c2sim.lox.validation.LoxXsdValidator;
 
