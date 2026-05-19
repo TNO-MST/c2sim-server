@@ -7,6 +7,7 @@ import java.util.List;
 import org.c2sim.client.model.DynamicSessionInfo;
 import org.c2sim.client.model.SessionInfo;
 import org.c2sim.client.model.StateType;
+import org.c2sim.lox.Global;
 
 class CreateJson {
   private static final ObjectMapper MAPPER =
@@ -32,7 +33,7 @@ class CreateJson {
     var sessionInfo = new SessionInfo();
     sessionInfo.setDisplayName(sharedSessionName);
     sessionInfo.setDescription(sharedSessionName);
-    sessionInfo.setC2simSchemaVersion("1.0.2");
+    sessionInfo.setC2simSchemaVersion(Global.C2SIM_SCHEMA_VERSION);
     session.setInfo(sessionInfo);
     return session;
   }

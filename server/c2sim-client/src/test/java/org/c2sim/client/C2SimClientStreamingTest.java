@@ -32,6 +32,7 @@ import org.c2sim.client.helpers.ResourceHelper;
 import org.c2sim.client.invoker.ApiException;
 import org.c2sim.client.model.*;
 import org.c2sim.lox.C2SimMsgKind;
+import org.c2sim.lox.Global;
 import org.c2sim.lox.exceptions.LoxException;
 import org.c2sim.lox.exceptions.ValidationException;
 import org.c2sim.lox.helpers.MessageBodyTypeHelper;
@@ -547,7 +548,7 @@ class C2SimClientStreamingTest {
             var result = new RequestCreateSession();
             var sessionInfo = new SessionInfo();
             sessionInfo.setDisplayName("TEST123");
-            sessionInfo.setC2simSchemaVersion("1.0.2");
+            sessionInfo.setC2simSchemaVersion(Global.C2SIM_SCHEMA_VERSION);
             sessionInfo.setDescription("TEST123");
             result.setData(sessionInfo);
             return result;
