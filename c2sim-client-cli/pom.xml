@@ -12,7 +12,7 @@
     <properties>
         <maven.compiler.release>21</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <c2sim.version>2.0.0-SNAPSHOT</c2sim.version>
+        <c2sim.version>2.0.0</c2sim.version>
     </properties>
 
     <!--
