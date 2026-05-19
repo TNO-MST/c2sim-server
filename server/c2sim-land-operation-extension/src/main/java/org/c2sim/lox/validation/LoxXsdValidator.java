@@ -47,7 +47,7 @@ import org.xml.sax.SAXParseException;
  */
 public class LoxXsdValidator implements ErrorHandler {
 
-  private static final String DEFAULT_XSD_SCHEMA = "lox/xsd/2025/C2SIM_SMX_LOX_CWIX2025.xsd";
+  private static final String DEFAULT_XSD_SCHEMA = "lox/xsd/2026/C2SIM_SMX_LOX_v2.0.0-cwix2026.xsd";
 
   private final List<SAXParseException> validationFatalErrors = new ArrayList<>();
   private final List<SAXParseException> validationErrors = new ArrayList<>();

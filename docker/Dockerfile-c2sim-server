@@ -57,15 +57,22 @@ WORKDIR /app
 COPY --from=build /build/server/c2sim-server/target/c2sim-server-*.jar /app/
 COPY --from=build /build/server/c2sim-server/target/config /app/config/
 
-RUN sh -c 'set -e; JAR=$(ls -1 /app/*.jar | head -n1); mv "$JAR" /app/server.jar'
+
+# Remove version from executable , use shortest length filename (to fix not to pick *-sources.jar *-javadoc.jar)
+RUN sh -c 'set -e; \
+  JAR=$(ls -1 /app/c2sim-server*.jar | awk "{ print length, \$0 }" | sort -n | head -n1 | cut -d" " -f2-); \
+  mv "$JAR" /app/server.jar'
 
 # Copy documentation
 
 COPY --from=documentation /generated/site /app/docs
 
+COPY ./docker/context/start.sh /app/start.sh
+RUN sed -i 's/\r$//' /app/start.sh && chmod +x /app/start.sh
+
 EXPOSE ${PORT}
 
-CMD ["sh", "-c", "java $JAVA_OPTS -jar /app/server.jar --port=${PORT}"]
+CMD ["/app/start.sh"]
 
 
 

@@ -8,6 +8,8 @@ server/c2sim-authorizer/target
 server/logs
 server/target
 server/open-api-javalin-server-stub/target
+*.iml
+
 site
 c2sim-client-cli/target
 .idea/

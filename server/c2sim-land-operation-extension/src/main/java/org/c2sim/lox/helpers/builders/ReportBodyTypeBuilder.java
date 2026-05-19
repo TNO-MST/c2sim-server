@@ -1,6 +1,7 @@
 package org.c2sim.lox.helpers.builders;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import org.c2sim.lox.schema.ReportBodyType;
 
@@ -39,6 +40,7 @@ public class ReportBodyTypeBuilder {
    * @return this builder
    */
   public ReportBodyTypeBuilder fromSender(UUID fromSender) {
+    Objects.requireNonNull(fromSender, "fromSender cannot be null");
     reportBody.setFromSender(fromSender.toString());
     return this;
   }
@@ -49,8 +51,9 @@ public class ReportBodyTypeBuilder {
    * @param toReceiver the UUID of the receiving system
    * @return this builder
    */
-  public ReportBodyTypeBuilder toReceiver(UUID toReceiver) {
-    reportBody.setToReceiver(toReceiver.toString());
+  public ReportBodyTypeBuilder addToReceiver(UUID toReceiver) {
+    Objects.requireNonNull(toReceiver, "toReceiver cannot be null");
+    reportBody.getToReceiver().add(toReceiver.toString());
     return this;
   }
 
@@ -61,6 +64,7 @@ public class ReportBodyTypeBuilder {
    * @return this builder
    */
   public ReportBodyTypeBuilder reportID(UUID reportID) {
+    Objects.requireNonNull(reportID, "reportID cannot be null");
     reportBody.setReportID(reportID.toString());
     return this;
   }
@@ -72,6 +76,7 @@ public class ReportBodyTypeBuilder {
    * @return this builder
    */
   public ReportBodyTypeBuilder reportingEntity(UUID reportingEntity) {
+    Objects.requireNonNull(reportingEntity, "reportingEntity cannot be null");
     reportBody.setReportingEntity(reportingEntity.toString());
     return this;
   }

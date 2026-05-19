@@ -21,6 +21,7 @@ import org.c2sim.client.api.SessionApi;
 import org.c2sim.client.exceptions.C2ClientException;
 import org.c2sim.client.exceptions.C2SimRestException;
 import org.c2sim.client.helpers.ExceptionHelper;
+import org.c2sim.client.helpers.LoggingHelper;
 import org.c2sim.client.helpers.MessageQueue;
 import org.c2sim.client.invoker.ApiClient;
 import org.c2sim.client.invoker.ApiException;
@@ -121,7 +122,13 @@ public class C2SimClient {
     if (builder.oidcProvider != null) {
       httpClientBuilder.addInterceptor(new AuthInterceptor(builder.oidcProvider));
     }
-    var httpClient = httpClientBuilder.build();
+
+    var httpClient = httpClientBuilder
+            .connectTimeout(builder.connectTimeoutInSec, TimeUnit.SECONDS)   // Time to establish connection
+            .readTimeout(builder.readTimeoutInSec, TimeUnit.SECONDS)      // Time waiting for server response
+            .writeTimeout(builder.writeTimeoutInSec, TimeUnit.SECONDS)     // Time sending request body
+            .callTimeout(builder.callTimeoutInSec, TimeUnit.SECONDS)
+            .build();
     if ((builder.sharedSessionName != null) && (!sharedSessionName.isEmpty())) {
       this.sharedSessionName = builder.sharedSessionName;
     }
@@ -469,8 +476,11 @@ public class C2SimClient {
   private void attemptConnection() {
     try {
       joinSharedSession();
-    } catch (Exception e) {
-      logger.error("{}Failed to join to C2SIM server: {}", getDebugPrefix(), e.getMessage(), e);
+    } catch (C2SimRestException | ApiException | C2ClientException  e) {
+      LoggingHelper.logRestException(logger, e,
+              String.format("%s: Failed to join to C2SIM server '%s'",
+                      getDebugPrefix(), this.getBasePathUrl()));
+
       var retry = c2simClientListener.onJoinFailed(this, e);
       if (retry) {
         logger.debug("{}Schedule retry join process in 5 sec.", getDebugPrefix());
@@ -980,6 +990,12 @@ public class C2SimClient {
     private String systemName = null;
     private C2SimClientListener listener = C2SimClientListener.DEFAULT;
 
+    private long connectTimeoutInSec = 10;   // Time to establish connection
+    private long readTimeoutInSec = 10;       // Time waiting for server response
+    private long writeTimeoutInSec = 10;      // Time sending request body
+    private long callTimeoutInSec = 0; // 0 seconds (no timeout) Overall request timeout
+
+
     /**
      * Sets the C2SIM server base URL from a {@link URI}.
      *
@@ -1127,6 +1143,50 @@ public class C2SimClient {
       this.oidcProvider = provider;
       return this;
     }
+
+    /**
+     * Timeout in to establish connection
+     *
+     * @param timeoutInSec timeout time in seconds
+     * @return this builder
+     */
+    public Builder connectTimeoutInSec(long timeoutInSec) {
+      this.connectTimeoutInSec = timeoutInSec;
+      return this;
+    }
+    /**
+     * Time waiting for server response
+     *
+     * @param timeoutInSec timeout time in seconds
+     * @return this builder
+     */
+    public Builder readTimeoutInSec(long timeoutInSec) {
+      this.readTimeoutInSec = timeoutInSec;
+      return this;
+    }
+    /**
+     * Time sending request body
+     *
+     * @param timeoutInSec timeout time in seconds
+     * @return this builder
+     */
+    public Builder writeTimeoutInSec(long timeoutInSec) {
+      this.writeTimeoutInSec = timeoutInSec;
+      return this;
+    }
+    /**
+     * Overall request timeout; 0 seconds (no timeout)
+     *
+     * @param timeoutInSec timeout time in seconds
+     * @return this builder
+     */
+    public Builder callTimeoutInSec(long timeoutInSec) {
+      this.callTimeoutInSec = timeoutInSec;
+      return this;
+    }
+
+
+
 
     /**
      * Builds and returns the configured {@link C2SimClient}.

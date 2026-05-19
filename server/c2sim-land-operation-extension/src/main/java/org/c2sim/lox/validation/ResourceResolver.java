@@ -74,12 +74,13 @@ public class ResourceResolver implements LSResourceResolver {
 
     // 2) Built-in fallback for C2SIM namespace
     if (in == null && isC2SimNamespace(namespaceURI)) {
-      final String path = "lox/xsd/2025/C2SIM_SMX_LOX_CWIX2025.xsd";
+      final String path = "lox/xsd/2026/C2SIM_SMX_LOX_v2.0.0-cwix2026.xsd";
       in = LoxXsdValidator.class.getClassLoader().getResourceAsStream(path);
       if (in == null) {
         logger.error("Classpath resource not found at '{}'", path);
       }
     }
+
 
     // 3) If still null, give up so the parser can try its default resolution
     if (in == null) {
@@ -93,7 +94,7 @@ public class ResourceResolver implements LSResourceResolver {
     // 4) Produce LSInput
     LSInputImpl input = new LSInputImpl(publicId, systemId, in);
     // Optional but helpful for resolving relative includes:
-    input.setBaseURI("classpath:/lox/xsd/2025/");
+    input.setBaseURI("classpath:/lox/xsd/2026/");
     return input;
   }
 

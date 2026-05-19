@@ -1,10 +1,9 @@
-<Message xmlns="http://www.sisostds.org/schemas/C2SIM/1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sisostds.org/schemas/C2SIM/1.1 file:///C:/development/c2sim-server/git/clean/c2sim-server/server/c2sim-server/src/main/resources/external/config/c2sim_schemas/internal/1.0.2/C2SIM_SMX_LOX_CWIX2025.xsd">
+<Message xmlns="http://www.sisostds.org/schemas/C2SIM/2.0.0-cwix2026" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sisostds.org/schemas/C2SIM/1.1 file:///C:/development/c2sim-server/git/clean/c2sim-server/server/c2sim-server/src/main/resources/external/config/c2sim_schemas/internal/1.0.2/C2SIM_SMX_LOX_CWIX2025.xsd">
     <C2SIMHeader>
         <AuthorizationHeader>
             <AuthorizationCredentials>{{token}}</AuthorizationCredentials>
             <AuthorizationType>Bearer</AuthorizationType>
         </AuthorizationHeader>
-        <CommunicativeActTypeCode>Inform</CommunicativeActTypeCode>
         <ConversationID>30124b8c-6e89-4745-b2a8-75d4d07084b6</ConversationID>
         <FromSendingSystem>NLD-TNO</FromSendingSystem>
         <MessageID>1e0e82d4-d9c0-4515-912b-373942e21912</MessageID>

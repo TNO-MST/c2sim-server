@@ -9,6 +9,7 @@ import com.github.oxo42.stateless4j.transitions.Transition;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.time.OffsetDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -181,10 +182,17 @@ public class SharedSession {
     ByteArrayInputStream toStream() {
       return new ByteArrayInputStream(xml);
     }
+
+    String toXmlString() {
+      return new String(xml, StandardCharsets.UTF_8);
+    }
+
+
   }
 
   private C2SimMessageContext buildMessageContext(InputStream xmlDoc) {
     var xml = readXmlBytes(xmlDoc);
+
     var kind = determineMsgKind(new ByteArrayInputStream(xml));
     if (kind == C2SimMsgKind.MESSAGE_BODY_NOT_WRAPPED) {
       throw new C2SimException(
@@ -201,23 +209,25 @@ public class SharedSession {
   private void validateMessage(C2SimMessageContext ctx) {
     boolean forceValidation = (ctx.kind() == C2SIM_INITIALIZATION);
     if (forceValidation || xsdValidationEnabled) {
-      c2SimSchemaService.validate(getSchemaVersion(), ctx.toStream());
+
       try {
-        var validator = LoxXsdValidator.doValidation(ctx.toStream());
+        var validator = c2SimSchemaService.validate(getSchemaVersion(), ctx.toStream());
+        // var validator = LoxXsdValidator.doValidation(ctx.toStream());
         if (!validator.isValid()) {
           throw XsdValidatorExceptionHelper.convert(validator);
         }
       } catch (ValidationException ve) {
         throw new C2SimException(
             C2SimException.ErrorCode.XSD_VALIDATION_FAILURE,
-            "XSD validation failed: " + ve.getMessage());
+            "XSD validation failed: " + ve.getMessage(),
+                new HashMap<>(Map.of(C2SimException.PROP_SCHEMA_VERSION, schemaVersion)));
       }
     }
   }
 
   private void dispatchByKind(C2SimMessageContext ctx) {
     if (ctx.kind() == C2SIM_INITIALIZATION) {
-      initState.receive(ctx.toStream(), stateMachine.getCurrentState());
+      initState.receivedInitializationMsg(ctx.toStream(), stateMachine.getCurrentState());
     } else if (ctx.kind() == INITIALIZATION_COMPLETE) {
       initState.recordInitializationComplete(ctx.header(), stateMachine.getCurrentState());
     } else if (C2SimStateMachine.isStateMachineMessage(ctx.kind())) {

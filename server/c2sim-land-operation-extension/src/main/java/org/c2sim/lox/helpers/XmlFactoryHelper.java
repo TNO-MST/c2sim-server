@@ -37,16 +37,14 @@ public final class XmlFactoryHelper {
     header.setMessageID(UUID.randomUUID().toString());
     header.setProtocol(Global.C2SIM_PROTOCOL);
     header.setProtocolVersion(Global.C2SIM_PROTOCOL_VERSION);
-    header.setSecurityClassificationCode(SecurityClassificationCodeType.UNCLASSIFIED);
     header.setInReplyToMessageID(null);
     header.setReplyToSystem(null);
     header.setConversationID(UUID.randomUUID().toString());
-    header.setCommunicativeActTypeCode(CommunicativeActTypeCodeType.ACCEPT);
 
     header.setSendingTime(DateTimeTypeHelper.createDateTimeType(Instant.now()));
     header.setAuthorizationHeader(null);
     header.setFromSendingSystem(senderSystemName);
-    header.setToReceivingSystem(senderSystemName);
+
     return header;
   }
 
@@ -419,7 +417,7 @@ public final class XmlFactoryHelper {
         .reportID(UUID.randomUUID())
         .reportingEntity(reportingEntity)
         .fromSender(fromSender)
-        .toReceiver(toReceiver);
+        .addToReceiver(toReceiver);
   }
 
   /**

@@ -1,19 +1,19 @@
-<Message xmlns="http://www.sisostds.org/schemas/C2SIM/1.1">
+<Message xmlns="http://www.sisostds.org/schemas/C2SIM/2.0.0-cwix2026">
     <C2SIMHeader>
-        <CommunicativeActTypeCode>Inform</CommunicativeActTypeCode>
+
         <ConversationID>88a26297-ce81-4acf-9675-afd182ec2682</ConversationID>
         <FromSendingSystem>LIMITED-ACCESS-SYSTEM</FromSendingSystem>
         <MessageID>dfd6e370-cc9d-4942-bf18-56987485ab59</MessageID>
         <Protocol>SISO-STD-C2SIM</Protocol>
 
         <ProtocolVersion>1.0.2</ProtocolVersion>
-        <SecurityClassificationCode>Unclassified</SecurityClassificationCode>
+
         <SendingTime>
             <IsoDateTime>2025-05-16T09:34:03Z</IsoDateTime>
         </SendingTime>
         <ToReceivingSystem>ALL</ToReceivingSystem>
     </C2SIMHeader>
-    <MessageBody xmlns="http://www.sisostds.org/schemas/C2SIM/1.1">
+    <MessageBody>
         <DomainMessageBody>
             <ReportBody>
                 <FromSender>670cfe5e-6c43-f267-ad7f-bd6e739def24</FromSender>

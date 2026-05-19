@@ -21,7 +21,7 @@ import org.c2sim.server.api.models.C2SimError;
 public class C2SimException extends RuntimeException {
 
   /** Property key: comma-separated list of all active session names. */
-  public static final String PROP_ACTIVE_SESSIONS = "PROP_ACTIVE_SESSIONS";
+  public static final String PROP_ACTIVE_SESSIONS = "ACTIVE_SESSIONS";
 
   /** Property key: name of the active shared session. */
   public static final String PROP_ACTIVE_SESSION = "ACTIVE_SESSION";
@@ -36,7 +36,7 @@ public class C2SimException extends RuntimeException {
   public static final String PROP_SUPPORTED_SCHEMA_VERSIONS = "SUPPORTED_SCHEMA_VERSIONS";
 
   /** Property key: the publish tracking ID. */
-  public static final String PROP_TRACKING_ID = "PROP_TRACKING_ID";
+  public static final String PROP_TRACKING_ID = "TRACKING_ID";
 
   /** Property key: the current state-machine state. */
   public static final String PROP_CURRENT_STATE = "CURRENT_STATE";
@@ -45,10 +45,13 @@ public class C2SimException extends RuntimeException {
   public static final String PROP_ALLOWED_TRIGGERS = "ALLOWED_TRIGGERS";
 
   /** Property key: comma-separated list of federates required to complete initialization. */
-  public static final String PROP_REQUIRED_FEDERATES = "PROP_REQUIRED_FEDERATES";
+  public static final String PROP_REQUIRED_FEDERATES = "REQUIRED_FEDERATES";
 
   /** Property key: comma-separated list of federates that have confirmed initialization. */
-  public static final String PROP_INIT_COMPLETED_FEDERATES = "PROP_INIT_COMPLETED_FEDERATES";
+  public static final String PROP_INIT_COMPLETED_FEDERATES = "INIT_COMPLETED_FEDERATES";
+
+  /** Property key: The namespace of LOX XSD that the C2SIM server is build against (LOX library) */
+  public static final String PROP_LOX_NAMESPACE = "EXPECTED_LOX_NAMESPACE";
 
   /**
    * Typed error codes for C2SIM server errors, serialised as the {@code code} field in the HTTP

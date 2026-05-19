@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Message xmlns="http://www.sisostds.org/schemas/C2SIM/1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sisostds.org/schemas/C2SIM/1.1 C2SIM_CWIX2022v1.1.xsd">
+<Message xmlns="http://www.sisostds.org/schemas/C2SIM/2.0.0-cwix2026" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" >
     <C2SIMHeader>
-        <CommunicativeActTypeCode>Inform</CommunicativeActTypeCode>
         <ConversationID>d9bcbe82-40d4-4e97-8443-9bd81da22c34</ConversationID>
         <FromSendingSystem>SERVER</FromSendingSystem>
         <MessageID>7015dee3-7017-4030-8d60-9b1397856750</MessageID>
@@ -13,8 +12,8 @@
         <ToReceivingSystem>LL</ToReceivingSystem>
     </C2SIMHeader>
     <MessageBody xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                 xsi:schemaLocation="http://www.sisostds.org/schemas/C2SIM/1.1 ../../C2SIMGUIv2.13.11/Schema/C2SIM/C2SIM_SMX_LOX_CWIX2024.xsd"
-                 xmlns="http://www.sisostds.org/schemas/C2SIM/1.1">
+
+                 xmlns="http://www.sisostds.org/schemas/C2SIM/2.0.0-cwix2026">
         <C2SIMInitializationBody>
             <!-- This file grew from the NATO MSG-201 CW2022 initialization file. It is built on the
               ORBAT developed by James Ruth of Trideum. Many of the units and objects it contains will

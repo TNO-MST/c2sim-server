@@ -25,6 +25,7 @@ public class XsdValidatorExceptionHelper {
    */
   public static C2SimException convert(LoxXsdValidator validator) {
     HashMap<String, Object> prop = new HashMap<>();
+
     short index = 1;
     for (var err : validator.getValidationsErrors()) {
       prop.put(

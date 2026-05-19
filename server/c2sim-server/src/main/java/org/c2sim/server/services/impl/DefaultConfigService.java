@@ -89,7 +89,7 @@ public class DefaultConfigService implements ConfigService {
           Config::asBool);
 
   private static final String DEFAULT_SHARED_SESSION_NAME = "default";
-  private static final String DEFAULT_SHARED_SESSION_SCHEMA_VERSION = "1.0.2";
+  private static final String DEFAULT_SHARED_SESSION_SCHEMA_VERSION = "2.0.0";
   private final Config cfg;
   private ServerConfigurationData serverConfig;
   private final EnvService envService;
@@ -207,6 +207,7 @@ public class DefaultConfigService implements ConfigService {
               .setDisplayName(DEFAULT_SHARED_SESSION_NAME)
               .setC2SimSchemaVersion(DEFAULT_SHARED_SESSION_SCHEMA_VERSION)
               .setDescription("Default shared session"));
+
       try {
         JsonFileReader.writeJsonFile(configFile, serverConfig);
       } catch (IOException e) {
