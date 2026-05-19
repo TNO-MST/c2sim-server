@@ -68,8 +68,6 @@ Initially the [maven release plugin](https://maven.apache.org/maven-release/mave
 
 The maven plugin [central-publishing-maven-plugin](https://central.sonatype.org/publish/publish-portal-maven/) is used to deploy the packages to the maven repository.  The initial idea was to only publish a subsection of the POM with the option  `<maven.deploy.skip>true</maven.deploy.skip>` in `properties` (pom.xml). This caused problems, therefor all packages are published.
 
-
-
 To be able to deploy to Maven Central, the `<users>/.m2/settings.xml` the 'central' entry must contain an `sonatype access token`. An access token can be created in the [sonatype website (Maven Central Repo)](https://central.sonatype.com/usertoken). 
 
 ```
@@ -85,6 +83,8 @@ To be able to deploy to Maven Central, the `<users>/.m2/settings.xml` the 'centr
 ```
 
 ## Setting POM module versions
+
+
 
 To show the current version used in the POM modules use:
 
@@ -138,7 +138,7 @@ mvn package
 git status
 ```
 
-The project should build, and there should not be any GIT changes.  
+The project should build, and there should not be any GIT changes. If there are git changes, commit them first.  
 
 All POM modules (for maven packages mandatory) should have in the `target` folder:
 
@@ -152,11 +152,21 @@ All POM modules (for maven packages mandatory) should have in the `target` folde
 
 **4.) Remove `-SNAPSHOT` from version in POM modules**
 
+In the folder `<root>/server`:
+
 ```
 mvn versions:set -DremoveSnapshot=true versions:commit -DprocessAllModules=true -DgenerateBackupPoms=false
 ```
 
-Check with GIT  diff changes if this is the desired version.
+Manually update 
+
+* `<c2sim-server.version>` in the file `<root>/server/pom.xml` (properties section).
+
+* `<c2sim.version>` in the the `<root>/c2sim-client-cli/pom.xml`
+
+
+
+Check with GIT  diff changes if this is the desired version (in all POM modules the -SNAPSHOT is removed in the `<version>` tag).
 
 **5.) Build the project**
 
@@ -174,7 +184,7 @@ All `maven central repo` must be signed, check if the signing process is configu
 mvn verify -P release
 ```
 
-The PGP pass phrase will be asked during build. 
+The PGP `pass phrase` will be asked during build. 
 
 **7.) Commit the release version to GitHub and create a release tag**
 
