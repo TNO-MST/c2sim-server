@@ -242,8 +242,7 @@ public class PositionReportContentTypeBuilder {
     }
     if (report.getEntityHealthStatus().stream()
             .filter(item -> item.getStrength() != null)
-            .count() > 1)
-    {
+            .count() > 1) {
       throw new IllegalArgumentException("Multiple strength entries found");
     }
     return report;

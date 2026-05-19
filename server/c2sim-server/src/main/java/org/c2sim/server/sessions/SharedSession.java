@@ -9,6 +9,7 @@ import com.github.oxo42.stateless4j.transitions.Transition;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.time.OffsetDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -20,6 +21,7 @@ import org.c2sim.lox.helpers.MessageTypeHelper;
 import org.c2sim.lox.sax.ExtractC2SimHeader;
 import org.c2sim.lox.schema.C2SIMHeaderType;
 import org.c2sim.lox.schema.C2SIMInitializationBodyType;
+import org.c2sim.lox.validation.LoxXsdValidator;
 import org.c2sim.server.api.models.DynamicSessionInfo;
 import org.c2sim.server.api.models.RequestJoinSession;
 import org.c2sim.server.api.models.SessionInfo;
@@ -180,10 +182,17 @@ public class SharedSession {
     ByteArrayInputStream toStream() {
       return new ByteArrayInputStream(xml);
     }
+
+    String toXmlString() {
+      return new String(xml, StandardCharsets.UTF_8);
+    }
+
+
   }
 
   private C2SimMessageContext buildMessageContext(InputStream xmlDoc) {
     var xml = readXmlBytes(xmlDoc);
+
     var kind = determineMsgKind(new ByteArrayInputStream(xml));
     if (kind == C2SimMsgKind.MESSAGE_BODY_NOT_WRAPPED) {
       throw new C2SimException(

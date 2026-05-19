@@ -15,11 +15,17 @@ import org.c2sim.lox.helpers.XmlFactoryHelper;
 import org.c2sim.lox.helpers.builders.MessageTypeBuilder;
 import org.c2sim.lox.sax.DetectXmlRootElement;
 import org.c2sim.lox.schema.C2SIMHeaderType;
+import org.c2sim.lox.validation.LoxXsdValidator;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
-import java.nio.file.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,6 +47,10 @@ public class CmdSendFolderXml extends MenuCommand {
         this.id = id;
         this.title = title;
         this.folder = folder;
+    }
+
+    private static String isNull(String string) {
+        return string == null ? "<not set>" : string;
     }
 
     @Override
@@ -144,7 +154,7 @@ public class CmdSendFolderXml extends MenuCommand {
                 Console.error("XML Root element must be 'Message' or 'MessageBody'");
                 return;
             }
-
+            Console.info("Important: the XML content of the file is parsed, and new XML is create (removing non C2SIM XSD fields)");
             Console.success("C2SIM Message Published.");
 
         } catch (IOException |
@@ -166,15 +176,32 @@ public class CmdSendFolderXml extends MenuCommand {
             ApiException,
             ValidationException,
             LoxException {
+        try {
+            byte[] bytes = inputStream.readAllBytes();
+            String text = new String(bytes, StandardCharsets.UTF_8);
+            var validator = LoxXsdValidator.doValidation(new ByteArrayInputStream(bytes));
+            if (!validator.isValid()) {
+                Console.error("XSD validations errors found:");
+                for (var err : validator.getValidationsErrors()) {
+                    Console.error(String.format("- Error line %d: %s", err.getLineNumber(), err.getMessage()));
+                }
+                Console.info("Trying to parse XML and correct errors.");
+            }
 
-        var message = MessageTypeHelper.readMessage(inputStream);
-        Console.println("Update 'sending time' and 'from system' in C2SIM header");
-        message.getC2SIMHeader().setSendingTime(DateTimeTypeHelper.createDateTimeTypeNow());
-        message.getC2SIMHeader().setFromSendingSystem(mainMenu.getClient().getSystemName());
-        Console.println(getC2SimHeaderAsText(message.getC2SIMHeader()));
-        Console.newLine();
-
-        mainMenu.getClient().publishC2SimDocument(message);
+            var message = MessageTypeHelper.readMessage(new ByteArrayInputStream(bytes));
+            if ((message != null) && (message.getC2SIMHeader() != null)) {
+                Console.println("Update 'sending time' and 'from system' in C2SIM header");
+                message.getC2SIMHeader().setSendingTime(DateTimeTypeHelper.createDateTimeTypeNow());
+                message.getC2SIMHeader().setFromSendingSystem(mainMenu.getClient().getSystemName());
+                Console.println(getC2SimHeaderAsText(message.getC2SIMHeader()));
+                Console.newLine();
+                mainMenu.getClient().publishC2SimDocument(message);
+            } else {
+                Console.error("Failed to parse XML into C2SIM Message");
+            }
+        } catch (IOException e) {
+            Console.error("I/O problem when parsing XML into C2SIM Message");
+        }
 
     }
 
@@ -189,7 +216,8 @@ public class CmdSendFolderXml extends MenuCommand {
             ValidationException,
             LoxException {
 
-        Console.info("File contains XML root element 'MessageBody', wrapping into XML root element 'Message'");
+        Console.info("File contains XML root element 'MessageBody', wrapping into XML root element 'Message' (no XSD validation)");
+
 
         var msgBody = MessageBodyTypeHelper.readMessageBody(inputStream);
 
@@ -198,8 +226,6 @@ public class CmdSendFolderXml extends MenuCommand {
         );
 
 
-        
-
         var message = MessageTypeBuilder.create()
                 .c2SIMHeader(header)
                 .messageBody(msgBody)
@@ -207,9 +233,16 @@ public class CmdSendFolderXml extends MenuCommand {
 
         Console.println(getC2SimHeaderAsText(message.getC2SIMHeader()));
         Console.newLine();
+        try {
+            String xml = MessageTypeHelper.writeMessageAsString(message,
+                    true, true);
+            if (xml != null ) {
+                var viewXml = xml.length() < 80*20 ? xml : xml.substring(0, 80*20) + "\n... [truncated]";
+                Console.info("Message send:\n" + viewXml);
+            }
+        } catch(Exception e) {}
 
-
-            mainMenu.getClient().publishC2SimDocument(message);
+        mainMenu.getClient().publishC2SimDocument(message);
 
     }
 
@@ -241,26 +274,26 @@ public class CmdSendFolderXml extends MenuCommand {
         Console.newLine();
     }
 
-    private static String isNull(String string) {
-        return string == null ? "<not set>" : string;
-    }
-
-    private  String getC2SimHeaderAsText(C2SIMHeaderType header) {
+    private String getC2SimHeaderAsText(C2SIMHeaderType header) {
         StringBuilder sb = new StringBuilder();
         sb.append("\n");
         sb.append("C2SIMHeaderType:");
+        if (header != null) {
+            // sb.append("\n  authorizationHeader=").append(header.getAuthorizationHeader().));
+            sb.append("\n-   conversationID=").append(isNull(header.getConversationID()));
+            sb.append("\n-   fromSendingSystem=").append(isNull(header.getFromSendingSystem()));
+            sb.append("\n-   inReplyToMessageID=").append(isNull(header.getInReplyToMessageID()));
+            sb.append("\n-   messageID=").append(isNull(header.getMessageID()));
+            sb.append("\n-   protocol=").append(isNull(header.getProtocol()));
+            sb.append("\n-   protocolVersion=").append(isNull(header.getProtocolVersion()));
+            sb.append("\n-   replyToSystem=").append(isNull(header.getReplyToSystem()));
+            sb.append("\n-   sendingTime=").append(header.getSendingTime() != null ?
+                    isNull(header.getSendingTime().getIsoDateTime()) : "<not set>");
 
-        // sb.append("\n  authorizationHeader=").append(header.getAuthorizationHeader().));
-        sb.append("\n-   conversationID=").append(isNull(header.getConversationID()));
-        sb.append("\n-   fromSendingSystem=").append(isNull(header.getFromSendingSystem()));
-        sb.append("\n-   inReplyToMessageID=").append(isNull(header.getInReplyToMessageID()));
-        sb.append("\n-   messageID=").append(isNull(header.getMessageID()));
-        sb.append("\n-   protocol=").append(isNull(header.getProtocol()));
-        sb.append("\n-   protocolVersion=").append(isNull(header.getProtocolVersion()));
-        sb.append("\n-   replyToSystem=").append(isNull(header.getReplyToSystem()));
-        sb.append("\n-   sendingTime=").append(header.getSendingTime());
-
-        sb.append("\n\n");
+            sb.append("\n\n");
+        } else {
+            sb.append("\n-   NO HEADER INFORMATION");
+        }
 
         return sb.toString();
     }

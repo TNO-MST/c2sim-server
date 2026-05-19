@@ -25,6 +25,8 @@ import java.net.UnknownHostException;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.util.Objects;
+import java.util.UUID;
+
 import org.c2sim.authorization.exceptions.AuthorisationException;
 import org.c2sim.authorization.impl.C2SimClaimsBuilder;
 import org.c2sim.server.api.apis.NotificationsApi;
@@ -228,6 +230,9 @@ public class DefaultWebService implements WebService {
     this.appServer =
         Javalin.create(
             javalinConfig -> {
+              // Enable Java virtual threads
+              javalinConfig.concurrency.useVirtualThreads = true;
+
               // Forwarded headers (X-Forwarded-For, X-Forwarded-Proto)
               javalinConfig.jetty.modifyServer(
                   server -> {
@@ -350,7 +355,8 @@ public class DefaultWebService implements WebService {
 
     if (ctx.path().startsWith("/api")) {
       var pathText = ctx.path(); // Invoke method(s) only conditionally.
-      loggerRest.debug("Incoming (API) REST: {} {}", ctx.method(), pathText);
+
+      loggerRest.debug("Incoming (API) REST: {} {} {}", ctx.ip(), ctx.method(), pathText);
     }
     // This VERB need clientId in header
     if (ctx.path().startsWith("/api")) {
@@ -407,10 +413,14 @@ public class DefaultWebService implements WebService {
 
     // System that made the request
     var systemName = (header != null) ? header.getFromSendingSystem() : "UNKNOWN";
+    if (systemName == null) {
+      systemName = "UNKNOWN";
+
+    }
     updateMetricsForFailedRequests(c2SimRestException, sharedSessionName, systemName);
     logger.error(
-        "Session '{}': Request '{}' by system '{}' with tracking id '{}' failed: {} ({}); "
-            + "STATUS BAD_REQUEST(400)",
+        "Return REST STATUS BAD_REQUEST(400): Session '{}': "+
+                "Request '{}' by system '{}' with tracking id '{}' failed: {} ({}) ",
         sharedSessionName,
         ctx.req().getRequestURI(),
         systemName,
@@ -430,22 +440,33 @@ public class DefaultWebService implements WebService {
    */
   private void updateMetricsForFailedRequests(
       C2SimException c2SimRestException, String sharedSessionName, String systemName) {
-    var errorCode = C2SimException.ErrorCode.fromCode(c2SimRestException.getError().getCode());
-    metricService.incInvalidMessagesSendByC2SimClient(
-        sharedSessionName, systemName, convertToMetricCategory(errorCode));
+    try {
+      var errorCode = C2SimException.ErrorCode.fromCode(c2SimRestException.getError().getCode());
+      metricService.incInvalidMessagesSendByC2SimClient(
+              sharedSessionName, systemName, convertToMetricCategory(errorCode));
+    } catch (Exception e) {
+      logger.error("Metric incInvalidMessagesSendByC2SimClient failed: {}", e.getMessage(), e);
+    }
   }
 
   /** Send error response to client */
   private void handleRESTFulExceptions(Exception e, Context ctx) {
     var trackingId = ContextHelper.getAttributeValue(ctx, ATTRIB_TRACKING_ID);
     // Check for error: use ctx.body()
+
+    // used for lookup
+    var errorId =  UUID.randomUUID().toString().replace("-", "").substring(0, 8);
+
     logger.error(
-        "Request '{}' with tracking id '{}' failed (generic): {}; return STATUS 500 error code",
+        "Request '{}' with tracking id '{}' failed (#ticket {}):\n"+
+                "- Unhandled exception in C2SIM server handling REST call : {}",
         ctx.req().getRequestURI(),
         trackingId,
-        e.getMessage());
+        errorId,
+        e.getMessage(),
+            e);
 
-    ctx.result("C2SIM Internal Server Error: " + e.getMessage());
+    ctx.result(String.format("C2SIM Internal Server Error: ticket %s (see C2SIM server log)", errorId));
     ctx.status(HttpStatus.INTERNAL_SERVER_ERROR);
   }
 

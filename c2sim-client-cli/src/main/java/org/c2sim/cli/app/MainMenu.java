@@ -80,7 +80,7 @@ public class MainMenu implements C2SimClient.C2SimClientListener {
 
 
 
-    public String schemaVersion = "1.0.2";
+    public String schemaVersion = "2.0.0";
     public String newSharedSessionDescription = "TEST";
 
 

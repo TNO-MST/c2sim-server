@@ -17,7 +17,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -263,7 +262,9 @@ public class DefaultC2SimSchemaService implements C2SimSchemaService {
         SchemaInfo schemaInfo = new SchemaInfo(version, xsdFiles, folder);
         schemaVersionFolders.put(version, schemaInfo);
 
-        var namespaceInOneLine = String.join("|", Arrays.stream(xsdFiles).map(x -> x.namespace).toList()); // this is for now always 1 entry
+        var namespaceInOneLine = String.join("|",
+                Arrays.stream(xsdFiles).map(x -> x.namespace).toList());
+                // this is for now always 1 entry
         logger.info(
                 "Registered xsd schema: version folder='{}'  namespace={} folder={}",
                 version,
