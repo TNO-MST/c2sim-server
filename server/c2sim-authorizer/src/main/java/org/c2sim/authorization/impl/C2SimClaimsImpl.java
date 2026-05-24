@@ -13,10 +13,8 @@ class C2SimClaimsImpl implements C2SimClaims {
   private final String clientId;
 
   // Claims
-  private final ClaimValueList communicativeActTypeCode;
   private final ClaimValueList fromSendingSystem;
   private final ClaimValueList replyToSystem;
-  private final ClaimValueList securityClassificationCode;
   private final ClaimValueList toReceivingSystem;
   private final ClaimValueList messageType;
   private final ClaimValueList systemMessageType;
@@ -25,36 +23,25 @@ class C2SimClaimsImpl implements C2SimClaims {
    * Creates a fully populated claims object.
    *
    * @param clientId the OAuth 2.0 client name from the JWT {@code client_id} claim
-   * @param communicativeActTypeCode permitted communicative-act type codes
    * @param fromSendingSystem permitted sending-system identifiers
    * @param replyToSystem permitted reply-to system identifiers
-   * @param securityClassificationCode permitted security-classification codes
    * @param toReceivingSystem permitted receiving-system identifiers
    * @param messageType permitted C2SIM message types
    * @param systemMessageType permitted system-level message types
    */
   C2SimClaimsImpl(
       String clientId,
-      ClaimValueList communicativeActTypeCode,
       ClaimValueList fromSendingSystem,
       ClaimValueList replyToSystem,
-      ClaimValueList securityClassificationCode,
       ClaimValueList toReceivingSystem,
       ClaimValueList messageType,
       ClaimValueList systemMessageType) {
     this.clientId = clientId;
-    this.communicativeActTypeCode = communicativeActTypeCode;
     this.fromSendingSystem = fromSendingSystem;
     this.replyToSystem = replyToSystem;
-    this.securityClassificationCode = securityClassificationCode;
     this.toReceivingSystem = toReceivingSystem;
     this.messageType = messageType;
     this.systemMessageType = systemMessageType;
-  }
-
-  /** {@inheritDoc} */
-  public ClaimValueList getCommunicativeActTypeCode() {
-    return communicativeActTypeCode;
   }
 
   /** {@inheritDoc} */
@@ -65,11 +52,6 @@ class C2SimClaimsImpl implements C2SimClaims {
   /** {@inheritDoc} */
   public ClaimValueList getReplyToSystem() {
     return replyToSystem;
-  }
-
-  /** {@inheritDoc} */
-  public ClaimValueList getSecurityClassificationCode() {
-    return securityClassificationCode;
   }
 
   /** {@inheritDoc} */
@@ -92,15 +74,29 @@ class C2SimClaimsImpl implements C2SimClaims {
     return clientId;
   }
 
+  /** {@inheritDoc} */
+  public String toTextDescription() {
+    StringBuilder sb = new StringBuilder("C2SIM Claims {");
+    sb.append("\nclientId=").append(clientId);
+    sb.append("\n, fromSendingSystem=").append(String.valueOf(fromSendingSystem));
+    sb.append("\n, replyToSystem=").append(String.valueOf(replyToSystem));
+    sb.append("\n, toReceivingSystem=").append(String.valueOf(toReceivingSystem));
+    sb.append("\n, messageType=").append(String.valueOf(messageType));
+    sb.append("\n, systemMessageType=").append(String.valueOf(systemMessageType));
+    sb.append("\n }");
+    return sb.toString();
+  }
+
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder("C2SIM Claims{");
     sb.append("clientId=").append(clientId);
 
-    sb.append(", communicativeActTypeCode=").append(String.valueOf(communicativeActTypeCode));
+    // sb.append(", communicativeActTypeCode=").append(String.valueOf(communicativeActTypeCode));
     sb.append(", fromSendingSystem=").append(String.valueOf(fromSendingSystem));
     sb.append(", replyToSystem=").append(String.valueOf(replyToSystem));
-    sb.append(", securityClassificationCode=").append(String.valueOf(securityClassificationCode));
+    // sb.append(",
+    // securityClassificationCode=").append(String.valueOf(securityClassificationCode));
     sb.append(", toReceivingSystem=").append(String.valueOf(toReceivingSystem));
     sb.append(", messageType=").append(String.valueOf(messageType));
     sb.append(", systemMessageType=").append(String.valueOf(systemMessageType));

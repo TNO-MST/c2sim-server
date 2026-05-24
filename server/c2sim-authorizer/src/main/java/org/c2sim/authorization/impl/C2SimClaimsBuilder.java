@@ -201,10 +201,8 @@ public class C2SimClaimsBuilder {
       // Extract claims
       return new C2SimClaimsImpl(
           getClientName(jwtClaims),
-          ClaimValueList.create(jwtClaims, C2SimClaims.COMMUNICATIVE_ACT_TYPE_CODE),
           ClaimValueList.create(jwtClaims, C2SimClaims.FROM_SENDING_SYSTEM),
           ClaimValueList.create(jwtClaims, C2SimClaims.REPLY_TO_SYSTEM),
-          ClaimValueList.create(jwtClaims, C2SimClaims.SECURITY_CLASSIFICATION_CODE),
           ClaimValueList.create(jwtClaims, C2SimClaims.TO_RECEIVING_SYSTEM),
           ClaimValueList.create(jwtClaims, C2SimClaims.MESSAGE_TYPE),
           ClaimValueList.create(jwtClaims, C2SimClaims.SYSTEM_MESSAGE_TYPE));

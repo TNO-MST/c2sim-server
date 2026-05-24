@@ -20,18 +20,11 @@ public interface C2SimClaims {
   /** Sentinel value indicating that a claim allows any value (wildcard). */
   String CLAIM_ANY = "ANY";
 
-  // Claim names.
-  /** JWT claim name for the communicative-act type code. */
-  String COMMUNICATIVE_ACT_TYPE_CODE = "communicativeActTypeCode";
-
   /** JWT claim name identifying the sending system. */
   String FROM_SENDING_SYSTEM = "fromSendingSystem";
 
   /** JWT claim name identifying the system to reply to. */
   String REPLY_TO_SYSTEM = "replyToSystem";
-
-  /** JWT claim name for the security-classification code. */
-  String SECURITY_CLASSIFICATION_CODE = "securityClassificationCode";
 
   /** JWT claim name identifying the receiving system. */
   String TO_RECEIVING_SYSTEM = "toReceivingSystem";
@@ -46,14 +39,6 @@ public interface C2SimClaims {
   //  -> Converting from JWT claim token value to ClaimValueList is done in C2SimClaimBuilder
 
   /**
-   * Returns the communicative-act type codes permitted by this token.
-   *
-   * @return the claim value list for {@link #COMMUNICATIVE_ACT_TYPE_CODE}
-   */
-  // Enum type CommunicativeActTypeCodeType
-  ClaimValueList getCommunicativeActTypeCode();
-
-  /**
    * Returns the set of permitted sending-system identifiers.
    *
    * @return the claim value list for {@link #FROM_SENDING_SYSTEM}
@@ -66,14 +51,6 @@ public interface C2SimClaims {
    * @return the claim value list for {@link #REPLY_TO_SYSTEM}
    */
   ClaimValueList getReplyToSystem();
-
-  /**
-   * Returns the permitted security-classification codes.
-   *
-   * @return the claim value list for {@link #SECURITY_CLASSIFICATION_CODE}
-   */
-  // Enum ELoxClassification
-  ClaimValueList getSecurityClassificationCode();
 
   /**
    * Returns the set of permitted receiving-system identifiers.
@@ -103,4 +80,6 @@ public interface C2SimClaims {
    * @return the OAuth 2.0 client name, or an empty string if the claim is absent
    */
   String getClientName(); // The AZP field in JWT
+
+  String toTextDescription();
 }

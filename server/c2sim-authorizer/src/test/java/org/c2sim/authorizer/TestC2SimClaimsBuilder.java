@@ -48,24 +48,6 @@ class TestC2SimClaimsBuilder {
   }
 
   @Test
-  void testClaimBuilderSecurityClassificationCode() throws AuthorisationException {
-    var actual = claims.getSecurityClassificationCode();
-    var expected =
-        ClaimValueList.createWithTextNotation(
-            C2SimClaims.COMMUNICATIVE_ACT_TYPE_CODE, "Unclassified");
-    assertEquals(expected, actual, "Claims SecurityClassificationCode was not good parsed");
-  }
-
-  @Test
-  void testClaimBuilderCommunicativeActTypeCode() throws AuthorisationException {
-    var actual = claims.getCommunicativeActTypeCode();
-    var expected =
-        ClaimValueList.createWithTextNotation(
-            C2SimClaims.COMMUNICATIVE_ACT_TYPE_CODE, "Accept;Agree;Confirm;Inform;Propose;Request");
-    assertEquals(expected, actual, "Claims CommunicativeActTypeCode was not good parsed");
-  }
-
-  @Test
   void testClaimBuilderFromSendingSystem() {
     var actual = claims.getFromSendingSystem();
     ClaimValueList expected = new ClaimValueList();
