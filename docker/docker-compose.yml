@@ -1,7 +1,7 @@
 
 services:
   c2sim-server:
-    image: docker.io/kluiverjh/c2sim-server:v1.0.4-SNAPSHOT
+    image: docker.io/kluiverjh/c2sim-server:2.0.1
     build:
       context: ./..
       dockerfile: ./docker/Dockerfile-c2sim-server
@@ -15,6 +15,7 @@ services:
       - C2SIM_BEARER_PUBLIC_KEY=${C2SIM_BEARER_PUBLIC_KEY}
       - C2SIM_IDENTITY_PROVIDER_URL=${C2SIM_IDENTITY_PROVIDER_URL}
       - C2SIM_AUTH_MODE=${C2SIM_AUTH_MODE}
+      - C2SIM_PREFIX=${C2SIM_PREFIX}
     restart: unless-stopped
     networks: [monitoring]
 
@@ -32,7 +33,7 @@ services:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
       KC_HEALTH_ENABLED: "true"
-    
+    networks: [monitoring]
     
 
   keycloak-init:
@@ -47,6 +48,7 @@ services:
     volumes:
       - ./credentials:/app/credentials      
     restart: "no"
+    networks: [monitoring]
     
   prometheus:
     image: prom/prometheus:v3
