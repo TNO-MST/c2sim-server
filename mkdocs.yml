@@ -1,6 +1,7 @@
 site_name: C2SIM Server
 site_url: https://github.com/TNO-MST/c2sim-server
 docs_dir: ./docs/content
+use_directory_urls: false
 theme:
   name: material
   features:
@@ -102,7 +103,7 @@ markdown_extensions:
 
 extra:
  mermaid: true  
- 
+ homepage: .
 
   
 plugins:
