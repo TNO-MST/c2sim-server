@@ -9,8 +9,6 @@ export const CLIENTS: ClientConfig[] = [
     c2simClaims: {
       fromSendingSystem: "NLD-LOX",
       messageType: "C2SIMInitialization;DomainMessage;ObjectInitialization;SystemAcknowledgement;SystemMessage",
-      securityClassificationCode: "UNCLASSIFIED",
-      communicativeActTypeCode: "Accept;Agree;Confirm;Inform;Propose;Refuse;Request",
       replyToSystem: "ANY",
       systemMessageType: "ANY",
 	  toReceivingSystem: "ANY"
@@ -22,10 +20,8 @@ export const CLIENTS: ClientConfig[] = [
     useHlaClaims: false,
     useC2simClaims: true,
     c2simClaims: {
-      fromSendingSystem: "FRA-SWORD",
-      messageType: "NLD-TAC2",
-      securityClassificationCode: "Unclassified;Confidential;Secret;TopSecret",
-      communicativeActTypeCode: "Accept;Agree;Confirm;Inform;Propose;Refuse;Request",
+      fromSendingSystem: "NLD-TAC",
+      messageType: "C2SIMInitialization;DomainMessage;ObjectInitialization;SystemAcknowledgement;SystemMessage",
       replyToSystem: "ANY",
       systemMessageType: "ANY",
 	  toReceivingSystem: "ANY"

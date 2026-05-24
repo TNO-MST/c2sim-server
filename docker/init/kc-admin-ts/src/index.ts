@@ -370,7 +370,7 @@ async function getClientInfoFromKeycloak(
     }
   }
 
-  // ✅ Return JSON object
+  // Return JSON object
   return {
     clientId: client.clientId,
     clientSecret: secret.value || "",
@@ -434,7 +434,7 @@ async function main(): Promise<void> {
 
     await applyClientAttributes(client.id, cfg);
 
-    // 🔹 SHOW TOKEN INFO (CONFIRMS SECRET WORKS)
+    // SHOW TOKEN INFO (CONFIRMS SECRET WORKS)
     await showAccessTokenInfo(client);
     const clientInfo = await getClientInfoFromKeycloak(client);
     clientInfoList.push(clientInfo);
