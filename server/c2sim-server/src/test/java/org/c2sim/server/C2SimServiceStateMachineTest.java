@@ -34,7 +34,7 @@ class C2SimServiceStateMachineTest extends BaseTest {
     logger.info("JUNIT: C2SIM client must join shared session " + SHARED_SESSION_NAME);
     // REST JOIN
     sharedSession.joinSharedSession(
-        CLIENT_ID_A, "joining", new RequestJoinSession("NLD_LOX", "SYSTEM"));
+        CLIENT_ID_A, "joining", new RequestJoinSession("NLD_LOX", "SYSTEM"), null, null);
     // ====================================================================================================
     logger.info(
         "JUNIT: Publish C2SIM XML 'submitInitialization' (simulate REST call):\n{}",
@@ -157,7 +157,8 @@ class C2SimServiceStateMachineTest extends BaseTest {
     // =====================================================================================================
     logger.info("JUNIT: Check C2SIM client joins shared session " + SHARED_SESSION_NAME);
     // Simulate REST join request
-    sharedSession.joinSharedSession(CLIENT_ID_A, "", new RequestJoinSession("NLD_LOX", "SYSTEM"));
+    sharedSession.joinSharedSession(
+        CLIENT_ID_A, "", new RequestJoinSession("NLD_LOX", "SYSTEM"), null, null);
     // =====================================================================================================
     logger.info(
         "JUNIT: Check C2SIM client can not publish C2SIM order when not in executing state.");

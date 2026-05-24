@@ -15,6 +15,9 @@ COPY ./docs/content/ /mkdocs_build/docs/content/
 
 
 # Build static site in /generated/site
+
+# Needed to host under /docs
+RUN sed -i 's|^site_url:.*|site_url: http://localhost:7777/docs/|' /mkdocs_build/mkdocs.yml
 RUN mkdocs build --clean --strict -f /mkdocs_build/mkdocs.yml  -d /generated/site
 
 

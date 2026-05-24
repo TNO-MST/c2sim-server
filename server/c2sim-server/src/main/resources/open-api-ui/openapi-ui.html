@@ -5,8 +5,8 @@
 <head>
     <meta charset="UTF-8">
     <title>OpenApi documentation</title>
-    <link rel="stylesheet" type="text/css" href="/webjars/swagger-ui/5.31.2/swagger-ui.css" >
-    <link rel="icon" type="image/png" href="/webjars/swagger-ui/5.32.2/favicon-32x32.png" sizes="32x32" />
+    <link rel="stylesheet" type="text/css" href="webjars/swagger-ui/5.31.2/swagger-ui.css" >
+    <link rel="icon" type="image/png" href="webjars/swagger-ui/5.32.2/favicon-32x32.png" sizes="32x32" />
 
     <style>
         html {
@@ -25,12 +25,12 @@
 </head>
 <body>
 <div id="swagger-ui"></div>
-<script src="/webjars/swagger-ui/5.31.2/swagger-ui-bundle.js"> </script>
-<script src="/webjars/swagger-ui/5.31.2/swagger-ui-standalone-preset.js"> </script>
+<script src="webjars/swagger-ui/5.31.2/swagger-ui-bundle.js"> </script>
+<script src="webjars/swagger-ui/5.31.2/swagger-ui-standalone-preset.js"> </script>
 <script>
     window.onload = function() {
         window.ui = SwaggerUIBundle({
-            url: "/openapi.yaml",
+            url: "openapi.yaml",
             dom_id: "#swagger-ui",
             deepLinking: true,
             presets: [

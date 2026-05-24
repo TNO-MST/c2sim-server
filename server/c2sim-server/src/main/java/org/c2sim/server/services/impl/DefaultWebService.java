@@ -75,7 +75,7 @@ public class DefaultWebService implements WebService {
   private Javalin appServer;
   private C2SimClaimsBuilder claimsBuilder = null;
 
-  private static final String DOCUMENTATION_ENDPOINT = "/docs"; // mkdocs endpoint
+  private static final String DOCUMENTATION_ENDPOINT = "docs"; // mkdocs endpoint
 
   /**
    * Creates the service, wires all REST API implementations, configures the Javalin instance, and
@@ -209,8 +209,9 @@ public class DefaultWebService implements WebService {
       builder.addAudience("c2sim");
       this.claimsBuilder = builder;
     } catch (Exception ex) {
-      logger.error("Failed to retrieve public key of keycloak (needed for signature validation)");
-      throw new AuthorisationException(ex.getMessage());
+      logger.error("Unable to validate bearer, the C2SIM server failed to retrieve public key of keycloak (needed for signature validation)");
+      throw new AuthorisationException("C2SIM server was not able to validate bearer: " +
+              ex.getMessage());
     }
     return this.claimsBuilder;
   }
@@ -231,6 +232,13 @@ public class DefaultWebService implements WebService {
             javalinConfig -> {
               // Enable Java virtual threads
               javalinConfig.concurrency.useVirtualThreads = true;
+
+              // Set URL prefix
+              var ctxPath = configService.getPrefixBasepath();
+              if ((ctxPath != null) && (ctxPath.equalsIgnoreCase("/"))) { // when mocking can be null
+                  logger.info("Javalin context path set to: '{}' ", ctxPath);
+                javalinConfig.router.contextPath = ctxPath;
+              }
 
               // Forwarded headers (X-Forwarded-For, X-Forwarded-Proto)
               javalinConfig.jetty.modifyServer(
@@ -271,13 +279,22 @@ public class DefaultWebService implements WebService {
                   && Files.exists(configService.getDocsDirectory(), LinkOption.NOFOLLOW_LINKS)
                   && (Files.isDirectory(
                       configService.getDocsDirectory(), LinkOption.NOFOLLOW_LINKS))) {
+                var docUrl =
+                    String.format(
+                        "%s%s",
+                        configService.getPrefixBasepath() != null
+                            ? configService.getPrefixBasepath()
+                            : "/",
+                        DOCUMENTATION_ENDPOINT);
                 javalinConfig.staticFiles.add(
                     files -> {
                       files.directory = configService.getDocsDirectory().toString();
-                      files.hostedPath = DOCUMENTATION_ENDPOINT;
+                      files.hostedPath = docUrl;
                       files.location = Location.EXTERNAL;
                       logger.info(
-                          "Hosting the web application docs from path '{}'. ", files.directory);
+                          "Hosting the web application docs, from folder '{}' under '{}'. ",
+                          files.directory,
+                          docUrl);
                     });
               }
               logger.trace("Enable REST call logging.");
@@ -300,6 +317,21 @@ public class DefaultWebService implements WebService {
 
               javalinConfig.routes.before(this::handleBefore); // Client tracking id
               javalinConfig.routes.after(this::handleAfter);
+
+              // Handle 404 not found error message
+              javalinConfig.routes.error(
+                  404,
+                  ctx -> {
+                    var path =
+                        configService.getPrefixBasepath() != null
+                            ? configService.getPrefixBasepath()
+                            : "/";
+                    ctx.html(
+                        "<html><body>C2SIM server doesn't support this endpoint"
+                            + " (404)<br/><a href="
+                            + path
+                            + ">Goto default</a></body></html>");
+                  });
 
               // Set exception handling:
               javalinConfig.routes.exception(
@@ -338,6 +370,11 @@ public class DefaultWebService implements WebService {
             }));
   }
 
+  private boolean isApiRequest(final Context ctx) {
+      var basePath = configService.getPrefixBasepath() != null ? configService.getPrefixBasepath() : "\\";
+      return (ctx.path().startsWith(basePath + "api"));
+  }
+
   /** Add a tracking ID to each request Can be used to correlate messages in log */
   private void handleBefore(@NotNull Context ctx) {
     metricService.incActiveHttpRequests();
@@ -351,14 +388,15 @@ public class DefaultWebService implements WebService {
     String trackingId = randomNanoId(DEFAULT_NUMBER_GENERATOR, DEFAULT_ALPHABET, 5);
 
     ctx.attribute(ATTRIB_TRACKING_ID, trackingId);
+    boolean isApiRequest = isApiRequest(ctx);
 
-    if (ctx.path().startsWith("/api")) {
+    if (isApiRequest) {
       var pathText = ctx.path(); // Invoke method(s) only conditionally.
 
       loggerRest.debug("Incoming (API) REST: {} {} {}", ctx.ip(), ctx.method(), pathText);
     }
     // This VERB need clientId in header
-    if (ctx.path().startsWith("/api")) {
+    if (isApiRequest) {
       switch (ctx.method().toString().toUpperCase()) {
         case "GET", "POST", "PUT", "DELETE" -> {
           String clientIdHeader = ctx.header(ContextHelper.ATTRIB_HEADER_PARAM_CLIENT_ID);
@@ -488,6 +526,10 @@ public class DefaultWebService implements WebService {
     }
 
     String url = "http(s)://" + externalHostName + ":" + this.webServerPort;
+    var basePath = configService.getPrefixBasepath();
+    if (basePath != null) {
+        url += basePath;
+    }
     logger.info("Listening on {}", url);
     logger.info("- {}/openapi.yaml to view Open API definition", url);
     logger.info("- {}/openapi-ui for Open API developers tools ", url);

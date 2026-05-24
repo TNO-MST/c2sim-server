@@ -92,6 +92,8 @@ public class C2SimException extends RuntimeException {
     NO_C2SIM_INITIALIZATION_BODY("NO_C2SIM_INITIALIZATION_BODY"),
     /** The requested state-machine transition is not allowed from the current state. */
     STATE_TRANSITION_NOT_ALLOWED("STATE_TRANSITION_NOT_ALLOWED"),
+    /** C2SIM client is already joined. */
+    C2SIM_CLIENT_ALREADY_JOINED("C2SIM_CLIENT_ALREADY_JOINED"),
     /**
      * The trigger was rejected because not all required federates have completed initialization.
      */

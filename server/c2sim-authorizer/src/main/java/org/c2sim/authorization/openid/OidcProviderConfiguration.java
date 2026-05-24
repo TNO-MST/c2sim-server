@@ -45,7 +45,8 @@ public record OidcProviderConfiguration(String jwks_uri) {
     } catch (Exception ex) {
 
       throw new AuthorisationException(
-          "Failed to retrieve OpenID configuration from " + openIdProvider.toExternalForm(), ex);
+          String.format("Failed to retrieve OpenID configuration (auto discovery) from '%s' (%s). ",
+                  openIdProvider.toExternalForm(), ex.getMessage()), ex);
     } finally {
       if (con != null) {
         con.disconnect();

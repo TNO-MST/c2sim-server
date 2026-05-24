@@ -29,7 +29,9 @@ class XsdMessageValidationTest extends BaseTest {
     sharedSession.joinSharedSession(
         CLIENT_ID_A,
         "joining A",
-        new RequestJoinSession(CLIENT_ID_A_SYSTEM_NAME, CLIENT_ID_A_SYSTEM_NAME));
+        new RequestJoinSession(CLIENT_ID_A_SYSTEM_NAME, CLIENT_ID_A_SYSTEM_NAME),
+        null,
+        null);
 
     C2SimException invalidXml =
         Assertions.assertThrowsExactly(

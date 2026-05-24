@@ -322,7 +322,7 @@ class C2SimClientStreamingTest {
             });
   }
 
-  private static MockResponse createStreamingEndPointResponse(
+    private static MockResponse createStreamingEndPointResponse(
       MockWebServer server, String clientId, String sharedSessionName) {
     var responseStreaming = new ResponseStreamEndpoints();
     var websocket = new ResponseStreamEndpointsWebsocket();

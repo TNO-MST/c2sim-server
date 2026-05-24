@@ -450,9 +450,20 @@ public class SharedSession {
    * @param requestJoinSession the join request body
    */
   public void joinSharedSession(
-      @NotNull String clientId, String trackingId, @NotNull RequestJoinSession requestJoinSession) {
-    var sessionClient = getOrCreateClientById(clientId);
+      @NotNull String clientId,
+      String trackingId,
+      @NotNull RequestJoinSession requestJoinSession,
+      C2SimAuthorizer auth,
+      String ipAddress) {
 
+    Objects.requireNonNull(clientId, "Client ID cannot be null");
+    Objects.requireNonNull(requestJoinSession, "requestJoinSession cannot be null");
+
+    // Check claims
+    SharedSessionExceptionFactory.authorizeFromSendingSystem(
+        auth, requestJoinSession.getSystemName());
+
+    var sessionClient = getOrCreateClientById(clientId);
     if (sessionClient.hasJoinedSharedSession()) {
       logger.warn(
           "Session '{}': Joining request '{}' for shared session '{}' "
@@ -461,18 +472,33 @@ public class SharedSession {
           trackingId,
           getSharedSessionName(),
           sessionClient.getClientNameForDebug());
+      SharedSessionExceptionFactory.throwAlreadyJoined(
+          getSharedSessionName(), sessionClient.getSystemName());
       return;
     }
+
+    var claimsAsText =
+        auth != null
+            ? auth.c2SimClaims().toTextDescription()
+            : "No claims (no Authorization header)";
+    var azp =
+        (auth != null && auth.c2SimClaims() != null)
+            ? auth.c2SimClaims().getClientName()
+            : SharedSessionClient.NO_AZP;
+
     sessionClient.setClientIdDisplayName(requestJoinSession.getClientIdDisplayName());
     sessionClient.setSystemName(
         Objects.requireNonNullElse(requestJoinSession.getSystemName(), "UNKNOWN"));
+    sessionClient.setAzp(azp);
+    sessionClient.setClientIpAddress(ipAddress);
     sessionClient.setHasJoinedSharedSession(true);
     logger.info(
-        "Session '{}': Joining request '{}' for shared session '{}' granted for {}.",
+        "Session '{}': Joining request '{}' for shared session '{}' granted for '{}', provided claims: {}.",
         getSharedSessionName(),
         trackingId,
         getSharedSessionName(),
-        sessionClient.getClientNameForDebug());
+        sessionClient.getClientNameForDebug(),
+        claimsAsText);
     clients.logC2SimClientsInfo();
   }
 

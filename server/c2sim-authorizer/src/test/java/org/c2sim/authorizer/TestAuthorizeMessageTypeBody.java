@@ -78,21 +78,12 @@ class TestAuthorizeMessageTypeBody {
     // Mock claims
     C2SimClaims jwtClaims = mock(C2SimClaims.class);
     // Service is allowed to:
-    var classifications =
-        ClaimValueList.createWithTextNotation(
-            C2SimClaims.SECURITY_CLASSIFICATION_CODE, "Unclassified");
-
-    var act =
-        ClaimValueList.createWithTextNotation(
-            C2SimClaims.COMMUNICATIVE_ACT_TYPE_CODE, "INFORM;ACCEPT");
 
     var msgType = ClaimValueList.createWithTextNotation(C2SimClaims.MESSAGE_TYPE, "ANY");
 
-    when(jwtClaims.getSecurityClassificationCode()).thenReturn(classifications);
     when(jwtClaims.getReplyToSystem()).thenReturn(ClaimValueList.CLAIM_IS_EMPTY_STRING);
     when(jwtClaims.getFromSendingSystem()).thenReturn(ClaimValueList.CLAIM_IS_EMPTY_STRING);
     when(jwtClaims.getMessageType()).thenReturn(msgType);
-    when(jwtClaims.getCommunicativeActTypeCode()).thenReturn(act);
     when(jwtClaims.getToReceivingSystem()).thenReturn(ClaimValueList.CLAIM_IS_EMPTY_STRING);
 
     var auth = new C2SimAuthorizerImpl(jwtClaims);
@@ -115,20 +106,11 @@ class TestAuthorizeMessageTypeBody {
     C2SimClaims jwtClaims = mock(C2SimClaims.class);
     // Service is allowed to:
 
-    var classifications =
-        ClaimValueList.createWithTextNotation(C2SimClaims.SECURITY_CLASSIFICATION_CODE, "");
-
-    var act =
-        ClaimValueList.createWithTextNotation(
-            C2SimClaims.COMMUNICATIVE_ACT_TYPE_CODE, "INFORM;ACCEPT");
-
     var msgType = ClaimValueList.createWithTextNotation(C2SimClaims.MESSAGE_TYPE, "SystemMessage");
 
-    when(jwtClaims.getSecurityClassificationCode()).thenReturn(classifications);
     when(jwtClaims.getReplyToSystem()).thenReturn(ClaimValueList.CLAIM_IS_EMPTY_STRING);
     when(jwtClaims.getFromSendingSystem()).thenReturn(ClaimValueList.CLAIM_IS_EMPTY_STRING);
     when(jwtClaims.getMessageType()).thenReturn(msgType);
-    when(jwtClaims.getCommunicativeActTypeCode()).thenReturn(act);
     when(jwtClaims.getToReceivingSystem()).thenReturn(ClaimValueList.CLAIM_IS_EMPTY_STRING);
 
     // <CommunicativeActTypeCode>Inform</CommunicativeActTypeCode>
@@ -156,20 +138,11 @@ class TestAuthorizeMessageTypeBody {
     // Mock claims
     C2SimClaims jwtClaims = mock(C2SimClaims.class);
     // Service is allowed to:
-    var classifications =
-        ClaimValueList.createWithTextNotation(C2SimClaims.SECURITY_CLASSIFICATION_CODE, "ANY");
-
-    var act =
-        ClaimValueList.createWithTextNotation(
-            C2SimClaims.COMMUNICATIVE_ACT_TYPE_CODE, "Inform;Accept");
-
     var msgType = ClaimValueList.createWithTextNotation(C2SimClaims.MESSAGE_TYPE, "DomainMessage");
 
-    when(jwtClaims.getSecurityClassificationCode()).thenReturn(classifications);
     when(jwtClaims.getReplyToSystem()).thenReturn(ClaimValueList.ANY);
     when(jwtClaims.getFromSendingSystem()).thenReturn(ClaimValueList.ANY);
     when(jwtClaims.getMessageType()).thenReturn(msgType);
-    when(jwtClaims.getCommunicativeActTypeCode()).thenReturn(act);
     when(jwtClaims.getToReceivingSystem()).thenReturn(ClaimValueList.ANY);
 
     // <CommunicativeActTypeCode>Inform</CommunicativeActTypeCode>

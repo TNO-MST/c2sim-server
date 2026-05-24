@@ -41,6 +41,15 @@ public class NotificationsApiServiceImp implements NotificationsApiService {
     logger.debug(("NotificationsApiServiceImp started"));
   }
 
+  private static String createHostName(String host, int port) {
+    if (port <= 0 || port == 80 || port == 443) {
+      // Default ports are used
+      return host;
+    } else {
+      return host + ":" + port;
+
+    }
+  }
   /**
    * {@inheritDoc}
    *
@@ -56,19 +65,25 @@ public class NotificationsApiServiceImp implements NotificationsApiService {
     // Check if session name is valid
     c2simService.getSharedSession(sharedSessionName, true);
 
+    var basePath = config.getPrefixBasepath();
+    if (basePath != null)
+    {
+      basePath = "/";
+    }
     // TODO Should return FQDN; DNS resolve problem clients + cors
     String externalHostName = config.getExternalHostname();
     var hostname =
         (externalHostName != null && !externalHostName.isBlank())
-            ? String.format("%s:%d", externalHostName, config.getExternalPort())
-            : ctx.host();
+            ? createHostName(externalHostName, config.getExternalPort())
+            : createHostName(ctx.host(), ctx.port());
 
     String encodedClientId = URLEncoder.encode(clientId, StandardCharsets.UTF_8);
     String url =
         String.format(
-            "%s://%s/api/c2sim/session/%s/ws?%s=%s",
+            "%s://%s%sapi/c2sim/session/%s/ws?%s=%s",
             ctx.scheme().equals("http") ? "ws" : "wss",
             hostname,
+            basePath,
             sharedSessionName,
             DefaultWebSocketService.QUERY_PARAM_CLIENT_ID,
             encodedClientId);

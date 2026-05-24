@@ -1,9 +1,7 @@
 export const C2SIM_CLAIM_KEYS = [
-  "communicativeActTypeCode",
   "fromSendingSystem",
   "messageType",
   "replyToSystem",
-  "securityClassificationCode",
   "systemMessageType",
   "toReceivingSystem",
 ] as const;

@@ -124,14 +124,10 @@ public class PublishApiServiceImpl implements PublishApiService {
     // Store for later use in metric service (if needed)
     ctx.attribute(ContextHelper.ATTRIB_C2SIM_HEADER, header);
 
+    var auth = ContextHelper.getAuthorizer(ctx);
     // C2SIM service can now process the XML C2SIM message
     try (InputStream autoClose = new ByteArrayInputStream(bodyBytes)) {
-      c2simService.publishC2SimDoc(
-          sessionId,
-          clientId,
-          trackingId,
-          autoClose,
-          ctx.attribute(ContextHelper.ATTRIB_AUTHORIZER));
+      c2simService.publishC2SimDoc(sessionId, clientId, trackingId, autoClose, auth);
       return new ResponseSend(trackingId);
     } catch (IOException e) {
       throw new C2SimException(C2SimException.ErrorCode.IO_ERROR, "Failed closing publish");

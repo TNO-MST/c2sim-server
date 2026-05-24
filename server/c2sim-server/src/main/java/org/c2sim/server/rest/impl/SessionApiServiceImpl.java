@@ -116,9 +116,10 @@ public class SessionApiServiceImpl implements SessionApiService {
       @NotNull RequestJoinSession requestJoinSession,
       @NotNull Context ctx) {
     ctx.attribute(ATTRIB_SHARED_SESSION_ID, sharedSessionName);
+    var auth = ContextHelper.getAuthorizer(ctx);
     var trackingId = ContextHelper.getAttributeValue(ctx, ATTRIB_TRACKING_ID);
     var session = c2simService.getSharedSession(sharedSessionName, true);
-    session.joinSharedSession(clientId, trackingId, requestJoinSession);
+    session.joinSharedSession(clientId, trackingId, requestJoinSession, auth, ctx.ip());
     return new ResponseJoinSession(session.createDynamicInfo());
   }
 
