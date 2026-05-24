@@ -2,6 +2,7 @@ package org.c2sim.server.utils;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import org.apache.commons.text.StringEscapeUtils;
 import org.c2sim.server.services.C2SimService;
 import org.c2sim.server.sessions.SharedSessionClient;
 
@@ -95,18 +96,37 @@ public class StatusWebPage {
                    <caption>Connected clients</caption>
                    <tr>
                    <th>Display Name</th>
-                   <th>ID</th><th>Joined</th>
+                   <th>ID</th>
+                   <th>IP address</th>
+                   <th>AZP (auth)</th>
+                   <th>System name</th>
+                   <th>Joined</th>
                    <th>Streaming</th>
+                   <th>Handshake</th>
                    <th>Lifetime (minutes)
                    </th></tr>""");
       for (SharedSessionClient client : session.getClientsManager()) {
+        String waiting = "<waiting for join>";
+        boolean joined = client.hasJoinedSharedSession();
+        var displayName = joined ? client.getClientIdDisplayName() : waiting;
+        var ipAddress = joined ? client.getClientIpAddress() : waiting;
+        var azp = joined ? client.getAzp() : waiting;
+        var systemName = joined ? client.getSystemName() : waiting;
+
+        long sec = client.getPartiallyConnectedInSeconds();
+        var handshake = sec >= 0 ? String.format("%d sec", sec) : "Complete";
         html.append(
             String.format(
-                "<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>%n",
-                client.getClientIdDisplayName(),
-                client.getClientId(),
+                "<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td>"
+                    + "<td>%s</td><td>%s</td><td>%s</td></tr>%n",
+                StringEscapeUtils.escapeHtml4(displayName),
+                StringEscapeUtils.escapeHtml4(client.getClientId()),
+                StringEscapeUtils.escapeHtml4(ipAddress),
+                StringEscapeUtils.escapeHtml4(azp),
+                StringEscapeUtils.escapeHtml4(systemName),
                 client.hasJoinedSharedSession(),
                 client.hasStreamToClient(),
+                handshake,
                 client.getCreationLifetimeInMinutes()));
       }
       html.append(

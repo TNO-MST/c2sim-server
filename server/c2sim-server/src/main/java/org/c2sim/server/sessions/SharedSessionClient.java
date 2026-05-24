@@ -3,6 +3,7 @@ package org.c2sim.server.sessions;
 import io.javalin.websocket.WsCloseStatus;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Objects;
 import org.c2sim.server.streaming.StreamingClient;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -24,13 +25,17 @@ public class SharedSessionClient {
 
   private static final Logger logger = LoggerFactory.getLogger(SharedSessionClient.class);
 
+  public static final String NO_AZP = "<no authorization>";
   private final String sessionName;
   private final String clientId;
-  private String systemName;
-  private String clientIdDisplayName;
+  private String systemName = "";
+  private String azp = NO_AZP;
+  private String ipAddress = "";
+  private String clientIdDisplayName = "";
   private boolean joinCompleted = false;
   private StreamingClient webSocketClient = null;
   private Instant created = Instant.now();
+  private Instant lastConnectionStateChanged = Instant.now();
 
   /**
    * Creates a new client tracker.
@@ -78,6 +83,7 @@ public class SharedSessionClient {
       webSocketClient.onC2SimMessageReceived(this::handleOnMessageFromStreamingClient);
       webSocketClient.onClosed(x -> handleOnClosedFromStreamingClient());
     }
+    updateLastConnectionStateChanged();
   }
 
   // Placeholder; in current specification no messages will be received
@@ -91,6 +97,7 @@ public class SharedSessionClient {
         sessionName,
         getClientNameForDebug());
     webSocketClient = null;
+    updateLastConnectionStateChanged();
   }
 
   /**
@@ -111,9 +118,13 @@ public class SharedSessionClient {
   public boolean sendC2SimMessage(@Nullable SharedSessionClient publisher, String c2simMessageXml) {
     boolean isPublisher =
         ((publisher != null) && (publisher.getClientId().contentEquals(clientId)));
-    if (hasStreamToClient() && hasJoinedSharedSession() && (publisher == null || !isPublisher)) {
-      webSocketClient.sendC2SimMessage(c2simMessageXml);
-      return true;
+    // Only send messages to client if fully connected (joined and has stream)
+    if (hasStreamToClient() && hasJoinedSharedSession()) {
+      // Don't send message it own messages to itself
+      if ((publisher == null || !isPublisher)) {
+        webSocketClient.sendC2SimMessage(c2simMessageXml);
+        return true;
+      }
     }
     return false;
   }
@@ -133,6 +144,7 @@ public class SharedSessionClient {
    * @param name the system name (must not be {@code null})
    */
   public void setSystemName(@NotNull String name) {
+    Objects.requireNonNull(name, "System name must not be null");
     systemName = name;
   }
 
@@ -143,6 +155,44 @@ public class SharedSessionClient {
    */
   public String getSystemName() {
     return systemName;
+  }
+
+  /**
+   * The Authorized Party in OpenID Connect token (joining session)
+   *
+   * @param azp the azp (must not be {@code null})
+   */
+  public void setAzp(@NotNull String azp) {
+    Objects.requireNonNull(azp, "AZP must not be null");
+    this.azp = azp;
+  }
+
+  /**
+   * Returns The Authorized Party in OpenID Connect token (joining session)
+   *
+   * @return the azp
+   */
+  public String getAzp() {
+    return azp;
+  }
+
+  /**
+   * The IP address of the client (joining session)
+   *
+   * @param address the ip address (must not be {@code null})
+   */
+  public void setClientIpAddress(@NotNull String address) {
+    Objects.requireNonNull(ipAddress, "address must not be null");
+    ipAddress = address;
+  }
+
+  /**
+   * Returns the ip address of the client (used when joining session)
+   *
+   * @return the ip address of the client
+   */
+  public String getClientIpAddress() {
+    return ipAddress;
   }
 
   /**
@@ -170,6 +220,7 @@ public class SharedSessionClient {
    */
   public void setHasJoinedSharedSession(boolean joined) {
     joinCompleted = joined;
+    updateLastConnectionStateChanged();
   }
 
   /**
@@ -202,12 +253,18 @@ public class SharedSessionClient {
   /** {@inheritDoc} */
   @Override
   public String toString() {
+    var handshakeSec = getPartiallyConnectedInSeconds();
+    var handshake =
+        handshakeSec >= 0 ? String.format("handshake duration %d sec", handshakeSec) : "Complete";
     return String.format(
-        "%s [System %s]: %s | %s | lifetime %d min ",
+        "%s [System %s]: %s | %s | %s | %s | %s | lifetime %d min ",
         getClientNameForDebug(),
         systemName,
+        azp,
+        ipAddress,
         hasJoinedSharedSession() ? "JOINED" : "NOT JOINED",
         hasStreamToClient() ? "STREAM CONNECTED" : "STREAM NOT CONNECTED",
+        handshake,
         getCreationLifetimeInMinutes());
   }
 
@@ -221,11 +278,29 @@ public class SharedSessionClient {
   }
 
   /**
+   * Returns the number of minutes since this client was created.
+   *
+   * @return returns -1 if there is a full connection else the number of sec since last connection
+   *     state change (either join or stream connection)
+   */
+  public long getPartiallyConnectedInSeconds() {
+    if (hasJoinedSharedSession() && hasStreamToClient()) {
+      return -1;
+    }
+    return Duration.between(lastConnectionStateChanged, Instant.now()).toSeconds();
+  }
+
+  private void updateLastConnectionStateChanged() {
+    lastConnectionStateChanged = Instant.now();
+  }
+
+  /**
    * Marks this client as resigned, logs the event, and closes any open streaming connection.
    *
    * @param reason the reason provided by the client
    */
   public void resign(@NotNull String reason) {
+    updateLastConnectionStateChanged();
     logger.info(
         "Session '{}': {} has resigned (left session), reason: '{}'.",
         sessionName,

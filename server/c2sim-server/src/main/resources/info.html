@@ -70,6 +70,11 @@
           box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
         }
 
+a {
+  display: inline-block;
+  width: 320px;
+  text-align: center;
+}
         footer {
           margin-top: 40px;
           font-size: 0.9em;
@@ -86,19 +91,22 @@
             transform: translateY(0);
           }
         }
+        .menu-item {
+    margin: 15px 0;
+}
     </style>
 </head>
 <body>
 <div class="container">
     <h1>C2SIM Server {{version}}</h1>
     <ul>
-        <li><a href="docs"> C2SIM Server Documentation</a></li>
-        <li><a href="openapi-ui.html"> Explore & Test RESTful APIs</a></li>
-        <li><a href="openapi.yaml"> Get OpenAPI Specification (OAS)</a></li>
-        <li><a href="/status"> Show C2SIM server status</a></li>
-        <li><a href="/health"> Health endpoint</a></li>
-        <li><a href="/configuration">C2SIM server configuration</a></li>
-        <li><a href="/metrics"> Open telemetry endpoint</a></li>
+        <li class="menu-item"><a href="docs/index.html"> C2SIM Server Documentation</a></li>
+        <li class="menu-item"><a href="openapi-ui.html"> Explore & Test RESTful APIs</a></li>
+        <li class="menu-item"><a href="openapi.yaml"> Get OpenAPI Specification (OAS)</a></li>
+        <li class="menu-item"><a href="status"> Show C2SIM server status</a></li>
+        <li class="menu-item"><a href="health"> Health endpoint</a></li>
+        <li class="menu-item"><a href="configuration">C2SIM server configuration</a></li>
+        <li class="menu-item"><a href="metrics"> Open telemetry endpoint</a></li>
     </ul>
     <footer>Build {{build}}</footer>
 </div>

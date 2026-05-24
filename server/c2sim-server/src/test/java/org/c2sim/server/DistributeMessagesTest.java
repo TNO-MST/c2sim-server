@@ -29,11 +29,15 @@ class DistributeMessagesTest extends BaseTest {
     sharedSession.joinSharedSession(
         CLIENT_ID_A,
         "joining A",
-        new RequestJoinSession(CLIENT_ID_A_SYSTEM_NAME, CLIENT_ID_A_SYSTEM_NAME));
+        new RequestJoinSession(CLIENT_ID_A_SYSTEM_NAME, CLIENT_ID_A_SYSTEM_NAME),
+        null,
+        null);
     sharedSession.joinSharedSession(
         CLIENT_ID_B,
         "joining B",
-        new RequestJoinSession(CLIENT_ID_B_SYSTEM_NAME, CLIENT_ID_B_SYSTEM_NAME));
+        new RequestJoinSession(CLIENT_ID_B_SYSTEM_NAME, CLIENT_ID_B_SYSTEM_NAME),
+        null,
+        null);
 
     // Get the shared session client
     var clientA = sharedSession.getOrCreateClientById(CLIENT_ID_A);

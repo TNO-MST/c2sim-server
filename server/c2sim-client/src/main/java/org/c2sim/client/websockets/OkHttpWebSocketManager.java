@@ -361,7 +361,6 @@ public final class OkHttpWebSocketManager {
           @Override
           public void onOpen(@NotNull WebSocket ws, @NotNull Response response) {
             logger.debug("WebSocket connected to C2SIM server.");
-            ;
             webSocket = ws;
             connected.set(true);
             attempt.set(0);

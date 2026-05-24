@@ -2,7 +2,10 @@ package org.c2sim.server.exceptions;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
+import org.c2sim.authorization.impl.AuthorizationResult;
+import org.c2sim.authorization.interfaces.C2SimAuthorizer;
 import org.c2sim.lox.C2SimMsgKind;
 import org.c2sim.lox.exceptions.LoxException;
 import org.c2sim.statemachine.State;
@@ -88,5 +91,46 @@ public class SharedSessionExceptionFactory {
             "Initialization Complete message is only processed in state INITIALIZING, "
                 + "current state is %s",
             currentState));
+  }
+
+  /**
+   * Throws a {@link C2SimException} when the provided fromSendingSystem in CLAIM doesn't matches
+   * with the system name.
+   *
+   * @param auth C2SIM authorization object
+   * @param systemName the requested system name
+   * @throws C2SimException when the provided fromSendingSystem in CLAIM doesn't matches with the
+   *     system name
+   */
+  public static void authorizeFromSendingSystem(C2SimAuthorizer auth, String systemName) {
+    if (auth != null) {
+      var result = auth.authorizeFromSendingSystem(systemName);
+      if (result.code != AuthorizationResult.Code.AUTHORIZED) {
+        throw new C2SimException(
+            C2SimException.ErrorCode.AUTHORIZATION_FAILURE,
+            String.format(
+                "The system name '%s' doesn't match with claim FromSendingSystem '%s'.",
+                systemName, auth.c2SimClaims().getFromSendingSystem()));
+      }
+    }
+  }
+
+  /**
+   * Throws a {@link C2SimException} indicating that a C2SIM client already joined
+   *
+   * @param sessionName the name of the shared session
+   * @param systemName the sending system name
+   * @throws C2SimException always
+   */
+  public static void throwAlreadyJoined(String sessionName, String systemName) {
+
+    Objects.requireNonNull(sessionName, "Session name is null");
+    Objects.requireNonNull(systemName, "System name is null");
+
+    throw new C2SimException(
+        C2SimException.ErrorCode.C2SIM_CLIENT_ALREADY_JOINED,
+        String.format(
+            "Already joined in shared session '%s' as system '%s'.", sessionName, systemName),
+        new HashMap<>(Map.of(C2SimException.PROP_SYSTEM_NAME, systemName)));
   }
 }

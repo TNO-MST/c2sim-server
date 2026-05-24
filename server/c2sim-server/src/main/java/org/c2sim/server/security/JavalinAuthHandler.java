@@ -88,6 +88,7 @@ public class JavalinAuthHandler {
       return;
     }
 
+    var basePath = configService.getPrefixBasepath();
     if (!ctx.path().startsWith("/api")) {
       // Only API is under restriction
       return;
@@ -101,7 +102,9 @@ public class JavalinAuthHandler {
 
     // Throws Authorization exception when invalid
     var claims = webService.getClaimsBuilder().build(token);
+
     var authorizer = new C2SimAuthorizerImpl(claims);
+
     ctx.attribute(ContextHelper.ATTRIB_AUTHORIZER, authorizer);
   }
 }

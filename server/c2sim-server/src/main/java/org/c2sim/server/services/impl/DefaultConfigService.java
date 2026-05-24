@@ -87,6 +87,13 @@ public class DefaultConfigService implements ConfigService {
           "Configuration endpoint /configuration is be exposed ",
           Boolean.class,
           Config::asBool);
+  private static final Config.Option<String> C2SIM_PREFIX =
+      new Config.Option<>(
+          "C2SIM_PREFIX",
+          "",
+          "Experimental: Prefix the webserver, for example /c2sim-server ",
+          String.class,
+          Config::asString);
 
   private static final String DEFAULT_SHARED_SESSION_NAME = "default";
   private static final String DEFAULT_SHARED_SESSION_SCHEMA_VERSION = "2.0.0";
@@ -114,6 +121,7 @@ public class DefaultConfigService implements ConfigService {
               .add(C2SIM_BEARER_PUBLIC_KEY)
               .add(C2SIM_IDENTITY_PROVIDER_URL)
               .add(C2SIM_EXPOSE_CFG_ENDPOINT)
+              .add(C2SIM_PREFIX)
               .build(envService.getenv()); // reads System.getenv
       var table = config.asTable();
       logger.info("Server config:\n {}", table);
@@ -292,5 +300,35 @@ public class DefaultConfigService implements ConfigService {
   @Override
   public String getSystemNameServer() {
     return "C2SIM_SERVER";
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public String getPrefix() {
+
+    return cfg.get(C2SIM_PREFIX);
+  }
+
+  private String basePath = null;
+
+  /** {@inheritDoc} */
+  @Override
+  public String getPrefixBasepath() {
+
+    if (basePath == null) {
+      var prefix = getPrefix();
+      if ((prefix != null) && (!prefix.isEmpty())) {
+        basePath = (!prefix.startsWith("/")) ? String.format("/%s", prefix) : prefix;
+      } else {
+        basePath = "/";
+      }
+      if (!basePath.startsWith("/")) {
+        basePath = "/" + basePath;
+      }
+      if (!basePath.endsWith("/")) {
+        basePath += "/";
+      }
+    }
+    return basePath;
   }
 }

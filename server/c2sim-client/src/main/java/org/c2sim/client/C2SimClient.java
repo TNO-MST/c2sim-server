@@ -479,6 +479,7 @@ public class C2SimClient {
   private void attemptConnection() {
     try {
       joinSharedSession();
+      joinSharedSession();
     } catch (C2SimRestException | ApiException | C2ClientException e) {
       LoggingHelper.logRestException(
           logger,
@@ -1211,11 +1212,54 @@ public class C2SimClient {
 
   private class C2SimSocketListener implements OkHttpWebSocketManager.WebSocketListener {
 
+    private boolean disconnectedWithError = false;
+    private C2SimClient client;
+
+    /*
+    TODO:
+     - how to handle reconnect of websocket?
+     Two possible causes for reconnect:
+     - Network error: no problem
+     - Restart C2SIM sever: need to create session if needed and join again
+    For now: just
+     */
+    private void rejoinSharedSessionAfterWebsocketReconnect() {
+      logger.debug(
+          "{}WebSocket reconnected after WebSocket disconnect, if C2SIM server restarted make sure rejoin  '{}'.",
+          getDebugPrefix(),
+          sharedSessionName);
+      try {
+        // Should throw C2SIM_CLIENT_ALREADY_JOINED exception from server
+
+        ExceptionHelper.executeWithExceptionWrapping(
+            () ->
+                sessionApi.joinSession(
+                    clientId,
+                    sharedSessionName,
+                    new RequestJoinSession()
+                        .systemName(systemName)
+                        .clientIdDisplayName(clientIdDisplayName)));
+        logger.warn(
+            "No C2SIM_CLIENT_ALREADY_JOINED error received, C2SIM server was restarted? "
+                + " TODO: now joined again, is total reconnect better ?");
+      } catch (C2SimRestException | ApiException e) {
+        // (c2simRestException.getError().getCode().equalsIgnoreCase("C2SIM_CLIENT_ALREADY_JOINED"))
+        // {
+
+        // don't care: if there was a network issue, no re-join is needed
+      }
+    }
+
     @Override
     public void onOpen(okhttp3.Response response) {
       logger.debug("{}WebSocket connected to C2SIM server", getDebugPrefix());
       hasStreamToSharedSession = true;
       c2simClientListener.onStreamConnected(C2SimClient.this);
+
+      if (disconnectedWithError) {
+        disconnectedWithError = false;
+        rejoinSharedSessionAfterWebsocketReconnect();
+      }
       syncStateMachine();
     }
 
@@ -1232,6 +1276,9 @@ public class C2SimClient {
 
     @Override
     public void onFailure(Throwable t, okhttp3.Response response) {
+      if (hasStreamToSharedSession) {
+        disconnectedWithError = true;
+      }
       String message = t.getMessage() != null ? t.getMessage() : t.getClass().getSimpleName();
       logger.error("{}WebSocket failure '{}'.", getDebugPrefix(), message);
       c2simClientListener.onStreamFault(C2SimClient.this, message);

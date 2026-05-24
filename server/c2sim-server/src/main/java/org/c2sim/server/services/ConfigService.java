@@ -141,4 +141,23 @@ public interface ConfigService {
    * @return if endpoint for config is exposed
    */
   boolean getConfigEndpointIsExposed();
+
+  /**
+   * Prefix the C2SIM server url, for example /c2sim-server
+   *
+   * @return the prefix for the server url, for example /c2sim-server
+   */
+  default String getPrefix() {
+    return "/";
+  }
+
+  /**
+   * return the getPrefix normalized For example C2SIM url is http://FQDN/c2sim-server/ the base
+   * prefix is /c2sim-server C2SIM url is http://FQDN/ the base prefix is / (default)
+   *
+   * @return the base prefix, always with / on the end! (can return null when mocking)
+   */
+  default String getPrefixBasepath() {
+    return "/";
+  }
 }
