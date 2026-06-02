@@ -23,6 +23,7 @@ import org.c2sim.server.utils.C2SimObjectMapper;
  *   <li>{@link WebService} → {@link DefaultWebService}
  *   <li>{@link WebSocketService} → {@link DefaultWebSocketService}
  *   <li>{@link MetricService} → {@link DefaultMetricService}
+ *   <li>{@link AuditService} → {@link DefaultAuditService}
  * </ul>
  *
  * <p>Also provides the shared {@link ObjectMapper} instance via {@link #provideObjectMapper()}.
@@ -44,6 +45,7 @@ public class DefaultModule extends AbstractModule {
     bind(WebService.class).to(DefaultWebService.class).in(Scopes.SINGLETON);
     bind(WebSocketService.class).to(DefaultWebSocketService.class).in(Scopes.SINGLETON);
     bind(MetricService.class).to(DefaultMetricService.class).in(Scopes.SINGLETON);
+    bind(AuditService.class).to(DefaultAuditService.class).in(Scopes.SINGLETON);
   }
 
   /**

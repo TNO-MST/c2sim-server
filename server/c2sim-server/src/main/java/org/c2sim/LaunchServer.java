@@ -75,6 +75,7 @@ public class LaunchServer {
         var sharedSession =
             new SharedSession(
                 getMetricService(),
+                getAuditService(),
                 getConfigService(),
                 getC2SimSchemaService(),
                 defaultSessionCfg.getSharedSessionName(),
@@ -161,5 +162,14 @@ public class LaunchServer {
    */
   public MetricService getMetricService() {
     return injector.getInstance(MetricService.class);
+  }
+
+  /**
+   * Returns the {@link AuditService} singleton from the injector.
+   *
+   * @return the audit service
+   */
+  public AuditService getAuditService() {
+    return injector.getInstance(AuditService.class);
   }
 }

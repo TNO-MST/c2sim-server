@@ -300,6 +300,8 @@ public class SharedSessionClient {
    * @param reason the reason provided by the client
    */
   public void resign(@NotNull String reason) {
+    Objects.requireNonNull(reason, "reason must not be null");
+
     updateLastConnectionStateChanged();
     logger.info(
         "Session '{}': {} has resigned (left session), reason: '{}'.",
@@ -314,5 +316,7 @@ public class SharedSessionClient {
       this.webSocketClient.closeConnection(
           WsCloseStatus.NORMAL_CLOSURE, "Requested by C2SIM client (resigned)");
     }
+    joinCompleted = false;
+
   }
 }

@@ -1,5 +1,6 @@
 package org.c2sim.server.sessions;
 
+import static org.c2sim.authorization.exceptions.AuthorisationException.AuthErrorCode.CLAIM_CHECK;
 import static org.c2sim.authorization.impl.AuthorizationResult.OK;
 import static org.c2sim.lox.C2SimMsgKind.*;
 import static org.c2sim.lox.sax.DetectMsgKind.determineMsgKind;
@@ -13,8 +14,12 @@ import java.nio.charset.StandardCharsets;
 import java.time.OffsetDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import org.c2sim.authorization.exceptions.AuthorisationException;
 import org.c2sim.authorization.interfaces.C2SimAuthorizer;
 import org.c2sim.lox.C2SimMsgKind;
+import org.c2sim.lox.C2SimMsgKindCategory;
+import org.c2sim.lox.C2SimMsgKindGroups;
 import org.c2sim.lox.exceptions.LoxException;
 import org.c2sim.lox.exceptions.ValidationException;
 import org.c2sim.lox.helpers.MessageTypeHelper;
@@ -27,6 +32,7 @@ import org.c2sim.server.api.models.SessionInfo;
 import org.c2sim.server.exceptions.C2SimException;
 import org.c2sim.server.exceptions.SharedSessionExceptionFactory;
 import org.c2sim.server.exceptions.XsdValidatorExceptionHelper;
+import org.c2sim.server.services.AuditService;
 import org.c2sim.server.services.C2SimSchemaService;
 import org.c2sim.server.services.ConfigService;
 import org.c2sim.server.services.MetricService;
@@ -57,6 +63,8 @@ public class SharedSession {
   private final String schemaVersion;
   private final String sharedSessionName;
   private final MetricService metricService;
+  private final ConfigService configService;
+  private final AuditService auditService;
   private final C2SimSchemaService c2SimSchemaService;
   private final SharedSessionClientManager clients;
   private final C2SimStateMachine stateMachine;
@@ -86,6 +94,7 @@ public class SharedSession {
    */
   public SharedSession(
       @NotNull MetricService metricService,
+      @NotNull AuditService auditService,
       @NotNull ConfigService configService,
       @NotNull C2SimSchemaService c2simSchemaService,
       @NotNull String sharedSessionName,
@@ -96,6 +105,8 @@ public class SharedSession {
     this.clients = new SharedSessionClientManager(this);
     this.created = OffsetDateTime.now();
     this.metricService = Objects.requireNonNull(metricService, "MetricService is null.");
+    this.auditService = Objects.requireNonNull(auditService, "AuditService is null.");
+    this.configService = Objects.requireNonNull(configService, "ConfigService is null.");
     this.c2SimSchemaService =
         Objects.requireNonNull(c2simSchemaService, "C2SimSchemaService is null.");
     this.sharedSessionName =
@@ -144,7 +155,7 @@ public class SharedSession {
    */
   public void publishC2SimDoc(
       String clientId, String trackingId, InputStream xmlDoc, C2SimAuthorizer authorizer)
-      throws C2SimException {
+          throws C2SimException, AuthorisationException {
     Objects.requireNonNull(clientId, "clientId is null.");
     Objects.requireNonNull(trackingId, "trackingId is null.");
     Objects.requireNonNull(xmlDoc, "xmlDoc is null.");
@@ -158,26 +169,36 @@ public class SharedSession {
 
     checkIfJoinedSession(client);
     var ctx = buildMessageContext(xmlDoc);
+
     validateMessage(ctx);
     if (authorizer != null) {
-      checkAuthorizer(authorizer, ctx.header());
+      checkAuthorizer(authorizer, ctx.header(), ctx.kind, ctx.category);
     }
     dispatchByKind(ctx);
 
     metricService.incValidMessagesSendByC2SimClient(
-        getSharedSessionName(), ctx.header().getFromSendingSystem(), resolveMetricType(ctx.kind()));
+        getSharedSessionName(),
+        client.getClientIpAddress(),
+        client.getSystemName(),
+        resolveMetricType(ctx.kind()));
 
     if (shouldDistribute(ctx.kind())) {
       clients.distributeMessage(client, trackingId, ctx.kind(), ctx.toStream());
     }
   }
 
+
+
   // -------------------------------------------------------------------------
   // Pipeline steps
   // -------------------------------------------------------------------------
 
   /** Holds the pre-parsed content of an incoming C2SIM message. */
-  private record C2SimMessageContext(byte[] xml, C2SimMsgKind kind, C2SIMHeaderType header) {
+  private record C2SimMessageContext(
+          byte[] xml,
+          C2SimMsgKind kind,
+          C2SimMsgKindCategory category,
+          C2SIMHeaderType header) {
     ByteArrayInputStream toStream() {
       return new ByteArrayInputStream(xml);
     }
@@ -190,7 +211,8 @@ public class SharedSession {
   private C2SimMessageContext buildMessageContext(InputStream xmlDoc) {
     var xml = readXmlBytes(xmlDoc);
 
-    var kind = determineMsgKind(new ByteArrayInputStream(xml));
+    var kindRecord = determineMsgKind(new ByteArrayInputStream(xml));
+    var kind = kindRecord.kind();
     if (kind == C2SimMsgKind.MESSAGE_BODY_NOT_WRAPPED) {
       throw new C2SimException(
           C2SimException.ErrorCode.C2SIM_ROOT_ELEMENT_MUST_BE_MESSAGE,
@@ -200,7 +222,7 @@ public class SharedSession {
       logger.warn("C2SIM message type was not recognised in XML message.");
     }
     var header = extractC2SimHeader(new ByteArrayInputStream(xml));
-    return new C2SimMessageContext(xml, kind, header);
+    return new C2SimMessageContext(xml, kind, kindRecord.category(),  header);
   }
 
   private void validateMessage(C2SimMessageContext ctx) {
@@ -259,13 +281,22 @@ public class SharedSession {
     }
   }
 
-  private void checkAuthorizer(C2SimAuthorizer authorizer, C2SIMHeaderType header) {
+  private void checkAuthorizer(
+          C2SimAuthorizer authorizer,
+          C2SIMHeaderType header,
+          C2SimMsgKind kind,
+          C2SimMsgKindCategory category) throws AuthorisationException{
     Objects.requireNonNull(authorizer, "authorizer is null.");
     Objects.requireNonNull(header, "header is null.");
-    logger.debug("Authorizer -> '{}'.", authorizer);
-    var result = authorizer.authorizeFromSendingSystem(header.getFromSendingSystem());
+
+    var result = authorizer.authorizeComleteMessage(
+       header,
+            kind,
+            category,
+            configService.getC2SimProtocol(),
+            configService.getC2SimProtocolVersion());
     if (result != OK) {
-      logger.info("Sender '{}' not auth ", header.getFromSendingSystem());
+      throw new AuthorisationException(CLAIM_CHECK, result.message);
     }
   }
 
@@ -337,7 +368,24 @@ public class SharedSession {
   }
 
   private MetricService.MetricMsgType resolveMetricType(C2SimMsgKind kind) {
-    return metricTypeLookup.getOrDefault(kind, MetricService.MetricMsgType.OTHER);
+    switch (kind) {
+        case C2SIM_INITIALIZATION -> {
+            return MetricService.MetricMsgType.INIT;
+        }
+        case ORDER -> {
+            return MetricService.MetricMsgType.ORDER;
+        }
+        case REPORT -> {
+            return MetricService.MetricMsgType.REPORT;
+        }
+    }
+    if (C2SimMsgKindGroups.isStateManagementMsgGroup(kind)) {
+      return MetricService.MetricMsgType.STATE_MANAGEMENT;
+    }
+    if (C2SimMsgKindGroups.isSimanMsgGroup(kind)) {
+      return MetricService.MetricMsgType.SIMAN;
+    }
+   return MetricService.MetricMsgType.OTHER;
   }
 
   // -------------------------------------------------------------------------
@@ -459,7 +507,7 @@ public class SharedSession {
     Objects.requireNonNull(clientId, "Client ID cannot be null");
     Objects.requireNonNull(requestJoinSession, "requestJoinSession cannot be null");
 
-    // Check claims
+    // The FromSendingSystem must match the system name in CLAIM
     SharedSessionExceptionFactory.authorizeFromSendingSystem(
         auth, requestJoinSession.getSystemName());
 
@@ -477,6 +525,7 @@ public class SharedSession {
       return;
     }
 
+
     var claimsAsText =
         auth != null
             ? auth.c2SimClaims().toTextDescription()
@@ -493,13 +542,25 @@ public class SharedSession {
     sessionClient.setClientIpAddress(ipAddress);
     sessionClient.setHasJoinedSharedSession(true);
     logger.info(
-        "Session '{}': Joining request '{}' for shared session '{}' granted for '{}', provided claims: {}.",
+        "Session '{}': Joining request '{}' for shared session '{}' " +
+                "granted for '{}' as system '{}', provided claims: {}.",
         getSharedSessionName(),
         trackingId,
         getSharedSessionName(),
         sessionClient.getClientNameForDebug(),
+        sessionClient.getSystemName(),
         claimsAsText);
     clients.logC2SimClientsInfo();
+
+    auditService.joinedSharedSessionSuccessfully(
+        getSharedSessionName(),
+            sessionClient.getSystemName(),
+            auth != null ? auth.c2SimClaims().getClientName() : "Not authenticated",
+            ipAddress,
+            auth != null ? auth.c2SimClaims().getJwtToken() : "");
+    if (auth != null) {
+      logger.info("JWT token: {}", auth.c2SimClaims().getJwtToken());
+    }
   }
 
   /**
@@ -511,7 +572,24 @@ public class SharedSession {
    */
   public void resignSession(
       @NotNull String clientId, @NotNull String trackingId, @NotNull String reason) {
-    clients.resignClient(clientId, trackingId, reason);
+    Objects.requireNonNull(clientId, "Client ID cannot be null");
+    Objects.requireNonNull(trackingId, "Tracking ID cannot be null");
+    Objects.requireNonNull(reason, "Reason cannot be null");
+
+    var client = clients.getClientById(clientId);
+    if (client != null) {
+      clients.resignClient(clientId, trackingId, reason);
+      auditService.resignedSharedSessionSuccessfully(
+              getSharedSessionName(),
+              client.getSystemName(),
+              client.getAzp(),
+              client.getClientIpAddress());
+    } else {
+      logger.warn(
+              "Session '{}': No client found with id '{}' to resign').",
+              getSharedSessionName(), clientId);
+
+    }
   }
 
   // -------------------------------------------------------------------------

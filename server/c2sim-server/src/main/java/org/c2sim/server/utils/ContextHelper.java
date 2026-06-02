@@ -46,7 +46,7 @@ public class ContextHelper {
    *
    * @param ctx Javalin context
    * @param key Storage key
-   * @return the attribute value or default value
+   * @return the attribute value or default value "unknown"
    */
   public static String getAttributeValue(Context ctx, String key) {
     return getAttributeValue(ctx, key, "<unknown>");
@@ -76,6 +76,15 @@ public class ContextHelper {
   }
 
   /**
+   * Store C2SimHeader
+   * @param ctx The Context
+   * @param header The C2SimHeader
+   */
+  public static void setC2SimHeader(Context ctx, C2SIMHeaderType header) {
+    ctx.attribute(ContextHelper.ATTRIB_C2SIM_HEADER, header);
+  }
+
+  /**
    * Return the C2SimAuthorizer from javalin context (if exist)
    *
    * @param ctx Javalin context
@@ -84,4 +93,6 @@ public class ContextHelper {
   public static C2SimAuthorizer getAuthorizer(Context ctx) {
     return ctx.attribute(ATTRIB_AUTHORIZER);
   }
+
+
 }

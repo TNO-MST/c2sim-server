@@ -8,10 +8,7 @@ import com.google.gson.Gson;
 import io.javalin.Javalin;
 import io.javalin.testtools.JavalinTest;
 import org.c2sim.server.api.models.C2SimError;
-import org.c2sim.server.services.C2SimService;
-import org.c2sim.server.services.ConfigService;
-import org.c2sim.server.services.MetricService;
-import org.c2sim.server.services.WebSocketService;
+import org.c2sim.server.services.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,6 +24,8 @@ class DefaultWebServiceTest {
   @Mock private C2SimService c2SimService;
 
   @Mock private MetricService metricService;
+
+  @Mock private AuditService auditService;
 
   @Mock private WebSocketService webSocketService;
 
@@ -44,7 +43,13 @@ class DefaultWebServiceTest {
     // when(configService.getConfigEndpointIsExposed()).thenReturn(false);
 
     webService =
-        new DefaultWebService(mapper, configService, c2SimService, metricService, webSocketService);
+        new DefaultWebService(
+                mapper,
+                configService,
+                c2SimService,
+                metricService,
+                auditService,
+                webSocketService);
   }
 
   @Test
@@ -68,7 +73,7 @@ class DefaultWebServiceTest {
     JavalinTest.test(
         app,
         (server, client) -> {
-          var response = client.get("/api/test"); // any /api route
+          var response = client.get("/api/c2sim/session/list"); // any /api route
           assertEquals(400, response.code());
           assertNotNull(response.body());
           String json = response.body().string();

@@ -8,6 +8,8 @@ import org.c2sim.authorization.exceptions.AuthorisationException;
 import org.jose4j.jwk.HttpsJwks;
 import org.jose4j.jwk.JsonWebKey;
 
+import static org.c2sim.authorization.exceptions.AuthorisationException.AuthErrorCode.SIGNATURE_VERIFICATION_FAILED;
+
 /** used for internal testing, not needed for general workflow */
 public class JwksUtil {
 
@@ -41,7 +43,7 @@ public class JwksUtil {
       return (PublicKey) key;
 
     } catch (Exception e) {
-      throw new AuthorisationException("Failed to get public key from openid provider");
+      throw new AuthorisationException(SIGNATURE_VERIFICATION_FAILED, "Failed to get public key from openid provider");
     }
   }
 

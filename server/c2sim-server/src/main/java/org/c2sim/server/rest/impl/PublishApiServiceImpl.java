@@ -16,6 +16,7 @@ import org.c2sim.server.services.C2SimService;
 import org.c2sim.server.services.ConfigService;
 import org.c2sim.server.services.MetricService;
 import org.c2sim.server.utils.ContextHelper;
+import org.c2sim.server.utils.SystemNameHelper;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -96,35 +97,42 @@ public class PublishApiServiceImpl implements PublishApiService {
     // It for client not mandatory to set this header field
     fileSizeInMb = bodyBytes.length / MEGA_BYTE;
 
+    // Check file size of C2SIM message (prevent wasting CPU cycles)
+    if (fileSizeInMb > configService.getMaxC2SimMessageSizeInMb()) {
+      throw new C2SimException(
+              C2SimException.ErrorCode.C2SIM_MSG_SIZE_EXCEEDED,
+              String.format(
+                      "C2SIM messages exceeds %.2f MB limit (size is %.2f MB)  ",
+                      configService.getMaxC2SimMessageSizeInMb(), fileSizeInMb));
+    }
+
     // Need C2SIM header for metrics (the sender system), see failed requests
     // The C2SIM header is also extracted in C2SIM service
     // So is now done twice, maybe improve in future
     var header = ExtractC2SimHeader.extract(new ByteArrayInputStream(bodyBytes));
-
-    // Store metric info c2sim message size
-    // TODO use auth header is exist?
-    var systemName = header != null ? header.getFromSendingSystem() : "UNKNOWN";
-    metricService.incBytesSendByC2SimClient(sessionId, systemName, bodyBytes.length);
-
+    // Check C2SIM header
     if (header == null) {
       throw new C2SimException(
-          C2SimException.ErrorCode.C2SIM_INVALID_HEADER,
-          "Could not extract C2SIM header from C2SIM message.");
+              C2SimException.ErrorCode.C2SIM_INVALID_HEADER,
+              "Could not extract C2SIM header from C2SIM message.");
     }
 
-    // Check file size of C2SIM message (prevent wasting CPU cycles)
-    if (fileSizeInMb > configService.getMaxC2SimMessageSizeInMb()) {
-      throw new C2SimException(
-          C2SimException.ErrorCode.C2SIM_MSG_SIZE_EXCEEDED,
-          String.format(
-              "C2SIM messages exceeds %.2f MB limit (size is %.2f MB)  ",
-              configService.getMaxC2SimMessageSizeInMb(), fileSizeInMb));
-    }
-
+    // Store metric info c2sim message size
     // Store for later use in metric service (if needed)
-    ctx.attribute(ContextHelper.ATTRIB_C2SIM_HEADER, header);
+
+    ContextHelper.setC2SimHeader(ctx, header);
 
     var auth = ContextHelper.getAuthorizer(ctx);
+    var systemName = SystemNameHelper.getSystemName(auth, header);
+
+    metricService.incBytesSendByC2SimClient(sessionId, ctx.ip(), systemName, bodyBytes.length);
+
+
+
+
+
+
+
     // C2SIM service can now process the XML C2SIM message
     try (InputStream autoClose = new ByteArrayInputStream(bodyBytes)) {
       c2simService.publishC2SimDoc(sessionId, clientId, trackingId, autoClose, auth);

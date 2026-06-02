@@ -8,6 +8,7 @@ import java.util.*;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import org.c2sim.lox.C2SimMsgKind;
+import org.c2sim.lox.C2SimMsgKindCategory;
 import org.c2sim.lox.helpers.MeasureHelper;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -21,15 +22,9 @@ public final class DetectMsgKind {
     throw new AssertionError("Only static functions");
   }
 
-  /**
-   * Extract message kind from XML message
-   *
-   * @param xmlInput the XML messages
-   * @return The message kind
-   */
-  public static MeasureHelper.MeasurementResult<C2SimMsgKind> determineMsgKindMeasured(
-      InputStream xmlInput) {
-    return measureMs(() -> determineMsgKind(xmlInput));
+  public record MsgKinds(
+          C2SimMsgKind kind,
+          C2SimMsgKindCategory category) {
   }
 
   /**
@@ -38,7 +33,18 @@ public final class DetectMsgKind {
    * @param xmlInput the XML messages
    * @return The message kind
    */
-  public static C2SimMsgKind determineMsgKind(String xmlInput) {
+  public static MeasureHelper.MeasurementResult<C2SimMsgKind> determineMsgKindMeasured(
+      InputStream xmlInput) {
+    return measureMs(() -> determineMsgKind(xmlInput).kind());
+  }
+
+  /**
+   * Extract message kind from XML message
+   *
+   * @param xmlInput the XML messages
+   * @return The message kind
+   */
+  public static MsgKinds determineMsgKind(String xmlInput) {
     return determineMsgKind(new ByteArrayInputStream(xmlInput.getBytes()));
   }
 
@@ -48,7 +54,7 @@ public final class DetectMsgKind {
    * @param xmlInput the XML messages
    * @return The message kind
    */
-  public static C2SimMsgKind determineMsgKind(InputStream xmlInput) {
+  public static MsgKinds determineMsgKind(InputStream xmlInput) {
 
     try {
 
@@ -64,19 +70,39 @@ public final class DetectMsgKind {
 
       SaxPathMatcherHandler handler = new SaxPathMatcherHandler();
       parser.parse(xmlInput, handler);
-      return handler.getMatchedEnum();
+      return new MsgKinds(handler.getMatchedEnum(), handler.getMatchedCategoryEnum());
 
     } catch (Exception ex) {
-      return C2SimMsgKind.ERROR;
+
+      return new MsgKinds(C2SimMsgKind.ERROR, C2SimMsgKindCategory.UNKNOWN);
     }
   }
 
   /** Helper to parse XML with SAX parser */
   // --- Step 2: Handler that matches paths to enum ---
   public static class SaxPathMatcherHandler extends DefaultHandler {
+
+    // The auth module needs category
+    private static final Map<String, C2SimMsgKindCategory> LOOKUP_CATEGORY;
+
+    static {
+      LOOKUP_CATEGORY =
+              Map.ofEntries(
+                      Map.entry("/Message/MessageBody/C2SIMInitializationBody",
+                              C2SimMsgKindCategory.C2SIM_INITIALIZATION),
+                      Map.entry("/Message/MessageBody/DomainMessageBody", C2SimMsgKindCategory.DOMAIN_MESSAGE),
+                      Map.entry("/Message/MessageBody/SystemAcknowledgementBody",
+                              C2SimMsgKindCategory.SYSTEM_ACKNOWLEDGEMENT),
+                      Map.entry("/Message/MessageBody/ObjectInitializationBody",
+                              C2SimMsgKindCategory.OBJECT_INITIALIZATION),
+                      Map.entry("/Message/MessageBody/SystemMessageBody", C2SimMsgKindCategory.SYSTEM_MESSAGE)
+              );
+    }
+
     private final Deque<String> stack = new ArrayDeque<>();
 
     private C2SimMsgKind matched = C2SimMsgKind.UNKNOWN;
+    private C2SimMsgKindCategory matchedCategory = C2SimMsgKindCategory.UNKNOWN;
 
     private static String stripPrefix(String qName) {
       int i = qName.indexOf(':');
@@ -115,11 +141,15 @@ public final class DetectMsgKind {
      */
     @Override
     public void endElement(String uri, String localName, String qName) throws SAXException {
+      String currentPath = XML_PATH_DELIMITER + String.join(XML_PATH_DELIMITER, stack);
+      // Check for category
+      if (this.matchedCategory == C2SimMsgKindCategory.UNKNOWN) {
+        matchedCategory = LOOKUP_CATEGORY.getOrDefault(currentPath, C2SimMsgKindCategory.UNKNOWN);
+      }
       if (matched != C2SimMsgKind.UNKNOWN) {
         return;
       }
-
-      String currentPath = XML_PATH_DELIMITER + String.join(XML_PATH_DELIMITER, stack);
+      // Check for message kind
       for (C2SimMsgKind t : C2SimMsgKind.values()) {
         if (t != C2SimMsgKind.UNKNOWN && currentPath.equals(C2SimMsgKind.getPath(t))) {
           matched = t;
@@ -137,6 +167,15 @@ public final class DetectMsgKind {
      */
     public C2SimMsgKind getMatchedEnum() {
       return matched;
+    }
+
+    /**
+     * Return the matched category  kind
+     *
+     * @return Returns the found category
+     */
+    public C2SimMsgKindCategory getMatchedCategoryEnum() {
+      return matchedCategory;
     }
   }
 }

@@ -3,8 +3,8 @@ package org.c2sim.authorizer;
 import static org.c2sim.authorization.impl.AuthorizationResult.Code.AUTHORIZED;
 import static org.c2sim.authorization.impl.AuthorizationResult.Code.UNAUTHORIZED;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.Mockito.*;
 
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
@@ -16,10 +16,14 @@ import org.c2sim.authorization.exceptions.AuthorisationException;
 import org.c2sim.authorization.impl.C2SimAuthorizerImpl;
 import org.c2sim.authorization.impl.C2SimClaimsBuilder;
 import org.c2sim.authorization.interfaces.C2SimClaims;
+import org.c2sim.authorization.lox.enums.ELoxMessageType;
 import org.c2sim.authorization.utils.ResourceHelper;
+import org.c2sim.lox.C2SimMsgKind;
+import org.c2sim.lox.C2SimMsgKindCategory;
 import org.c2sim.lox.exceptions.LoxException;
 import org.c2sim.lox.exceptions.ValidationException;
 import org.c2sim.lox.helpers.MessageTypeHelper;
+import org.c2sim.lox.sax.DetectMsgKind;
 import org.c2sim.lox.validation.LoxXsdValidator;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -58,9 +62,15 @@ class TestAuthorizeMessageTypeBody {
     var msg = MessageTypeHelper.readMessage(new StringReader(xml));
     assertNotNull(msg, "Failed to load XML sample data");
 
+    var detect = DetectMsgKind.determineMsgKind(xml);
     var auth = new C2SimAuthorizerImpl(claimsSystemMessage);
 
-    var result = auth.authorizeMessageTypeBody(msg, "SISO-STD-C2SIM", "1.0.1");
+    var result = auth.authorizeComleteMessage(
+            msg.getC2SIMHeader(),
+            detect.kind(),
+            detect.category(),
+            "SISO-STD-C2SIM",
+            "1.0.1");
     assertSame(UNAUTHORIZED, result.code);
   }
 
@@ -75,6 +85,10 @@ class TestAuthorizeMessageTypeBody {
     var msg = MessageTypeHelper.readMessage(new StringReader(xml));
     assertNotNull(msg, "Failed to load XML sample data");
 
+    var detect = DetectMsgKind.determineMsgKind(xml);
+    assertSame(C2SimMsgKind.REPORT, detect.kind());
+    assertSame(C2SimMsgKindCategory.DOMAIN_MESSAGE, detect.category());
+
     // Mock claims
     C2SimClaims jwtClaims = mock(C2SimClaims.class);
     // Service is allowed to:
@@ -87,7 +101,8 @@ class TestAuthorizeMessageTypeBody {
     when(jwtClaims.getToReceivingSystem()).thenReturn(ClaimValueList.CLAIM_IS_EMPTY_STRING);
 
     var auth = new C2SimAuthorizerImpl(jwtClaims);
-    var result = auth.authorizeMessageTypeBody(msg, "SISO-STD-C2SIM", "1.0.1");
+    var result = auth.authorizeComleteMessage(msg.getC2SIMHeader(),
+            detect.kind(), detect.category(),"SISO-STD-C2SIM", "1.0.1");
     assertSame(UNAUTHORIZED, result.code);
   }
 
@@ -101,6 +116,10 @@ class TestAuthorizeMessageTypeBody {
     assertTrue(validator.isValid(), "XML test report is invalid (XSD validator)");
     var msg = MessageTypeHelper.readMessage(new StringReader(xml));
     assertNotNull(msg, "Failed to load XML sample data");
+
+    var detect = DetectMsgKind.determineMsgKind(xml);
+    assertSame(C2SimMsgKind.REPORT, detect.kind());
+    assertSame(C2SimMsgKindCategory.DOMAIN_MESSAGE, detect.category());
 
     // Mock claims
     C2SimClaims jwtClaims = mock(C2SimClaims.class);
@@ -120,7 +139,8 @@ class TestAuthorizeMessageTypeBody {
     //                <Protocol>SISO-STD-C2SIM</Protocol>
 
     var auth = new C2SimAuthorizerImpl(jwtClaims);
-    var result = auth.authorizeMessageTypeBody(msg, "SISO-STD-C2SIM", "1.0.1");
+    var result = auth.authorizeComleteMessage(msg.getC2SIMHeader(),
+            detect.kind(), detect.category(), "SISO-STD-C2SIM", "1.0.1");
     assertSame(UNAUTHORIZED, result.code);
   }
 
@@ -134,6 +154,10 @@ class TestAuthorizeMessageTypeBody {
     assertTrue(validator.isValid(), "XML test report is invalid (XSD validator)");
     var msg = MessageTypeHelper.readMessage(new StringReader(xml));
     assertNotNull(msg, "Failed to load XML sample data");
+
+    var detect = DetectMsgKind.determineMsgKind(xml);
+    assertSame(C2SimMsgKind.REPORT, detect.kind());
+    assertSame(C2SimMsgKindCategory.DOMAIN_MESSAGE, detect.category());
 
     // Mock claims
     C2SimClaims jwtClaims = mock(C2SimClaims.class);
@@ -152,7 +176,8 @@ class TestAuthorizeMessageTypeBody {
     //                <Protocol>SISO-STD-C2SIM</Protocol>
 
     var auth = new C2SimAuthorizerImpl(jwtClaims);
-    var result = auth.authorizeMessageTypeBody(msg, "SISO-STD-C2SIM", "1.0.2");
+    var result = auth.authorizeComleteMessage(msg.getC2SIMHeader(),
+            detect.kind(), detect.category(), "SISO-STD-C2SIM", "1.0.2");
     assertSame(AUTHORIZED, result.code);
   }
 }

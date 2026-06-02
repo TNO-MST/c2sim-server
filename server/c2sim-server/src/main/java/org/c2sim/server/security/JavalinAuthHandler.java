@@ -8,6 +8,8 @@ import org.c2sim.server.services.ConfigService;
 import org.c2sim.server.services.WebService;
 import org.c2sim.server.utils.ContextHelper;
 
+import static org.c2sim.authorization.exceptions.AuthorisationException.AuthErrorCode.AUTHORISATION_HEADER_MISSING;
+
 /**
  * Javalin {@code before}-filter that enforces Bearer-token authentication on all {@code /api}
  * endpoints.
@@ -33,7 +35,7 @@ public class JavalinAuthHandler {
     throw new AssertionError("Only static functions");
   }
 
-  private static String getBearToken(Context ctx, boolean throwAuthExceptionWhenMissing) {
+  private static String getBearToken(Context ctx, boolean throwAuthExceptionWhenMissing) throws AuthorisationException {
 
     String authHeader = ctx.header("Authorization");
 
@@ -41,7 +43,8 @@ public class JavalinAuthHandler {
     if (authHeader == null) {
       // Is this allowed (e.g. development / testing) ?
       if (throwAuthExceptionWhenMissing) {
-        throw new UnauthorizedResponse("Authorization header missing");
+        throw new AuthorisationException(AUTHORISATION_HEADER_MISSING,
+                "Authorization header missing");
       }
       return null;
     }

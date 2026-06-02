@@ -50,6 +50,11 @@
       <artifactId>logback-classic</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>co.elastic.logging</groupId>
+      <artifactId>logback-ecs-encoder</artifactId>
+    </dependency>
+
     <!-- Server stub interfaces generated based on OpenAPI specification -->
     <dependency>
       <groupId>nl.tno</groupId>

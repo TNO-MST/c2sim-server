@@ -81,5 +81,12 @@ public interface C2SimClaims {
    */
   String getClientName(); // The AZP field in JWT
 
+  /**
+   * Return original JWT token
+   *
+   * @return JWT token
+   */
+  String getJwtToken() ;
+
   String toTextDescription();
 }

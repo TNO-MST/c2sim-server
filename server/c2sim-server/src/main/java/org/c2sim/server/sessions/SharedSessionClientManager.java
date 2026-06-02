@@ -143,8 +143,11 @@ public class SharedSessionClientManager implements Iterable<SharedSessionClient>
    * @throws C2SimException with {@link C2SimException.ErrorCode#NO_CLIENT_ID} if no client with the
    *     given ID exists in this session
    */
-  public void resignClient(
+  public boolean resignClient(
       @NotNull String clientId, @NotNull String trackingId, @NotNull String reason) {
+    Objects.requireNonNull(reason, "reason is null");
+    Objects.requireNonNull(clientId, "clientId is null");
+    Objects.requireNonNull(trackingId, "trackingId is null");
     var client = getClientById(clientId);
     if (client == null) {
       var clientIdNotFound =
@@ -157,8 +160,10 @@ public class SharedSessionClientManager implements Iterable<SharedSessionClient>
       logC2SimException(clientIdNotFound);
       throw clientIdNotFound;
     }
+
     sharedSessionClients.remove(clientId); // Remove client from list
     client.resign(reason); // Disconnect streaming client
+    return true;
   }
 
   private void logC2SimException(C2SimException exception) {

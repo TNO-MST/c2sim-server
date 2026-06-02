@@ -24,6 +24,27 @@
         </encoder>
     </appender>
 
+    <!-- Audit JSON -->
+    <appender name="AUDIT_JSON"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+
+        <file>logs/audit.json</file>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>logs/audit.%d{yyyy-MM-dd}.json.gz</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+
+        <encoder class="co.elastic.logging.logback.EcsEncoder">
+            <serviceName>c2sim-auth-service</serviceName>
+        </encoder>
+
+    </appender>
+
+    <logger name="AUDIT" level="INFO" additivity="false">
+        <appender-ref ref="AUDIT_JSON"/>
+    </logger>
+
     <root level="INFO">
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="FILE" />

@@ -14,6 +14,9 @@ import org.jose4j.jwt.consumer.InvalidJwtException;
 import org.jose4j.jwt.consumer.JwtConsumerBuilder;
 import org.jose4j.keys.resolvers.HttpsJwksVerificationKeyResolver;
 
+import static org.c2sim.authorization.exceptions.AuthorisationException.AuthErrorCode.INVALID_JWT;
+import static org.c2sim.authorization.exceptions.AuthorisationException.AuthErrorCode.SIGNATURE_VERIFICATION_FAILED;
+
 /**
  * Builder for validating JWT Bearer tokens and extracting {@link C2SimClaims}.
  *
@@ -46,14 +49,15 @@ public class C2SimClaimsBuilder {
   // Use  public key (provided by keycloak) for signing validation (no need to access keycloak)
   private C2SimClaimsBuilder(String publicKeyPem) throws AuthorisationException {
     if (publicKeyPem == null) {
-      throw new AuthorisationException("No public key provided");
+      throw new AuthorisationException(SIGNATURE_VERIFICATION_FAILED, "No public key provided");
     }
     // Convert PEM string to PublicKey
     java.security.PublicKey publicKey = null;
     try {
       publicKey = PemUtil.getPublicKeyFromPem(publicKeyPem);
     } catch (Exception ex) {
-      throw new AuthorisationException("Public key has invalid format (must be PEM BASE64)");
+      throw new AuthorisationException(SIGNATURE_VERIFICATION_FAILED,
+              "Public key has invalid format (must be PEM BASE64)");
     }
 
     this.jwtConsumerBuilder =
@@ -71,15 +75,17 @@ public class C2SimClaimsBuilder {
    */
   private C2SimClaimsBuilder(URL openIdProvider) throws AuthorisationException {
     if (openIdProvider == null) {
-      throw new AuthorisationException("No OpenID Provider provided");
+      throw new AuthorisationException(SIGNATURE_VERIFICATION_FAILED,
+              "No OpenID Provider provided, required for public key to verify signature");
     }
 
     var configuration =
         OidcProviderConfiguration.downloadOpenIdConfigurationFromKeycloak(openIdProvider);
 
     if (configuration.getJwksUri() == null) {
-      throw new AuthorisationException(
-          "No JWKS URI returned by OpenID Provider at " + openIdProvider.toExternalForm());
+      throw new AuthorisationException(SIGNATURE_VERIFICATION_FAILED,
+          "No JWKS URI returned by OpenID Provider at " + openIdProvider.toExternalForm() +
+              " (required for public key to verify signature)");
     }
 
     // Fetch encryption information from openid provider
@@ -200,6 +206,7 @@ public class C2SimClaimsBuilder {
 
       // Extract claims
       return new C2SimClaimsImpl(
+              jwt,
           getClientName(jwtClaims),
           ClaimValueList.create(jwtClaims, C2SimClaims.FROM_SENDING_SYSTEM),
           ClaimValueList.create(jwtClaims, C2SimClaims.REPLY_TO_SYSTEM),
@@ -210,7 +217,9 @@ public class C2SimClaimsBuilder {
     } catch (InvalidJwtException ex) {
       var errors =
           ex.getErrorDetails().stream().map(ErrorCodeValidator.Error::getErrorMessage).toList();
-      throw new AuthorisationException("Invalid JWT: " + String.join("\n", errors), ex);
+      throw new AuthorisationException(INVALID_JWT,
+              "Invalid JWT error '" + ex.getMessage() + "', \nDetails:\n\n" +
+                      String.join("\n", errors), ex);
     }
   }
 }

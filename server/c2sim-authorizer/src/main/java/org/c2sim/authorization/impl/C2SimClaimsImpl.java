@@ -10,6 +10,7 @@ import org.c2sim.authorization.interfaces.C2SimClaims;
  * created via {@link C2SimClaimsBuilder#build(String)}.
  */
 class C2SimClaimsImpl implements C2SimClaims {
+  private final String jwt;
   private final String clientId;
 
   // Claims
@@ -22,6 +23,7 @@ class C2SimClaimsImpl implements C2SimClaims {
   /**
    * Creates a fully populated claims object.
    *
+   * @param jwt original JWT token  (only for logging)
    * @param clientId the OAuth 2.0 client name from the JWT {@code client_id} claim
    * @param fromSendingSystem permitted sending-system identifiers
    * @param replyToSystem permitted reply-to system identifiers
@@ -30,12 +32,14 @@ class C2SimClaimsImpl implements C2SimClaims {
    * @param systemMessageType permitted system-level message types
    */
   C2SimClaimsImpl(
+          String jwt,
       String clientId,
       ClaimValueList fromSendingSystem,
       ClaimValueList replyToSystem,
       ClaimValueList toReceivingSystem,
       ClaimValueList messageType,
       ClaimValueList systemMessageType) {
+    this.jwt = jwt;
     this.clientId = clientId;
     this.fromSendingSystem = fromSendingSystem;
     this.replyToSystem = replyToSystem;
@@ -73,6 +77,12 @@ class C2SimClaimsImpl implements C2SimClaims {
   public String getClientName() {
     return clientId;
   }
+
+  /** {@inheritDoc} */
+  public String getJwtToken() {
+    return jwt;
+  }
+
 
   /** {@inheritDoc} */
   public String toTextDescription() {

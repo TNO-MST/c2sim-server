@@ -14,6 +14,19 @@ export const CLIENTS: ClientConfig[] = [
 	  toReceivingSystem: "ANY"
     },
   },
+    {
+    name: "NLD-LOX-2",
+    expireTimeInSeconds: 3600,
+    useHlaClaims: false,
+    useC2simClaims: true,
+    c2simClaims: {
+      fromSendingSystem: "NLD-LOX",
+      messageType: "C2SIMInitialization;ObjectInitialization;SystemAcknowledgement;SystemMessage",
+      replyToSystem: "ANY",
+      systemMessageType: "QUERY;SIMAN",
+	  toReceivingSystem: "ANY"
+    },
+  },
   {
     name: "NLD-TAC2-1",
     expireTimeInSeconds: 3600,

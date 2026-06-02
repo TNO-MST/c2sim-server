@@ -7,6 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import org.c2sim.server.api.models.RequestCreateSession;
 import org.c2sim.server.exceptions.C2SimException;
+import org.c2sim.server.services.AuditService;
 import org.c2sim.server.services.C2SimSchemaService;
 import org.c2sim.server.services.ConfigService;
 import org.c2sim.server.services.MetricService;
@@ -27,6 +28,7 @@ public class SharedSessionManager implements Iterable<SharedSession> {
   private final ConfigService configService;
   private final C2SimSchemaService c2simSchemaService;
   private final MetricService metricService;
+  private final AuditService auditService;
 
   /**
    * Creates the manager.
@@ -38,10 +40,12 @@ public class SharedSessionManager implements Iterable<SharedSession> {
   public SharedSessionManager(
       ConfigService configService,
       C2SimSchemaService c2simSchemaService,
-      MetricService metricService) {
+      MetricService metricService,
+      AuditService auditService) {
     this.configService = Objects.requireNonNull(configService);
     this.c2simSchemaService = Objects.requireNonNull(c2simSchemaService);
     this.metricService = Objects.requireNonNull(metricService);
+    this.auditService = Objects.requireNonNull(auditService);
   }
 
   /**
@@ -98,6 +102,7 @@ public class SharedSessionManager implements Iterable<SharedSession> {
       var sharedSession =
           new SharedSession(
               metricService,
+              auditService,
               configService,
               c2simSchemaService,
               sharedSessionName,

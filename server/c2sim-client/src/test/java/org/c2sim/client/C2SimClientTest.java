@@ -14,10 +14,7 @@ import org.c2sim.client.api.SessionApi;
 import org.c2sim.server.api.models.DynamicSessionInfo;
 import org.c2sim.server.api.models.SessionInfo;
 import org.c2sim.server.api.models.StateType;
-import org.c2sim.server.services.C2SimService;
-import org.c2sim.server.services.ConfigService;
-import org.c2sim.server.services.MetricService;
-import org.c2sim.server.services.WebSocketService;
+import org.c2sim.server.services.*;
 import org.c2sim.server.services.impl.DefaultWebService;
 import org.c2sim.server.utils.C2SimObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -37,9 +34,11 @@ class C2SimClientTest {
     var configService = Mockito.mock(ConfigService.class);
     var c2SimService = Mockito.mock(C2SimService.class);
     var metricService = Mockito.mock(MetricService.class);
+      var auditService = Mockito.mock(AuditService.class);
     var webSocketService = Mockito.mock(WebSocketService.class);
     var webService =
-        new DefaultWebService(mapper, configService, c2SimService, metricService, webSocketService);
+        new DefaultWebService(mapper, configService, c2SimService, metricService,
+                auditService, webSocketService);
 
     when(configService.getWebServerPortNumber()).thenReturn(7777);
     var x = new ArrayList<DynamicSessionInfo>();
