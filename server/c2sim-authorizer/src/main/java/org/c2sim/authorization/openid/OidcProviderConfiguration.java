@@ -10,6 +10,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import org.c2sim.authorization.exceptions.AuthorisationException;
 
+import static org.c2sim.authorization.exceptions.AuthorisationException.AuthErrorCode.SIGNATURE_VERIFICATION_FAILED;
+
 /**
  * Get the public key from Identity Provider
  *
@@ -34,7 +36,7 @@ public record OidcProviderConfiguration(String jwks_uri) {
 
       int status = con.getResponseCode();
       if (status != HttpURLConnection.HTTP_OK) {
-        throw new AuthorisationException(
+        throw new AuthorisationException(SIGNATURE_VERIFICATION_FAILED,
             "OpenID Provider returned HTTP " + status + " at " + openIdProvider);
       }
 
@@ -44,7 +46,7 @@ public record OidcProviderConfiguration(String jwks_uri) {
       }
     } catch (Exception ex) {
 
-      throw new AuthorisationException(
+      throw new AuthorisationException(SIGNATURE_VERIFICATION_FAILED,
           String.format("Failed to retrieve OpenID configuration (auto discovery) from '%s' (%s). ",
                   openIdProvider.toExternalForm(), ex.getMessage()), ex);
     } finally {

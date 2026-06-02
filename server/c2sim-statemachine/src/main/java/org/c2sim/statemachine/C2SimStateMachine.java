@@ -36,21 +36,45 @@ public class C2SimStateMachine {
   // When not in list, allowed in all states....
 
   private static final Map<C2SimMsgKind, Set<State>> allowedMsgState =
-      Map.of(
-          // For C2SimMsgKind defined in state machine, the state machine is used
-          // C2SimMsgKind.StartScenario
-          // C2SimMsgKind.StopScenario
-          // C2SimMsgKind.SubmitInitialization
-          // C2SimMsgKind.C2SIMInitialization
-          // C2SimMsgKind.InitializationComplete
-          // These msg are not in state machine, do manually:
-          C2SimMsgKind.OBJECT_INITIALIZATION, Set.of(State.INITIALIZING),
-          C2SimMsgKind.C2SIM_INITIALIZATION, Set.of(State.INITIALIZING),
-          C2SimMsgKind.REPORT, executingStates,
-          C2SimMsgKind.ORDER, executingStates,
-          C2SimMsgKind.MAGIC_MOVE, executingStates,
-          C2SimMsgKind.SET_SIMULATION_REALTIME_MULTIPLE, executingStates,
-          C2SimMsgKind.CHECKPOINT_RESTORE, executingStates);
+          Map.ofEntries(
+                  Map.entry(C2SimMsgKind.OBJECT_INITIALIZATION, Set.of(State.INITIALIZING)),
+                  Map.entry(C2SimMsgKind.C2SIM_INITIALIZATION, Set.of(State.INITIALIZING)),
+                  Map.entry(C2SimMsgKind.REPORT, executingStates),
+                  Map.entry(C2SimMsgKind.ORDER, executingStates),
+                  Map.entry(C2SimMsgKind.MAGIC_MOVE, executingStates),
+
+
+                  // Simulation Speed
+                  Map.entry(C2SimMsgKind.SET_SIMULATION_REALTIME_MULTIPLE, executingStates),
+                  Map.entry(C2SimMsgKind.SIMULATION_REALTIME_MULTIPLE_REPORT, executingStates),
+                  Map.entry(C2SimMsgKind.REQUEST_SIMULATION_REALTIME_MULTIPLE, executingStates),
+
+                  // Check points
+                  Map.entry(C2SimMsgKind.CHECKPOINT_SAVE, executingStates),
+                  Map.entry(C2SimMsgKind.CHECKPOINT_RESTORE, executingStates),
+
+                  // Recording
+                  Map.entry(C2SimMsgKind.RECORDING_STATUS_REPORT, executingStates),
+                  Map.entry(C2SimMsgKind.REQUEST_RECORDING_STATUS, executingStates),
+                  Map.entry(C2SimMsgKind.RESUME_RECORDING, executingStates),
+                  Map.entry(C2SimMsgKind.START_RECORDING, executingStates),
+                  Map.entry(C2SimMsgKind.STOP_RECORDING, executingStates),
+                  Map.entry(C2SimMsgKind.PAUSE_RECORDING, executingStates),
+
+
+                  // Playback
+                  Map.entry(C2SimMsgKind.PLAYBACK_STATUS_REPORT, executingStates),
+                  Map.entry(C2SimMsgKind.REQUEST_PLAYBACK_STATUS, executingStates),
+                  Map.entry(C2SimMsgKind.START_PLAYBACK, executingStates),
+                  Map.entry(C2SimMsgKind.RESUME_PLAYBACK, executingStates),
+                  Map.entry(C2SimMsgKind.STOP_PLAYBACK, executingStates),
+                  Map.entry(C2SimMsgKind.PAUSE_PLAYBACK, executingStates),
+                  Map.entry(C2SimMsgKind.REQUEST_PLAYBACK_REALTIME_MULTIPLE, executingStates),
+                  Map.entry(C2SimMsgKind.PLAYBACK_REALTIME_MULTIPLE_REPORT, executingStates),
+                  Map.entry(C2SimMsgKind.SET_PLAYBACK_REALTIME_MULTIPLE, executingStates)
+
+          );
+
 
   /** Map the ENUM trigger from this module on the XSD message */
   private static final Map<Trigger, C2SimMsgKind> xml2cmdMapping =

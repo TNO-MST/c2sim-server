@@ -125,7 +125,7 @@ public final class MessageQueue implements AutoCloseable {
       validation = new ValidationOutcome(null, null);
     }
 
-    return new C2SimMessage(owner, kind, xmlMsg, validation.exception(), validation.result(), msg);
+    return new C2SimMessage(owner, kind.kind(), xmlMsg, validation.exception(), validation.result(), msg);
   }
 
   private static MessageType getMessageType(String xmlMsg) {

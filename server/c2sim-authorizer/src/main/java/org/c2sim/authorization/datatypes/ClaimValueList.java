@@ -6,6 +6,8 @@ import org.c2sim.authorization.exceptions.AuthorisationException;
 import org.c2sim.authorization.interfaces.C2SimClaims;
 import org.jose4j.jwt.JwtClaims;
 
+import static org.c2sim.authorization.exceptions.AuthorisationException.AuthErrorCode.INVALID_CLAIM_DATATYPE;
+
 /**
  * Models the C2SIM PEP "set of STRING" claim datatype extracted from a JWT Bearer token.
  *
@@ -157,13 +159,13 @@ public class ClaimValueList extends HashSet<String> {
       if (object instanceof String text) {
         values.add(text.trim());
       } else {
-        throw new AuthorisationException(
+        throw new AuthorisationException(INVALID_CLAIM_DATATYPE,
             String.format(
                 "Claim '%s': only strings allowed in array, found other datatype", claimName));
       }
     }
     if (values.contains(C2SimClaims.CLAIM_ANY)) {
-      throw new AuthorisationException(
+      throw new AuthorisationException(INVALID_CLAIM_DATATYPE,
           String.format("Claim '%s': ANY is a reserved word", claimName));
     }
     return values;
@@ -198,7 +200,7 @@ public class ClaimValueList extends HashSet<String> {
 
     // Check array for ANY
     if (claimList.contains(C2SimClaims.CLAIM_ANY)) {
-      throw new AuthorisationException(
+      throw new AuthorisationException(INVALID_CLAIM_DATATYPE,
           String.format(
               "Claim '%s' string list contains reserved word 'ANY' (only allowed as single value)",
               claimName));
@@ -245,7 +247,7 @@ public class ClaimValueList extends HashSet<String> {
         return processDataTypeAsStringList(claimName, claimValueAsStringArray);
       }
       default ->
-          throw new AuthorisationException(
+          throw new AuthorisationException(INVALID_CLAIM_DATATYPE,
               String.format(
                   "Claim '%s' has invalid datatype "
                       + " (allowed datatype: string with '%s' as separator OR json array of strings ",

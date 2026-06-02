@@ -235,6 +235,7 @@ class C2SimServiceStateMachineTest extends BaseTest {
       bind(WebService.class).to(DefaultWebService.class).in(Scopes.SINGLETON);
       bind(WebSocketService.class).to(DefaultWebSocketService.class).in(Scopes.SINGLETON);
       bind(MetricService.class).to(DefaultMetricService.class).in(Scopes.SINGLETON);
+      bind(AuditService.class).to(DefaultAuditService.class).in(Scopes.SINGLETON);
     }
 
     @Provides

@@ -66,8 +66,7 @@ public class NotificationsApiServiceImp implements NotificationsApiService {
     c2simService.getSharedSession(sharedSessionName, true);
 
     var basePath = config.getPrefixBasepath();
-    if (basePath != null)
-    {
+    if (basePath != null) {
       basePath = "/";
     }
     // TODO Should return FQDN; DNS resolve problem clients + cors

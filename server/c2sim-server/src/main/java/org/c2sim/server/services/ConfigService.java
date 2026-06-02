@@ -6,6 +6,9 @@ import org.c2sim.server.models.ServerConfigurationData;
 import org.c2sim.server.security.EAuthLevel;
 import org.jetbrains.annotations.NotNull;
 
+import static org.c2sim.lox.Global.C2SIM_PROTOCOL;
+import static org.c2sim.lox.Global.C2SIM_PROTOCOL_VERSION;
+
 /**
  * Service that provides access to all server configuration settings.
  *
@@ -160,4 +163,21 @@ public interface ConfigService {
   default String getPrefixBasepath() {
     return "/";
   }
+
+  /**
+   * The C2SIM protocol that should be used
+   * @return C2SIM Protocol
+   */
+  default String getC2SimProtocol() {
+    return C2SIM_PROTOCOL;
+  }
+  /**
+   * The C2SIM protocol version that should be used
+   * @return C2SIM Protocol version
+   */
+  default String getC2SimProtocolVersion() {
+    return C2SIM_PROTOCOL_VERSION;
+  }
+
+
 }

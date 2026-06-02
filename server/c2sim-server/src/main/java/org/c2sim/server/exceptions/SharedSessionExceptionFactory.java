@@ -109,7 +109,7 @@ public class SharedSessionExceptionFactory {
         throw new C2SimException(
             C2SimException.ErrorCode.AUTHORIZATION_FAILURE,
             String.format(
-                "The system name '%s' doesn't match with claim FromSendingSystem '%s'.",
+                "The system name '%s' in the join request, doesn't match with claim FromSendingSystem '%s'.",
                 systemName, auth.c2SimClaims().getFromSendingSystem()));
       }
     }

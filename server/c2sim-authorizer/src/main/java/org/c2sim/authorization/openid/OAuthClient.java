@@ -11,6 +11,8 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import org.c2sim.authorization.exceptions.AuthorisationException;
 
+import static org.c2sim.authorization.exceptions.AuthorisationException.AuthErrorCode.ACCESS_TOKEN_FETCH_FAILED;
+
 // Get JWT token with grant flow client_credentials
 public class OAuthClient {
 
@@ -42,7 +44,8 @@ public class OAuthClient {
       }
 
       if (conn.getResponseCode() != HttpURLConnection.HTTP_OK) {
-        throw new AuthorisationException("Failed to get token: HTTP " + conn.getResponseCode());
+        throw new AuthorisationException(ACCESS_TOKEN_FETCH_FAILED,
+                "Failed to get token: IDP returned HTTP status " + conn.getResponseCode());
       }
 
       try (BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
@@ -50,7 +53,7 @@ public class OAuthClient {
         return json.get("access_token").getAsString();
       }
     } catch (Exception e) {
-      throw new AuthorisationException(e.getMessage(), e);
+      throw new AuthorisationException(ACCESS_TOKEN_FETCH_FAILED, e.getMessage(), e);
     }
   }
 }

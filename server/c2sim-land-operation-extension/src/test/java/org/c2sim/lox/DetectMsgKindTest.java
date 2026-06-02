@@ -33,8 +33,11 @@ class DetectMsgKindTest {
     String resourcePath = "lox/C2SIMInitialization_small.xml";
     try (InputStream inputStream =
         DetectMsgKindTest.class.getClassLoader().getResourceAsStream(resourcePath)) {
+      var detect = DetectMsgKind.determineMsgKind(inputStream);
       Assertions.assertEquals(
-          C2SimMsgKind.C2SIM_INITIALIZATION, DetectMsgKind.determineMsgKind(inputStream));
+          C2SimMsgKind.C2SIM_INITIALIZATION, detect.kind());
+      Assertions.assertEquals(
+          C2SimMsgKindCategory.C2SIM_INITIALIZATION, detect.category());
     }
   }
 

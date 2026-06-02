@@ -22,14 +22,16 @@ public interface MetricService {
   }
 
   public enum MetricMsgType {
-    /** C2SIM System messages */
-    SYSTEM_MESSAGE,
+    /** SIMAN messages */
+    SIMAN,
     /** C2SIM report messages */
     REPORT,
     /** C2SIM order messages */
     ORDER,
     /** C2SIM report messages */
     INIT,
+    /** State management */
+    STATE_MANAGEMENT,
     /** C2SIM other messages */
     OTHER
   }
@@ -51,7 +53,10 @@ public interface MetricService {
    * @return the updated total number of messages sent by the system
    */
   long incValidMessagesSendByC2SimClient(
-      String sharedSessionName, String systemName, MetricMsgType msgType);
+      String sharedSessionName,
+      String ipAddress,
+      String systemName,
+      MetricMsgType msgType);
 
   /**
    * Returns the current number of messages sent by a specific client within a given session.
@@ -69,12 +74,16 @@ public interface MetricService {
    * a shared session.
    *
    * @param sharedSessionName the name of the shared session
+   * @param ipAddress the ip address of the system
    * @param systemName the unique system identifier
    * @param errorType kind of error
    * @return the updated total number of failed messages
    */
   long incInvalidMessagesSendByC2SimClient(
-      String sharedSessionName, String systemName, MetricInvalidMsgReasonType errorType);
+      String sharedSessionName,
+      String ipAddress,
+      String systemName,
+      MetricInvalidMsgReasonType errorType);
 
   /**
    * Store the metrics for call duration of REST request
@@ -94,17 +103,22 @@ public interface MetricService {
 
   /**
    * @param sharedSessionName The shared session name
+   * @param ipAddress The ip address C2SIM client
    * @param systemName The system name of C2SIM client
    * @param numberOfBytes C2SIM messages (XML) size (bytes)
    * @return new total bytes send
    */
-  long incBytesSendByC2SimClient(String sharedSessionName, String systemName, long numberOfBytes);
+  long incBytesSendByC2SimClient(
+          String sharedSessionName,
+          String ipAddress,
+          String systemName,
+          long numberOfBytes);
 
   /**
    * This metrics is for all requests. E.g. invalid token The incInvalidMessagesSendByC2SimClient is
    * used when a C2SIM message could not be processed due to auth error
-   *
+   * @param ipAddress IP address of the client that failed to authenticate (e.g. invalid token)
    * @return the number of auth failures
    */
-  long incAuthFailed();
+  long incAuthFailed(String ipAddress);
 }

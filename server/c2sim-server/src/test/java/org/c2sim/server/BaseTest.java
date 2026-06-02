@@ -9,10 +9,7 @@ import org.c2sim.lox.helpers.MessageTypeHelper;
 import org.c2sim.lox.helpers.XmlFactoryHelper;
 import org.c2sim.lox.helpers.builders.GeodeticCoordinateTypeBuilder;
 import org.c2sim.lox.schema.C2SIMHeaderType;
-import org.c2sim.server.services.C2SimSchemaService;
-import org.c2sim.server.services.C2SimService;
-import org.c2sim.server.services.ConfigService;
-import org.c2sim.server.services.MetricService;
+import org.c2sim.server.services.*;
 import org.c2sim.server.sessions.SharedSession;
 import org.junit.jupiter.api.BeforeEach;
 import org.slf4j.Logger;
@@ -33,6 +30,7 @@ public abstract class BaseTest {
   protected ConfigService configService;
   protected C2SimSchemaService c2simSchemaService;
   protected MetricService metricService;
+  protected AuditService auditService;
 
   //
   protected String submitInitializationXml;
@@ -76,12 +74,13 @@ public abstract class BaseTest {
     configService = Objects.requireNonNull(injector.getInstance(ConfigService.class));
     c2simSchemaService = Objects.requireNonNull(injector.getInstance(C2SimSchemaService.class));
     metricService = Objects.requireNonNull(injector.getInstance(MetricService.class));
-
+    auditService = Objects.requireNonNull(injector.getInstance(AuditService.class));
     logger.info("JUNIT: Create a shared shared session " + SHARED_SESSION_NAME);
     // Create shared session
     c2simService.addSharedSession(
         new SharedSession(
             metricService,
+            auditService,
             configService,
             c2simSchemaService,
             SHARED_SESSION_NAME,

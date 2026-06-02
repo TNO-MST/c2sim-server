@@ -5,6 +5,8 @@ import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Timer;
 import io.micrometer.prometheusmetrics.PrometheusConfig;
 import io.micrometer.prometheusmetrics.PrometheusMeterRegistry;
+
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.c2sim.server.services.MetricService;
@@ -39,6 +41,7 @@ public class DefaultMetricService implements MetricService {
   private static final String METRIC_ATTRIB_REQUEST_METHOD = "c2sim.request.method";
   private static final String METRIC_ATTRIB_REQUEST_ENDPOINT = "c2sim.request.endpoint";
   private static final String METRIC_ATTRIB_REQUEST_STATUS = "c2sim.request.status";
+  private static final String METRIC_ATTRIB_IP_ADDRESS = "c2sim.ip";
 
   private final PrometheusMeterRegistry registry =
       new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
@@ -75,7 +78,10 @@ public class DefaultMetricService implements MetricService {
   /** {@inheritDoc} */
   @Override
   public long incValidMessagesSendByC2SimClient(
-      String sharedSessionName, String systemName, MetricMsgType msgType) {
+      String sharedSessionName,
+      String ipAddress,
+      String systemName,
+      MetricMsgType msgType) {
     if (sharedSessionName != null
         && !sharedSessionName.isBlank()
         && systemName != null
@@ -117,11 +123,16 @@ public class DefaultMetricService implements MetricService {
   /** {@inheritDoc} */
   @Override
   public long incInvalidMessagesSendByC2SimClient(
-      String sharedSessionName, String systemName, MetricInvalidMsgReasonType errorType) {
-    if (sharedSessionName != null
-        && !sharedSessionName.isBlank()
-        && systemName != null
-        && !systemName.isBlank()) {
+      String sharedSessionName,
+      String ipAddress,
+      String systemName,
+      MetricInvalidMsgReasonType errorType) {
+    Objects.requireNonNull(errorType, "errorType must not be null");
+    Objects.requireNonNull(sharedSessionName, "sharedSessionName must not be null");
+    Objects.requireNonNull(ipAddress, "ipAddress must not be null");
+    Objects.requireNonNull(systemName, "systemName must not be null");
+
+    if (!sharedSessionName.isBlank() && !systemName.isBlank()) {
       Counter counter =
           Counter.builder(METRIC_NAME_MSG_INVALID_TOTAL)
               .description(
@@ -139,10 +150,11 @@ public class DefaultMetricService implements MetricService {
 
   /** {@inheritDoc} */
   @Override
-  public long incAuthFailed() {
+  public long incAuthFailed(String ipAddress) {
     Counter counter =
         Counter.builder(METRIC_NAME_AUTH_FAILED_TOTAL)
             .description("Authorization failed (invalid token)")
+            .tags(METRIC_ATTRIB_IP_ADDRESS, ipAddress)
             .register(registry);
     counter.increment();
     return (long) counter.count();
@@ -176,7 +188,11 @@ public class DefaultMetricService implements MetricService {
   /** {@inheritDoc} */
   @Override
   public long incBytesSendByC2SimClient(
-      String sharedSessionName, String systemName, long numberOfBytes) {
+      String sharedSessionName,
+      String ipAddress,
+      String systemName,
+      long numberOfBytes) {
+
     if (sharedSessionName != null
         && !sharedSessionName.isBlank()
         && systemName != null

@@ -6,6 +6,7 @@ import org.c2sim.authorization.interfaces.C2SimClaims;
 import org.c2sim.authorization.interfaces.TextEnum;
 import org.c2sim.authorization.utils.EnumUtil;
 
+
 public enum ELoxMessageType implements TextEnum {
   /** C2SIM Object initialization */
   C2SIM_INITIALIZATION("C2SIMInitialization"),
@@ -29,6 +30,8 @@ public enum ELoxMessageType implements TextEnum {
   public static Set<ELoxMessageType> fromTextSet(Set<String> texts) {
     return EnumUtil.fromTextSet(ELoxMessageType.class, texts);
   }
+
+
 
   public String getText() {
     return text;

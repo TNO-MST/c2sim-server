@@ -2,6 +2,8 @@ package org.c2sim.server.services;
 
 import java.io.InputStream;
 import java.util.List;
+
+import org.c2sim.authorization.exceptions.AuthorisationException;
 import org.c2sim.authorization.interfaces.C2SimAuthorizer;
 import org.c2sim.server.api.models.DynamicSessionInfo;
 import org.c2sim.server.api.models.RequestCreateSession;
@@ -77,7 +79,7 @@ public interface C2SimService {
       String trackingId,
       InputStream xmlDoc,
       @Nullable C2SimAuthorizer auth)
-      throws C2SimException;
+          throws C2SimException, AuthorisationException;
 
   /**
    * See publishC2SimDoc
@@ -90,5 +92,5 @@ public interface C2SimService {
    */
   void publishC2SimDoc(
       String sharedSessionName, String publishingClientId, String trackingId, InputStream xmlDoc)
-      throws C2SimException;
+          throws C2SimException, AuthorisationException;
 }

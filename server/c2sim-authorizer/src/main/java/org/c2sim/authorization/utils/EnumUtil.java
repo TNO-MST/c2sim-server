@@ -5,6 +5,8 @@ import java.util.Set;
 import org.c2sim.authorization.exceptions.AuthorisationException;
 import org.c2sim.authorization.interfaces.TextEnum;
 
+import static org.c2sim.authorization.exceptions.AuthorisationException.AuthErrorCode.INVALID_CLAIM_DATATYPE;
+
 /** Helper class to handle enumerations */
 public class EnumUtil {
 
@@ -48,7 +50,7 @@ public class EnumUtil {
         return constant;
       }
     }
-    throw new AuthorisationException(
+    throw new AuthorisationException(INVALID_CLAIM_DATATYPE,
         String.format("The value '%s' can not be mapped on enum", text));
   }
 }

@@ -1,0 +1,18 @@
+filebeat.inputs:
+  - type: filestream
+    id: c2sim-audit
+    enabled: true
+    paths:
+      - /app/logs/audit.json
+
+    parsers:
+      - ndjson:
+          overwrite_keys: true
+          add_error_key: true
+
+output.elasticsearch:
+  hosts: ["http://elasticsearch:9200"]
+
+setup.template.enabled: true
+
+logging.level: error

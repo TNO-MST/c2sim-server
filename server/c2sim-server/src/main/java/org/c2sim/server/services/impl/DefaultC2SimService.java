@@ -7,13 +7,12 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import org.c2sim.authorization.exceptions.AuthorisationException;
 import org.c2sim.authorization.interfaces.C2SimAuthorizer;
 import org.c2sim.server.api.models.*;
 import org.c2sim.server.exceptions.C2SimException;
-import org.c2sim.server.services.C2SimSchemaService;
-import org.c2sim.server.services.C2SimService;
-import org.c2sim.server.services.ConfigService;
-import org.c2sim.server.services.MetricService;
+import org.c2sim.server.services.*;
 import org.c2sim.server.sessions.SharedSession;
 import org.c2sim.server.sessions.SharedSessionManager;
 import org.slf4j.Logger;
@@ -31,6 +30,7 @@ public class DefaultC2SimService implements C2SimService {
   private final ConfigService configService;
   private final C2SimSchemaService c2simSchemaService;
   private final MetricService metricService;
+  private final AuditService auditService;
   // All active shared sessions
   private final SharedSessionManager sessionManager;
 
@@ -46,14 +46,20 @@ public class DefaultC2SimService implements C2SimService {
   public DefaultC2SimService(
       ConfigService configService,
       C2SimSchemaService c2simSchemaService,
-      MetricService metricService) {
+      MetricService metricService,
+      AuditService auditService) {
 
     this.metricService = Objects.requireNonNull(metricService, "Metric service is null");
+    this.auditService =  Objects.requireNonNull(auditService, "Audit service is null");
     this.configService = Objects.requireNonNull(configService, "Config service is null");
     this.c2simSchemaService =
         Objects.requireNonNull(c2simSchemaService, "C2SIM schema service is null");
     this.sessionManager =
-        new SharedSessionManager(this.configService, this.c2simSchemaService, this.metricService);
+        new SharedSessionManager(
+                this.configService,
+                this.c2simSchemaService,
+                this.metricService,
+                this.auditService);
 
     var schemaVersions = join("','", c2simSchemaService.getSupportedSchemaVersions());
     logger.info("Detected C2SIM schema folders (versions): '{}'", schemaVersions);
@@ -88,7 +94,7 @@ public class DefaultC2SimService implements C2SimService {
   @Override
   public void publishC2SimDoc(
       String sharedSessionName, String clientId, String trackingId, InputStream xmlDoc)
-      throws C2SimException {
+          throws C2SimException, AuthorisationException {
     publishC2SimDoc(sharedSessionName, clientId, trackingId, xmlDoc, null);
   }
 
@@ -100,7 +106,7 @@ public class DefaultC2SimService implements C2SimService {
       String trackingId,
       InputStream xmlDoc,
       C2SimAuthorizer authorizer)
-      throws C2SimException {
+          throws C2SimException, AuthorisationException {
     Objects.requireNonNull(xmlDoc);
     Objects.requireNonNull(sharedSessionName);
     Objects.requireNonNull(trackingId);

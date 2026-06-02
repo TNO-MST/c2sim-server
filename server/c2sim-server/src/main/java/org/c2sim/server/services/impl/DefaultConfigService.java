@@ -62,7 +62,7 @@ public class DefaultConfigService implements ConfigService {
   private static final Config.Option<EAuthLevel> C2SIM_AUTH_MODE =
       new Config.Option<>(
           "C2SIM_AUTH_MODE",
-          EAuthLevel.MIXED_AUTH,
+          EAuthLevel.STRICT_AUTH,
           "Bearer tokens (not required (disables all auth) / mandatory / mixed)",
           EAuthLevel.class,
           Config.asEnum(EAuthLevel.class));
@@ -94,6 +94,20 @@ public class DefaultConfigService implements ConfigService {
           "Experimental: Prefix the webserver, for example /c2sim-server ",
           String.class,
           Config::asString);
+  private static final Config.Option<String> C2SIM_PROTOCOL =
+          new Config.Option<>(
+                  "C2SIM_PROTOCOL",
+                  org.c2sim.lox.Global.C2SIM_PROTOCOL,
+                  "C2SIM Protocol that must be used in C2SIM header",
+                  String.class,
+                  Config::asString);
+  private static final Config.Option<String> C2SIM_PROTOCOL_VERSION =
+          new Config.Option<>(
+                  "C2SIM_PROTOCOL_VERSION",
+                  org.c2sim.lox.Global.C2SIM_PROTOCOL_VERSION,
+                  "C2SIM Protocol version that must be used in C2SIM header",
+                  String.class,
+                  Config::asString);
 
   private static final String DEFAULT_SHARED_SESSION_NAME = "default";
   private static final String DEFAULT_SHARED_SESSION_SCHEMA_VERSION = "2.0.0";
@@ -122,6 +136,8 @@ public class DefaultConfigService implements ConfigService {
               .add(C2SIM_IDENTITY_PROVIDER_URL)
               .add(C2SIM_EXPOSE_CFG_ENDPOINT)
               .add(C2SIM_PREFIX)
+              .add(C2SIM_PROTOCOL)
+              .add(C2SIM_PROTOCOL_VERSION)
               .build(envService.getenv()); // reads System.getenv
       var table = config.asTable();
       logger.info("Server config:\n {}", table);
@@ -300,6 +316,18 @@ public class DefaultConfigService implements ConfigService {
   @Override
   public String getSystemNameServer() {
     return "C2SIM_SERVER";
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public String getC2SimProtocol() {
+    return cfg.get(C2SIM_PROTOCOL);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public String getC2SimProtocolVersion() {
+    return cfg.get(C2SIM_PROTOCOL_VERSION);
   }
 
   /** {@inheritDoc} */
