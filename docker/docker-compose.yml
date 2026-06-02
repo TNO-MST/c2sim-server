@@ -1,23 +1,24 @@
-
 services:
   c2sim-server:
-    image: docker.io/kluiverjh/c2sim-server:2.0.1
-    build:
-      context: ./..
-      dockerfile: ./docker/Dockerfile-c2sim-server
-    container_name: c2sim-server
-    ports:
-      - "${C2SIM_SERVER_PORT}:7777"
-    environment:
-      - JAVA_OPTS=-Xms256m -Xmx512m
-      - C2SIM_EXTERNAL_HOSTNAME=${C2SIM_EXTERNAL_HOSTNAME}
-      - C2SIM_EXTERNAL_PORT_NUMBER=${C2SIM_SERVER_PORT}
-      - C2SIM_BEARER_PUBLIC_KEY=${C2SIM_BEARER_PUBLIC_KEY}
-      - C2SIM_IDENTITY_PROVIDER_URL=${C2SIM_IDENTITY_PROVIDER_URL}
-      - C2SIM_AUTH_MODE=${C2SIM_AUTH_MODE}
-      - C2SIM_PREFIX=${C2SIM_PREFIX}
-    restart: unless-stopped
-    networks: [monitoring]
+   image: docker.io/kluiverjh/c2sim-server:2.0.1
+   build:
+     context: ./..
+     dockerfile: ./docker/Dockerfile-c2sim-server
+   container_name: c2sim-server
+   volumes:
+     - ./logs:/app/logs
+   ports:
+     - "${C2SIM_SERVER_PORT}:7777"
+   environment:
+     - JAVA_OPTS=-Xms256m -Xmx512m
+     - C2SIM_EXTERNAL_HOSTNAME=${C2SIM_EXTERNAL_HOSTNAME}
+     - C2SIM_EXTERNAL_PORT_NUMBER=${C2SIM_SERVER_PORT}
+     - C2SIM_BEARER_PUBLIC_KEY=${C2SIM_BEARER_PUBLIC_KEY}
+     - C2SIM_IDENTITY_PROVIDER_URL=${C2SIM_IDENTITY_PROVIDER_URL}
+     - C2SIM_AUTH_MODE=${C2SIM_AUTH_MODE}
+     - C2SIM_PREFIX=${C2SIM_PREFIX}
+   restart: unless-stopped
+   networks: [monitoring]
 
   keycloak:
     # image: quay.io/keycloak/keycloak:24.0.1
@@ -79,6 +80,39 @@ services:
       - ./grafana/dashboards:/var/lib/grafana/dashboards    
     networks: [monitoring]
 
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.13.4
+    ports:
+      - "5601:5601"
+    environment:
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+    depends_on:
+      - elasticsearch      
+    networks: [monitoring]
+    
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.13.4
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false   
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    ports:
+      - "9200:9200"
+    networks: [monitoring]
+    
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:8.13.4
+    container_name: filebeat
+    user: root
+    volumes:
+      - ./filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+      - ./logs:/app/logs:ro
+    depends_on:
+      - elasticsearch
+    command: ["--strict.perms=false"]
+    networks: [monitoring]
+    
 networks:
   monitoring:
     driver: bridge    
