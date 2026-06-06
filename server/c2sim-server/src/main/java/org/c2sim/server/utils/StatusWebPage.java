@@ -135,6 +135,17 @@ public class StatusWebPage {
                 """);
     }
 
+    html.append("""
+            <button onclick="cleanupAndRefresh()">Cleanup</button>
+            
+            <script>
+            async function cleanupAndRefresh() {
+              await fetch('cleanup');
+              location.reload();
+            }
+            </script>
+            """);
+
     long endTime = System.nanoTime(); // stop timing
     double buildTimeMs = (endTime - startTime) / 1_000_000.0;
 

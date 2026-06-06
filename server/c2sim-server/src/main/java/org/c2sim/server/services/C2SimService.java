@@ -93,4 +93,9 @@ public interface C2SimService {
   void publishC2SimDoc(
       String sharedSessionName, String publishingClientId, String trackingId, InputStream xmlDoc)
           throws C2SimException, AuthorisationException;
+
+  /**
+   * Manual cleanup of dead connections
+   */
+  void cleanUp();
 }

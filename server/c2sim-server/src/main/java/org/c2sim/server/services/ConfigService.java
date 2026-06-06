@@ -179,5 +179,12 @@ public interface ConfigService {
     return C2SIM_PROTOCOL_VERSION;
   }
 
+  /**
+   * Max seconds of inactivity before a session is considered inactive and removed from the active sessions list
+   * @return timeout time sec
+   */
+  default int getInactiveTimeoutSec() {
+    return 180;
+  }
 
 }
