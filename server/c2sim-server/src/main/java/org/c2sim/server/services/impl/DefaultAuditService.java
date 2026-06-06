@@ -20,7 +20,7 @@ public class DefaultAuditService  implements AuditService {
     private static final String PROP_CLIENT_ID = "clientId";
     private static final String PROP_TRACKING_ID = "trackingId";
     private static final String PROP_ERROR_MSG = "errorMsg";
-
+    private static final String PROP_AUTH_FAILURE_CODE = "authFailureCode";
     private static final String STATUS_SUCCESS = "SUCCESS";
     private static final String STATUS_FAILURE = "FAILURE";
 
@@ -70,10 +70,19 @@ public class DefaultAuditService  implements AuditService {
         MDC.put(PROP_TRACKING_ID,  trackingId);
         MDC.put(PROP_ERROR_MSG, message);
         MDC.put(PROP_IP_ADDRESS, ip);
-        MDC.put(PROP_ACTION, "AUTH");
+        MDC.put(PROP_ACTION, "AUTH_FAILURE");
+        MDC.put(PROP_AUTH_FAILURE_CODE, errorCode.toString());
         MDC.put(PROP_STATUS, STATUS_FAILURE);
         auditLogger.info("C2SIM client '{}' with IP Address '{}' auth failure (error code '{}').",
                 clientId, ip, errorCode.name());
+        MDC.clear();
+    }
+
+    @Override
+    public void startAudit() {
+        MDC.put(PROP_ACTION, "START_AUDIT");
+        MDC.put(PROP_STATUS, STATUS_SUCCESS);
+        auditLogger.info("C2SIM Server started, audit log started.");
         MDC.clear();
     }
 }

@@ -7,6 +7,9 @@ import org.c2sim.authorization.exceptions.AuthorisationException;
  */
 public interface AuditService {
 
+    void startAudit();
+
+
     void joinedSharedSessionSuccessfully(
             String sharedSession,
             String systemName,

@@ -234,6 +234,9 @@ public class DefaultWebService implements WebService {
 
     private void setupJavalin() {
         disableJettyLogging(); // Javalin uses jetty as engine, jetty also uses logback logger
+        if (auditService != null) {
+            auditService.startAudit();
+        }
         this.appServer =
                 Javalin.create(
                         javalinConfig -> {
