@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>nl.tno</groupId>
   <artifactId>c2sim</artifactId>
-  <version>2.0.1-SNAPSHOT</version>
+  <version>2.0.2-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>c2sim</name>
   <description>C2SIM-server multi-module project</description>
@@ -36,7 +36,7 @@
   <scm>
     <connection>scm:git:https://github.com/TNO-MST/c2sim-server.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/TNO-MST/c2sim-server.git</developerConnection>
-    <tag>2.0.1</tag>
+    <tag>2.0.2</tag>
     <url>https://github.com/TNO-MST/c2sim-server</url>
   </scm>
   <issueManagement>
@@ -44,7 +44,7 @@
   </issueManagement>
   <properties>
     <!-- This must match project.version: -->
-    <c2sim-server.version>2.0.1-SNAPSHOT</c2sim-server.version>
+    <c2sim-server.version>2.0.2-SNAPSHOT</c2sim-server.version>
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
