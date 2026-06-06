@@ -21,6 +21,19 @@ public class StatusWebPage {
     throw new AssertionError("Only static functions");
   }
 
+  private static String statusLed(boolean value) {
+    return value
+            ? "<span style=\"display:inline-block;"
+            + "width:12px;"
+            + "height:12px;"
+            + "border-radius:50%;"
+            + "background:#28a745\"></span>"
+            : "<span style=\"display:inline-block;"
+            + "width:12px;"
+            + "height:12px;"
+            + "border-radius:50%;"
+            + "background:#dc3545\"></span>";
+  }
   /**
    * Generates a complete HTML document describing the current server state.
    *
@@ -117,15 +130,15 @@ public class StatusWebPage {
         var handshake = sec >= 0 ? String.format("%d sec", sec) : "Complete";
         html.append(
             String.format(
-                "<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td>"
-                    + "<td>%s</td><td>%s</td><td>%s</td></tr>%n",
+                "<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td style=\"text-align:center\">%s</td>"
+                    + "<td style=\"text-align:center\">%s</td><td>%s</td><td>%s</td></tr>%n",
                 StringEscapeUtils.escapeHtml4(displayName),
                 StringEscapeUtils.escapeHtml4(client.getClientId()),
                 StringEscapeUtils.escapeHtml4(ipAddress),
                 StringEscapeUtils.escapeHtml4(azp),
                 StringEscapeUtils.escapeHtml4(systemName),
-                client.hasJoinedSharedSession(),
-                client.hasStreamToClient(),
+                statusLed(client.hasJoinedSharedSession()),
+                statusLed(client.hasStreamToClient()),
                 handshake,
                 client.getCreationLifetimeInMinutes()));
       }
