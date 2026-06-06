@@ -62,7 +62,7 @@ public class DefaultConfigService implements ConfigService {
   private static final Config.Option<EAuthLevel> C2SIM_AUTH_MODE =
       new Config.Option<>(
           "C2SIM_AUTH_MODE",
-          EAuthLevel.STRICT_AUTH,
+          EAuthLevel.MIXED_AUTH,
           "Bearer tokens (not required (disables all auth) / mandatory / mixed)",
           EAuthLevel.class,
           Config.asEnum(EAuthLevel.class));
@@ -108,6 +108,14 @@ public class DefaultConfigService implements ConfigService {
                   "C2SIM Protocol version that must be used in C2SIM header",
                   String.class,
                   Config::asString);
+  private static final Config.Option<Integer> C2SIM_INACTIVE_TIMEOUT_SEC =
+          new Config.Option<>(
+                  "C2SIM_INACTIVE_TIMEOUT_SEC",
+                  180,
+                  "Number of seconds after which an inactive C2SIM client is removed ",
+                  Integer.class,
+                  Config::asInt);
+
 
   private static final String DEFAULT_SHARED_SESSION_NAME = "default";
   private static final String DEFAULT_SHARED_SESSION_SCHEMA_VERSION = "2.0.0";
@@ -138,6 +146,7 @@ public class DefaultConfigService implements ConfigService {
               .add(C2SIM_PREFIX)
               .add(C2SIM_PROTOCOL)
               .add(C2SIM_PROTOCOL_VERSION)
+              .add(C2SIM_INACTIVE_TIMEOUT_SEC)
               .build(envService.getenv()); // reads System.getenv
       var table = config.asTable();
       logger.info("Server config:\n {}", table);
@@ -358,5 +367,11 @@ public class DefaultConfigService implements ConfigService {
       }
     }
     return basePath;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public int getInactiveTimeoutSec() {
+    return cfg.get(C2SIM_INACTIVE_TIMEOUT_SEC);
   }
 }

@@ -78,13 +78,31 @@ public final class RestRoutes {
               "/metrics",
               ctx -> handleMetrics(ctx, metricService, configService.getIsMetricsEnabled()));
           get("/status", ctx -> handleStatus(c2simService, ctx));
+          get("/cleanup", ctx -> handleCleanUp(c2simService, ctx));
           path("api", () -> defineC2SimRoutes(sessionApi, notificationApi, publishApi));
           ws("/api/c2sim/session/{sessionName}/ws", webSocketService::onNewWebSocket);
         });
   }
 
+  /**
+   * Return an HTML status page of the server state
+   * @param c2simService The C2SIM service
+   * @param ctx The javalin context
+   */
   public static void handleStatus(C2SimService c2simService, Context ctx) {
     ctx.html(StatusWebPage.createStatusPage(c2simService));
+  }
+
+  /**
+   * Cleanup dead connections manual
+   * @param c2simService The C2SIM service
+   * @param ctx The javalin context
+   */
+  public static void handleCleanUp(C2SimService c2simService, Context ctx) {
+    logger.info("Cleanup REST endpoint called, starting cleanup of dead connections");
+
+    c2simService.cleanUp();
+    ctx.status(200);
   }
 
   /**

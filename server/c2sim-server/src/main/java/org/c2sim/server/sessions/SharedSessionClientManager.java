@@ -186,4 +186,18 @@ public class SharedSessionClientManager implements Iterable<SharedSessionClient>
     var logText = sb.toString();
     logger.debug(logText);
   }
+
+
+    public void removeInactiveClients(long timeoutInSeconds) {
+    for (var client : this) {
+      if (client.getLastActivityInSeconds() > timeoutInSeconds) {
+        logger.info(
+            "Session '{}': Removing inactive client '{}'.",
+            owner.getSharedSessionName(),
+            client.getClientNameForDebug());
+        sharedSessionClients.remove(client.getClientId());
+        client.resign("Removed by C2SIM server (inactive connection)");
+      }
+    }
+  }
 }

@@ -36,6 +36,7 @@ public class SharedSessionClient {
   private StreamingClient webSocketClient = null;
   private Instant created = Instant.now();
   private Instant lastConnectionStateChanged = Instant.now();
+  private Instant lastActivity = Instant.now();
 
   /**
    * Creates a new client tracker.
@@ -120,6 +121,7 @@ public class SharedSessionClient {
         ((publisher != null) && (publisher.getClientId().contentEquals(clientId)));
     // Only send messages to client if fully connected (joined and has stream)
     if (hasStreamToClient() && hasJoinedSharedSession()) {
+      updateLastActivity();
       // Don't send message it own messages to itself
       if ((publisher == null || !isPublisher)) {
         webSocketClient.sendC2SimMessage(c2simMessageXml);
@@ -278,7 +280,7 @@ public class SharedSessionClient {
   }
 
   /**
-   * Returns the number of minutes since this client was created.
+   * Returns the number of seconds since this client fully connected (joined & streaming).
    *
    * @return returns -1 if there is a full connection else the number of sec since last connection
    *     state change (either join or stream connection)
@@ -290,8 +292,27 @@ public class SharedSessionClient {
     return Duration.between(lastConnectionStateChanged, Instant.now()).toSeconds();
   }
 
+  /**
+   * Returns the number of seconds since last interaction with C2SIM client.
+   * When C2SIM client is joined and has streaming connection then 0 sec;
+   * In some rare cases, the C2SIM client only send but doesn't want to receive
+   * @return the number of seconds with last interaction with C2SIM client
+   */
+  public long getLastActivityInSeconds() {
+    if (hasJoinedSharedSession() && hasStreamToClient()) {
+      // As long as there is a websocket the C2SIM client is active
+      return 0;
+    }
+    return Duration.between(lastConnectionStateChanged, Instant.now()).toSeconds();
+  }
+
   private void updateLastConnectionStateChanged() {
     lastConnectionStateChanged = Instant.now();
+    updateLastActivity();
+  }
+
+  private void updateLastActivity() {
+    lastActivity = Instant.now();
   }
 
   /**

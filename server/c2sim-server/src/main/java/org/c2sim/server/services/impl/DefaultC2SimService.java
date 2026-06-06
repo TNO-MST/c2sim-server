@@ -128,4 +128,13 @@ public class DefaultC2SimService implements C2SimService {
   public void addSharedSession(SharedSession sharedSession) {
     sessionManager.addSharedSession(sharedSession);
   }
+
+  /** {@inheritDoc} */
+  @Override
+  public void cleanUp() {
+    for (SharedSession sharedSession : sessionManager) {
+      sharedSession.getClientsManager().removeInactiveClients(configService.getInactiveTimeoutSec());
+    }
+
+  }
 }
