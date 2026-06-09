@@ -167,7 +167,7 @@ public class C2SIMHeaderTypeBuilder {
       header.setProtocol(Global.C2SIM_PROTOCOL);
     }
     if (header.getProtocolVersion() == null) {
-      header.setProtocol(Global.C2SIM_PROTOCOL_VERSION);
+      header.setProtocolVersion(Global.C2SIM_PROTOCOL_VERSION);
     }
 
     if (header.getConversationID() == null) {
