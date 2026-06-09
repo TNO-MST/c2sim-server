@@ -10,17 +10,18 @@ public class DefaultAuditService  implements AuditService {
 
     private static final Logger auditLogger = LoggerFactory.getLogger("AUDIT");
 
-    private static final String PROP_SHARED_SESSION = "sharedSession";
-    private static final String PROP_SYSTEM_NAME = "systemName";
-    private static final String PROP_ACTION = "action";
-    private static final String PROP_STATUS = "status";
-    private static final String PROP_IP_ADDRESS = "clientIP";
-    private static final String PROP_AZP = "azp";
-    private static final String PROP_JWT = "jwt";
-    private static final String PROP_CLIENT_ID = "clientId";
-    private static final String PROP_TRACKING_ID = "trackingId";
-    private static final String PROP_ERROR_MSG = "errorMsg";
-    private static final String PROP_AUTH_FAILURE_CODE = "authFailureCode";
+    private static final String PROP_SHARED_SESSION = "c2sim.sharedSession";
+    private static final String PROP_SYSTEM_NAME = "c2sim.systemName";
+    private static final String PROP_ACTION = "c2sim.action";
+    private static final String PROP_STATUS = "c2sim.status";
+    private static final String PROP_IP_ADDRESS = "c2sim.clientIP";
+    private static final String PROP_AZP = "c2sim.azp";
+    private static final String PROP_JWT = "c2sim.jwt";
+    private static final String PROP_CLIENT_ID = "c2sim.clientId";
+    private static final String PROP_TRACKING_ID = "c2sim.trackingId";
+    private static final String PROP_ERROR_MSG = "c2sim.errorMsg";
+    private static final String PROP_AUTH_FAILURE_CODE = "c2sim.authFailureCode";
+    
     private static final String STATUS_SUCCESS = "SUCCESS";
     private static final String STATUS_FAILURE = "FAILURE";
 
