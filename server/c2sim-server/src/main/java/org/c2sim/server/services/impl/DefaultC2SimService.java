@@ -135,6 +135,16 @@ public class DefaultC2SimService implements C2SimService {
     for (SharedSession sharedSession : sessionManager) {
       sharedSession.getClientsManager().removeInactiveClients(configService.getInactiveTimeoutSec());
     }
+  }
 
+  /** {@inheritDoc} */
+  @Override
+  public void shutdown() {
+
+    for (SharedSession sharedSession : sessionManager) {
+      logger.info("Shutdown shared session '{}'.", sharedSession.getSharedSessionName());
+      sharedSession.getClientsManager().shutdown();
+    }
+    logger.info("C2SIM service has been shut down.");
   }
 }

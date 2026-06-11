@@ -32,6 +32,10 @@ public interface WebService {
   /** Stops the Javalin HTTP server. */
   void stop();
 
+  /** Shutdown service */
+  void shutdown();
+
+
   /**
    * Returns the {@link C2SimClaimsBuilder} used to parse and validate Bearer tokens.
    *

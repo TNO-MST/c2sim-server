@@ -12,7 +12,6 @@ import io.javalin.json.JavalinJackson;
 import io.javalin.micrometer.MicrometerPlugin;
 import io.javalin.openapi.plugin.swagger.SwaggerPlugin;
 import io.micrometer.core.instrument.binder.jvm.JvmMemoryMetrics;
-import io.micrometer.core.instrument.binder.jvm.JvmThreadMetrics;
 import io.micrometer.core.instrument.binder.system.ProcessorMetrics;
 import io.micrometer.core.instrument.binder.system.UptimeMetrics;
 import org.c2sim.authorization.exceptions.AuthorisationException;
@@ -140,7 +139,7 @@ public class DefaultWebService implements WebService {
             var registry = metricService.getRegistry();
 
             new JvmMemoryMetrics().bindTo(registry);
-            new JvmThreadMetrics().bindTo(registry);
+            // new JvmThreadMetrics().bindTo(registry);
             new UptimeMetrics().bindTo(registry);
             new ProcessorMetrics().bindTo(registry);
             // new DiskSpaceMetrics(new File(System.getProperty("user.dir"))).bindTo(registry);
@@ -607,5 +606,12 @@ public class DefaultWebService implements WebService {
      */
     public Javalin getJavalin() {
         return appServer;
+    }
+
+    public void shutdown() {
+        if (appServer != null) {
+            appServer.stop();
+        }
+
     }
 }

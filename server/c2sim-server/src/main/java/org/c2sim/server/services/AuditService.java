@@ -9,6 +9,7 @@ public interface AuditService {
 
     void startAudit();
 
+    void stopAudit();
 
     void joinedSharedSessionSuccessfully(
             String sharedSession,

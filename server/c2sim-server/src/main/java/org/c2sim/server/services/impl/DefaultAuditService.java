@@ -21,7 +21,7 @@ public class DefaultAuditService  implements AuditService {
     private static final String PROP_TRACKING_ID = "c2sim.trackingId";
     private static final String PROP_ERROR_MSG = "c2sim.errorMsg";
     private static final String PROP_AUTH_FAILURE_CODE = "c2sim.authFailureCode";
-    
+
     private static final String STATUS_SUCCESS = "SUCCESS";
     private static final String STATUS_FAILURE = "FAILURE";
 
@@ -84,6 +84,14 @@ public class DefaultAuditService  implements AuditService {
         MDC.put(PROP_ACTION, "START_AUDIT");
         MDC.put(PROP_STATUS, STATUS_SUCCESS);
         auditLogger.info("C2SIM Server started, audit log started.");
+        MDC.clear();
+    }
+
+    @Override
+    public void stopAudit() {
+        MDC.put(PROP_ACTION, "STOP_AUDIT");
+        MDC.put(PROP_STATUS, STATUS_SUCCESS);
+        auditLogger.info("C2SIM Server shutdown");
         MDC.clear();
     }
 }
