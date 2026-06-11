@@ -1,9 +1,11 @@
 package org.c2sim;
 
+import org.c2sim.server.ShutdownManager;
 import org.c2sim.server.utils.ManifestHelper;
 import org.c2sim.server.utils.ResourceHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 
 /**
  * Main entry point for the C2SIM server process.
@@ -25,8 +27,6 @@ import org.slf4j.LoggerFactory;
 public class Program {
   private static final Logger logger = LoggerFactory.getLogger(Program.class);
   private static final Object lock = new Object();
-
-  private static volatile boolean isShuttingDown = false; // Flag to indicate shutdown
 
   private static String manifestImplVersion = "";
   private static String manifestBuildTime = "";
@@ -66,24 +66,10 @@ public class Program {
    *
    * @param args command-line arguments (currently unused)
    */
-  public static void main(String[] args) {
+  public static void main(String[] args) throws InterruptedException {
 
     // Register shutdown hook to handle SIGTERM
-    // Register a shutdown hook to notify the main thread when the application is shutting down
-    Runtime.getRuntime()
-        .addShutdownHook(
-            new Thread(
-                () -> {
-                  logger.info("Shutdown hook triggered. Application is shutting down...");
-
-                  // Set the shutdown flag and notify the waiting thread
-                  synchronized (lock) {
-                    isShuttingDown = true; // Set shutdown flag
-                    lock.notifyAll(); // Notify the thread waiting on the lock
-                  }
-
-                  // Perform additional cleanup tasks here if needed
-                }));
+    // Is done in static init ShutdownManager
 
     showWelcomeBanner();
     getManifestBuildInfoAndPrint();
@@ -96,23 +82,11 @@ public class Program {
 
     // Start javalin server
     deployment.start();
-    logger.info("Press <enter> to stop the server (when running in terminal mode)");
-    // System.in.read(); Doesn't work for kubernetes POD
-    synchronized (lock) {
-      while (!isShuttingDown) {
-        try {
-          logger.info("C2SIM Server is running...");
-          lock.wait(); // This will block the main thread
-        } catch (InterruptedException e) {
-          logger.warn("Main thread interrupted.");
-          Thread.currentThread().interrupt();
-        }
-      }
-    }
-
+    ShutdownManager.awaitShutdown();
     // Cleanup or shutdown logic after being notified
-    logger.info("Main thread shutdown process.");
     deployment.stop();
+
+    logger.info("Shutdown process completed.");
     logger.info("Sever terminated");
   }
 

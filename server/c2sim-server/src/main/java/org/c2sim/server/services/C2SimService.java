@@ -98,4 +98,9 @@ public interface C2SimService {
    * Manual cleanup of dead connections
    */
   void cleanUp();
+
+  /**
+   * Shutdown of C2SIM server
+   */
+  void shutdown();
 }

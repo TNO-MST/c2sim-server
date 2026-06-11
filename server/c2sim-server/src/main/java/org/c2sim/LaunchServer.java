@@ -107,7 +107,11 @@ public class LaunchServer {
 
   /** Stops the HTTP REST server. */
   public void stop() {
-    getWebService().stop();
+    getC2SimService().shutdown();
+    logger.info("Write close to audit log.");
+    getAuditService().stopAudit();
+    getWebService().shutdown();
+
   }
 
   /**
