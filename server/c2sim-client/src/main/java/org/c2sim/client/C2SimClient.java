@@ -845,6 +845,7 @@ public class C2SimClient {
       case RESET_SCENARIO,
           PAUSE_SCENARIO,
           START_SCENARIO,
+           STOP_SCENARIO,
           SHARE_SCENARIO,
           RESUME_SCENARIO,
           SUBMIT_INITIALIZATION ->
