@@ -17,7 +17,21 @@ The `message` has two elements at root level:
 
 ## Schema version
 
-Each `C2SIM sxd schema` should have it own version namespace. However, due to publication error all XSD schema's have namespace `http://www.sisostds.org/schemas/C2SIM/1.1`. 
+The C2SIM server currently uses the C2SIM XSD schema with the namespace:
+
+`http://www.sisostds.org/schemas/C2SIM/2.0.0-cwix2026` ([XSD file](https://github.com/TNO-MST/c2sim-server/blob/main/server/c2sim-land-operation-extension/src/main/resources/lox/xsd/2026/C2SIM_SMX_LOX_v2.0.0-cwix2026.xsd))
+
+During startup, the C2SIM server logs the XSD version in use:
+
+`The C2SIM server uses the LOX library, which was generated (JAXB) against the XSD namespace 'http://www.sisostds.org/schemas/C2SIM/2.0.0-cwix2026'.`
+
+The C2SIM schema can be extended with custom XML elements and fields. However, the C2SIM Header and C2SIM Initialization messages are parsed and validated by the C2SIM server and therefore must conform exactly to the supported XSD schema.
+
+The namespace
+
+`http://www.sisostds.org/schemas/C2SIM/1.1`
+
+is obsolete and should no longer be used. 
 
 ## C2SIM Header
 
