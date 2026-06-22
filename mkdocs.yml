@@ -79,6 +79,7 @@ nav:
       - OpenID: security/openid.md  
       - Keycloak dev env: security/keycloak-development-env.md
       - Keycloak web interface: security/keycloak-webinterface.md
+      - Audit log: security/audit-log.md
 
 markdown_extensions:
   - admonition

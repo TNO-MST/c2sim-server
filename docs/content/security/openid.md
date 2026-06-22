@@ -132,15 +132,15 @@ The `token_endpoint` contains the url to the `token endpoint`.
 
 The `c2sim` scope includes domain-specific claims required by the C2SIM server.
 
-| Claim                      | Description                   |
-| -------------------------- | ----------------------------- |
-| communicativeActTypeCode   | Type of communicative act     |
-| fromSendingSystem          | Originating system            |
-| replyToSystem              | Reply destination system      |
-| securityClassificationCode | Security classification level |
-| toReceivingSystem          | Target receiving system       |
-| messageType                | C2SIM message type            |
-| systemMessageType          | System-level message type     |
+| Claim             | Description               | Values                                                                    |
+| ----------------- | ------------------------- | ------------------------------------------------------------------------- |
+| fromSendingSystem | Originating system        | Should match sender in C2SIM header `FromSendingSystem`                   |
+| replyToSystem     | Reply destination system  |                                                                           |
+| toReceivingSystem | Target receiving system   |                                                                           |
+| messageType       | C2SIM message type        | DomainMessage, ObjectInitialization, SystemAcknowledgement, SystemMessage |
+| systemMessageType | System-level message type | QUERY, SIMAN                                                              |
+
+The  `QUERY` and `SIMAN` are logical names. The system message are logged at startup of the server.
 
 ## C2SIM Scope
 
