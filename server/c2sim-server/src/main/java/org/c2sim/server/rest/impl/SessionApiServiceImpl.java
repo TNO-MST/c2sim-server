@@ -86,8 +86,11 @@ public class SessionApiServiceImpl implements SessionApiService {
       @NotNull String clientId, @NotNull String sharedSessionName, @NotNull Context ctx) {
     ctx.attribute(ATTRIB_SHARED_SESSION_ID, sharedSessionName);
     var session = c2simService.getSharedSession(sharedSessionName, true);
-    // Fixed in after handler
-    return session.getC2SIMInitializationAsTextXml();
+    // Serialization to XML (not JSON) fixed in javalin after handler
+    var auth = ContextHelper.getAuthorizer(ctx);
+    logger.info("C2SIMInitialization requested by clientId={} for session={} (auth={})",
+            clientId, sharedSessionName, auth != null);
+    return session.getC2SIMInitializationAsTextXml(auth);
   }
 
   /** {@inheritDoc} */

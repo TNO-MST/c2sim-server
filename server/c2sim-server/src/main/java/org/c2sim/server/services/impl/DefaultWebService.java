@@ -317,13 +317,14 @@ public class DefaultWebService implements WebService {
                                     metricService,
                                     c2SimService,
                                     webSocketService);
+                            javalinConfig.routes.before(this::handleBefore); // Client tracking id
                             javalinConfig.routes.beforeMatched(JavalinAuthHandler::addSecurityToAllEndpoints);
                             // Must return XML instead of JSON:
-                            javalinConfig.routes.before(
+                            javalinConfig.routes.beforeMatched(
                                     "/api/c2sim/session/{sessionId}/initialization",
                                     this::handleSpecialCaseRestOperationInitialization);
 
-                            javalinConfig.routes.before(this::handleBefore); // Client tracking id
+
                             javalinConfig.routes.after(this::handleAfter);
 
                             // Handle 404 not found error message

@@ -2,6 +2,7 @@ package org.c2sim.server.sessions;
 
 import static org.c2sim.authorization.exceptions.AuthorisationException.AuthErrorCode.CLAIM_CHECK;
 import static org.c2sim.authorization.impl.AuthorizationResult.OK;
+import static org.c2sim.authorization.lox.enums.ELoxMessageType.SYSTEM_MESSAGE;
 import static org.c2sim.lox.C2SimMsgKind.*;
 import static org.c2sim.lox.sax.DetectMsgKind.determineMsgKind;
 
@@ -17,6 +18,7 @@ import java.util.stream.Collectors;
 
 import org.c2sim.authorization.exceptions.AuthorisationException;
 import org.c2sim.authorization.interfaces.C2SimAuthorizer;
+import org.c2sim.authorization.lox.enums.ELoxMessageType;
 import org.c2sim.lox.C2SimMsgKind;
 import org.c2sim.lox.C2SimMsgKindCategory;
 import org.c2sim.lox.C2SimMsgKindGroups;
@@ -679,7 +681,15 @@ public class SharedSession {
    * @throws C2SimException with {@link C2SimException.ErrorCode#NO_C2SIM_INITIALIZATION_BODY} if
    *     the session has not yet been initialized or no initialization has been received
    */
-  public String getC2SIMInitializationAsTextXml() {
+  public String getC2SIMInitializationAsTextXml(C2SimAuthorizer authorizer) {
+
+    if (authorizer != null) {
+      // Claim MessageType must contain C2SIM_INITIALIZATION to access the initialization XML
+      var result = authorizer.authorizeMessageType(ELoxMessageType.C2SIM_INITIALIZATION);
+      if (result != OK) {
+        throw new AuthorisationException(CLAIM_CHECK, result.message);
+      }
+    }
     return initState.getAsXml(stateMachine.getCurrentState());
   }
 
