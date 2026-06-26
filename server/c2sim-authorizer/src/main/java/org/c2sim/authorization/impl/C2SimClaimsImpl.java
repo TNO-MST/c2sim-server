@@ -86,32 +86,20 @@ class C2SimClaimsImpl implements C2SimClaims {
 
   /** {@inheritDoc} */
   public String toTextDescription() {
+
     StringBuilder sb = new StringBuilder("C2SIM Claims {");
     sb.append("\nclientId=").append(clientId);
-    sb.append("\n, fromSendingSystem=").append(String.valueOf(fromSendingSystem));
-    sb.append("\n, replyToSystem=").append(String.valueOf(replyToSystem));
-    sb.append("\n, toReceivingSystem=").append(String.valueOf(toReceivingSystem));
-    sb.append("\n, messageType=").append(String.valueOf(messageType));
-    sb.append("\n, systemMessageType=").append(String.valueOf(systemMessageType));
+    sb.append("\n, fromSendingSystem=").append(fromSendingSystem.getClaimIsAny() ? "ANY" : String.valueOf(fromSendingSystem));
+    sb.append("\n, replyToSystem=").append(replyToSystem.getClaimIsAny() ? "ANY" :String.valueOf(replyToSystem));
+    sb.append("\n, toReceivingSystem=").append(toReceivingSystem.getClaimIsAny() ? "ANY" :String.valueOf(toReceivingSystem));
+    sb.append("\n, messageType=").append(messageType.getClaimIsAny() ? "ANY" :String.valueOf(messageType));
+    sb.append("\n, systemMessageType=").append(systemMessageType.getClaimIsAny() ? "ANY" :String.valueOf(systemMessageType));
     sb.append("\n }");
     return sb.toString();
   }
 
   @Override
   public String toString() {
-    StringBuilder sb = new StringBuilder("C2SIM Claims{");
-    sb.append("clientId=").append(clientId);
-
-    // sb.append(", communicativeActTypeCode=").append(String.valueOf(communicativeActTypeCode));
-    sb.append(", fromSendingSystem=").append(String.valueOf(fromSendingSystem));
-    sb.append(", replyToSystem=").append(String.valueOf(replyToSystem));
-    // sb.append(",
-    // securityClassificationCode=").append(String.valueOf(securityClassificationCode));
-    sb.append(", toReceivingSystem=").append(String.valueOf(toReceivingSystem));
-    sb.append(", messageType=").append(String.valueOf(messageType));
-    sb.append(", systemMessageType=").append(String.valueOf(systemMessageType));
-
-    sb.append('}');
-    return sb.toString();
+    return toTextDescription();
   }
 }
