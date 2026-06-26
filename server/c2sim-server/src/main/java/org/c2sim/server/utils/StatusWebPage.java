@@ -42,6 +42,7 @@ public class StatusWebPage {
    */
   @SuppressWarnings("checkstyle:LineLength")
   public static String createStatusPage(C2SimService service) {
+    boolean hasInvalidClientIds = false;
     long startTime = System.nanoTime();
     String renderTime =
         LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
@@ -87,6 +88,12 @@ public class StatusWebPage {
                  display: inline-block;
                  width: 80px;
                }
+               .error {
+                  color: red;
+                  font-weight: bold;
+               }
+               .no-error {
+               }
             </style>
             </head>
             <body>""");
@@ -109,7 +116,7 @@ public class StatusWebPage {
                    <caption>Connected clients</caption>
                    <tr>
                    <th>Display Name</th>
-                   <th>ID</th>
+                   <th>clientId</th>
                    <th>IP address</th>
                    <th>AZP (auth)</th>
                    <th>System name</th>
@@ -126,13 +133,21 @@ public class StatusWebPage {
         var azp = joined ? client.getAzp() : waiting;
         var systemName = joined ? client.getSystemName() : waiting;
 
+        // Check
+        var wrongClientId = (joined && systemName.toLowerCase().contains(client.getClientId().toLowerCase()));
+        if (wrongClientId) {
+          hasInvalidClientIds = true;
+        }
+        var className = wrongClientId ? "error" : "no_error";
+
         long sec = client.getPartiallyConnectedInSeconds();
         var handshake = sec >= 0 ? String.format("%d sec", sec) : "Complete";
         html.append(
             String.format(
-                "<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td style=\"text-align:center\">%s</td>"
+                "<tr><td>%s</td><td class=\"%s\">%s</td><td>%s</td><td>%s</td><td>%s</td><td style=\"text-align:center\">%s</td>"
                     + "<td style=\"text-align:center\">%s</td><td>%s</td><td>%s</td></tr>%n",
                 StringEscapeUtils.escapeHtml4(displayName),
+                className,
                 StringEscapeUtils.escapeHtml4(client.getClientId()),
                 StringEscapeUtils.escapeHtml4(ipAddress),
                 StringEscapeUtils.escapeHtml4(azp),
@@ -145,11 +160,31 @@ public class StatusWebPage {
       html.append(
           """
                 </table>
+                
                 """);
     }
 
+    if (hasInvalidClientIds) {
+      var addWarning = """
+              <div style="
+                  padding: 10px 14px;
+                  margin: 10px 0;
+                  border-left: 4px solid #f0ad4e;
+                  background-color: #fff8e5;
+                  color: #664d03;
+                  font-size: 0.9rem;
+              ">
+                  <strong>Warning:</strong>
+                  When C2SIM client is instantiated it must generate a random <code>clientId</code> (preferably 5 characters).
+                  This <code>clientId</code> must be added to each REST header. Each C2SIM client <b>instance</b> should use its
+                  own random <code>clientId</code>. The C2SIM server will reject non random clientId in the future.
+              </div>
+      """;
+      html.append(addWarning);
+    }
+
     html.append("""
-            <button onclick="cleanupAndRefresh()">Cleanup</button>
+            <button onclick="cleanupAndRefresh()" title="Remove dead (timeout) connections.">Cleanup</button>
             
             <script>
             async function cleanupAndRefresh() {
