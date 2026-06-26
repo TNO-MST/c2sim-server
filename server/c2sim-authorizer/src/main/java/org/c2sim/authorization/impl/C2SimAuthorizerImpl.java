@@ -23,14 +23,16 @@ public record C2SimAuthorizerImpl(C2SimClaims c2SimClaims) implements C2SimAutho
       String claimName, String allowedClaims, String requestedClaim) {
     return String.format(
         "Client C2SIM header attribute '%s' has value [%s], but claim '%s' only give permissions for [%s].",
-            claimName, requestedClaim, claimName, allowedClaims);
+            claimName, requestedClaim, claimName,
+            allowedClaims);
   }
 
   private static String getAccessDeniedMessageTypeMsg(
           String claimName, String allowedClaims, String requestedClaim) {
     return String.format(
             "Client C2SIM message is of category [%s], but claim '%s' only give permissions for [%s].",
-             requestedClaim, claimName, allowedClaims);
+             requestedClaim, claimName,
+             allowedClaims);
   }
 
   @Override
@@ -72,6 +74,10 @@ public record C2SimAuthorizerImpl(C2SimClaims c2SimClaims) implements C2SimAutho
       // }
       // checks.add(authorizeToReceivingSystem(receivingSystem));
 
+      // Auth system message
+      if (msgKind != null) {
+        checks.add(authorizeSystemMessageType(msgKind));
+      }
 
       // Protocol
       if (!protocol.equals(header.getProtocol())) {
@@ -200,7 +206,7 @@ public record C2SimAuthorizerImpl(C2SimClaims c2SimClaims) implements C2SimAutho
   public AuthorizationResult authorizeSystemMessageType(C2SimMsgKind command) {
 
     // Are all system messages allowed?
-    if (c2SimClaims.getSystemMessageType() == null || c2SimClaims.getSystemMessageType().isEmpty()) {
+    if (c2SimClaims.getSystemMessageType() == null || c2SimClaims.getSystemMessageType().getClaimIsAny()) {
       return AuthorizationResult.OK;
     }
 
@@ -219,8 +225,17 @@ public record C2SimAuthorizerImpl(C2SimClaims c2SimClaims) implements C2SimAutho
 
     // Is it a system message that is under control of the authorizer?
     if (belongsToGroups.isEmpty()) {
+      logger.info("System message {} is in any groups, so it is allowed.", command);
       return AuthorizationResult.OK;
     }
+
+    String groups = belongsToGroups.stream()
+            .map(Enum::name)
+            .collect(Collectors.joining(";"));
+
+    logger.info("System message {} is part of group(s) '{}'.",
+            command,
+            groups);
 
     // Check if claim contains any of the groups
     for (ELoxSystemMessageType group : belongsToGroups) {

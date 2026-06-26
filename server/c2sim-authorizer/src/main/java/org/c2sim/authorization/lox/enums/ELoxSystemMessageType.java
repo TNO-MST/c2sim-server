@@ -10,13 +10,13 @@ import java.util.stream.Collectors;
 public enum ELoxSystemMessageType implements TextEnum{
 
         /** SIMAN */
-        SIMAN("siman"),
+        SIMAN("SIMAN"),
         /** Siman response */
-        SIMAN_RESPONSE("simanResponse"),
+        SIMAN_RESPONSE("SIMAN_RESPONSE"),
         /** Query */
-        QUERY("query"),
+        QUERY("QUERY"),
         /** Unknown message type */
-        UNKNOWN("Unknown");
+        UNKNOWN("UNKNOWN");
 
         private final String text;
 

@@ -109,7 +109,7 @@ class C2SimServiceStateMachineTest extends BaseTest {
         "JUNIT: Reject request C2SIM initialization when not in executing state (late join)");
     C2SimException requestC2SIM =
         Assertions.assertThrowsExactly(
-            C2SimException.class, sharedSession::getC2SIMInitializationAsTextXml);
+            C2SimException.class, () -> sharedSession.getC2SIMInitializationAsTextXml(null) );
     Assertions.assertEquals(
         C2SimException.ErrorCode.NO_C2SIM_INITIALIZATION_BODY.toString(),
         requestC2SIM.getError().getCode());
@@ -132,7 +132,7 @@ class C2SimServiceStateMachineTest extends BaseTest {
             + sharedSession.getCurrentState());
     // ====================================================================================================
     logger.info("JUNIT: Request C2SIM initialization, should be allowed.");
-    var xml = sharedSession.getC2SIMInitializationAsTextXml();
+    var xml = sharedSession.getC2SIMInitializationAsTextXml(null);
     Assertions.assertNotNull(xml);
     Assertions.assertFalse(xml.isEmpty());
     logger.info("C2SIM initialization:\n{}", xml);

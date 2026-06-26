@@ -139,4 +139,10 @@ public class C2SimMsgKindGroups {
                 .collect(Collectors.joining(", ")) + "]";
     }
 
+    public static String getQueryGroupAsText() {
+        return "["+ queryMessages.stream()
+                .map(Enum::name)
+                .collect(Collectors.joining(", ")) + "]";
+    }
+
 }

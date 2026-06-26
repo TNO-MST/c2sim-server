@@ -10,6 +10,7 @@ import java.util.Objects;
 
 import org.c2sim.authorization.exceptions.AuthorisationException;
 import org.c2sim.authorization.interfaces.C2SimAuthorizer;
+import org.c2sim.lox.C2SimMsgKindGroups;
 import org.c2sim.server.api.models.*;
 import org.c2sim.server.exceptions.C2SimException;
 import org.c2sim.server.services.*;
@@ -63,6 +64,10 @@ public class DefaultC2SimService implements C2SimService {
 
     var schemaVersions = join("','", c2simSchemaService.getSupportedSchemaVersions());
     logger.info("Detected C2SIM schema folders (versions): '{}'", schemaVersions);
+
+    logger.info("OIDC Claim 'SystemMessage': \n- group QUERY: '{}', \n- group SIMAN: '{}' ",
+            C2SimMsgKindGroups.getQueryGroupAsText(), C2SimMsgKindGroups.getSimanMsgGroupAsText());
+
   }
 
   /** {@inheritDoc} */

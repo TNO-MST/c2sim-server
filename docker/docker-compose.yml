@@ -1,6 +1,6 @@
 services:
   c2sim-server:
-   image: docker.io/kluiverjh/c2sim-server:2.0.2
+   image: docker.io/kluiverjh/c2sim-server:2.0.4
    build:
      context: ./..
      dockerfile: ./docker/Dockerfile-c2sim-server
