@@ -199,7 +199,7 @@ public class MainMenu implements C2SimClient.C2SimClientListener {
                                 new CmdSendFolderXml(this, "invalid_xml", "Invalid XML", "invalid"),
                                 new CmdSendFolderXml(this, "other_xml", "Other XML", "other")
                         ), this::showC2SimClientState),
-
+                new CmdLateJoinRequestInit(this),
                 new CmdResign(this),
                 new CmdQuit(this)
         );
